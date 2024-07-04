@@ -8,17 +8,21 @@
 
 /* Begin PBXBuildFile section */
 		F55222622C36CD5E0057C0E5 /* Gym_ioApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F55222612C36CD5E0057C0E5 /* Gym_ioApp.swift */; };
-		F55222642C36CD5E0057C0E5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F55222632C36CD5E0057C0E5 /* ContentView.swift */; };
+		F55222642C36CD5E0057C0E5 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F55222632C36CD5E0057C0E5 /* MainView.swift */; };
 		F55222662C36CD5F0057C0E5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F55222652C36CD5F0057C0E5 /* Assets.xcassets */; };
 		F55222692C36CD5F0057C0E5 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F55222682C36CD5F0057C0E5 /* Preview Assets.xcassets */; };
+		F5B5714C2C36D43500062087 /* WorkoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5B5714B2C36D43500062087 /* WorkoutView.swift */; };
+		F5B5714E2C36E90400062087 /* ExerciseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5B5714D2C36E90400062087 /* ExerciseView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		F552225E2C36CD5E0057C0E5 /* Gym.io.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gym.io.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F55222612C36CD5E0057C0E5 /* Gym_ioApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gym_ioApp.swift; sourceTree = "<group>"; };
-		F55222632C36CD5E0057C0E5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		F55222632C36CD5E0057C0E5 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		F55222652C36CD5F0057C0E5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F55222682C36CD5F0057C0E5 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		F5B5714B2C36D43500062087 /* WorkoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutView.swift; sourceTree = "<group>"; };
+		F5B5714D2C36E90400062087 /* ExerciseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,7 +56,9 @@
 			isa = PBXGroup;
 			children = (
 				F55222612C36CD5E0057C0E5 /* Gym_ioApp.swift */,
-				F55222632C36CD5E0057C0E5 /* ContentView.swift */,
+				F55222632C36CD5E0057C0E5 /* MainView.swift */,
+				F5B5714B2C36D43500062087 /* WorkoutView.swift */,
+				F5B5714D2C36E90400062087 /* ExerciseView.swift */,
 				F55222652C36CD5F0057C0E5 /* Assets.xcassets */,
 				F55222672C36CD5F0057C0E5 /* Preview Content */,
 			);
@@ -137,7 +143,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F55222642C36CD5E0057C0E5 /* ContentView.swift in Sources */,
+				F5B5714E2C36E90400062087 /* ExerciseView.swift in Sources */,
+				F55222642C36CD5E0057C0E5 /* MainView.swift in Sources */,
+				F5B5714C2C36D43500062087 /* WorkoutView.swift in Sources */,
 				F55222622C36CD5E0057C0E5 /* Gym_ioApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -284,7 +292,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "me.mjorge.Gym-io";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -313,7 +321,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "me.mjorge.Gym-io";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
