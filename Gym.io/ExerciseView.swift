@@ -219,13 +219,22 @@ class ExerciseTimeBased: Exercise {
 
 
 #Preview {
-    ExerciseView(exercise: ExerciseRepBased(
-        name: "Bench Press",
-        imageName: "dumbbell",
-        instructions: "Lie on the bench with your feet flat on the ground. Grip the barbell with your hands slightly wider than shoulder-width apart. Lower the barbell to your chest, then push it back up to the starting position.",
-        sets: 4,
-        reps: 10,
-        weight: 135,
-        caloriesPerRep: 5
-    ))
+    ExerciseView(
+        //        exercise: ExerciseRepBased(
+        //        name: "Bench Press",
+        //        imageName: "dumbbell",
+        //        instructions: "Lie on the bench with your feet flat on the ground. Grip the barbell with your hands slightly wider than shoulder-width apart. Lower the barbell to your chest, then push it back up to the starting position.",
+        //        sets: 4,
+        //        reps: 10,
+        //        weight: 135,
+        //        caloriesPerRep: 5
+        //    )
+        exercise: ExerciseTimeBased(
+            name: "Bench Press",
+            imageName: "dumbbell",
+            instructions: "Lie on the bench with your feet flat on the ground. Grip the barbell with your hands slightly wider than shoulder-width apart. Lower the barbell to your chest, then push it back up to the starting position.",
+            duration: 30,
+            caloriesPerMinute: 5
+        )
+    )
 }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F54B3C532C384B7600171A6F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54B3C522C384B7600171A6F /* ContentView.swift */; };
 		F55222622C36CD5E0057C0E5 /* Gym_ioApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F55222612C36CD5E0057C0E5 /* Gym_ioApp.swift */; };
 		F55222642C36CD5E0057C0E5 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F55222632C36CD5E0057C0E5 /* MainView.swift */; };
 		F55222662C36CD5F0057C0E5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F55222652C36CD5F0057C0E5 /* Assets.xcassets */; };
@@ -16,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F54B3C522C384B7600171A6F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F552225E2C36CD5E0057C0E5 /* Gym.io.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gym.io.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F55222612C36CD5E0057C0E5 /* Gym_ioApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gym_ioApp.swift; sourceTree = "<group>"; };
 		F55222632C36CD5E0057C0E5 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
@@ -56,6 +58,7 @@
 			isa = PBXGroup;
 			children = (
 				F55222612C36CD5E0057C0E5 /* Gym_ioApp.swift */,
+				F54B3C522C384B7600171A6F /* ContentView.swift */,
 				F55222632C36CD5E0057C0E5 /* MainView.swift */,
 				F5B5714B2C36D43500062087 /* WorkoutView.swift */,
 				F5B5714D2C36E90400062087 /* ExerciseView.swift */,
@@ -144,6 +147,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F5B5714E2C36E90400062087 /* ExerciseView.swift in Sources */,
+				F54B3C532C384B7600171A6F /* ContentView.swift in Sources */,
 				F55222642C36CD5E0057C0E5 /* MainView.swift in Sources */,
 				F5B5714C2C36D43500062087 /* WorkoutView.swift in Sources */,
 				F55222622C36CD5E0057C0E5 /* Gym_ioApp.swift in Sources */,

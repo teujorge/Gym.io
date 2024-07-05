@@ -8,14 +8,13 @@
 import SwiftUI
 
 struct WorkoutView: View {
-    let workoutTitle: String
-    let workoutDescription: String
-    let exercises: [Exercise]
+    
+    let workout: Workout
     
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                Text(workoutDescription)
+                Text(workout.description)
                     .foregroundColor(.secondary)
                     .padding(.horizontal)
                     .padding(.bottom)
@@ -85,8 +84,14 @@ struct WorkoutView: View {
             
             Spacer()
         }
-        .navigationTitle(workoutTitle)
+        .navigationTitle(workout.title)
     }
+}
+
+struct Workout {
+    let title: String
+    let description: String
+    let exercises: [Exercise]
 }
 
 
@@ -103,7 +108,10 @@ var exercises: [Exercise] = [
 ]
 
 let PreviewWorkoutView = WorkoutView(
-    workoutTitle: "Full Body Workout",
-    workoutDescription: "A complete workout targeting all major muscle groups.",
-    exercises: exercises
+    workout:
+        Workout(
+            title: "Full Body Workout",
+            description: "A complete workout targeting all major muscle groups.",
+            exercises: exercises
+        )
 )
