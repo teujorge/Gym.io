@@ -23,7 +23,7 @@ struct WorkoutView: View {
                 VStack(alignment: .leading, spacing: 15) {
                     Text("Exercises")
                         .font(.headline)
-                    ForEach(exercises, id: \.id) { exercise in
+                    ForEach(workout.exercises, id: \.id) { exercise in
                         NavigationLink(destination: ExerciseView(exercise: exercise)) {
                             VStack(alignment: .leading) {
                                 Text(exercise.name)
