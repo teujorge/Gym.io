@@ -42,7 +42,7 @@ struct MainView: View {
                             }
                             Spacer()
                             NavigationLink(destination: {
-                                PreviewWorkoutView
+                                WorkoutView(workout: _previewWorkouts[0])
                             }) {
                                 Text("Start")
                                     .padding()
