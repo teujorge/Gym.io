@@ -88,7 +88,8 @@ struct WorkoutView: View {
     }
 }
 
-struct Workout {
+struct Workout: Identifiable {
+    let id = UUID()
     let title: String
     let description: String
     let exercises: [Exercise]

@@ -18,7 +18,7 @@ struct ContentView: View {
                 }
             
             // Workouts
-            EmptyView()
+            WorkoutsView(workouts: [])
                 .tabItem {
                     Image(systemName: "list.bullet")
                 }
