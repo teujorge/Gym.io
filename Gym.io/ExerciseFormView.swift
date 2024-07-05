@@ -10,6 +10,7 @@ import SwiftUI
 struct ExerciseFormView: View {
     let exercise: Exercise?
     let onSave: (Exercise) -> Void
+    let onDelete: (() -> Void)?
     
     @State private var name = ""
     @State private var imageName = ""
@@ -20,10 +21,13 @@ struct ExerciseFormView: View {
     @State private var weight = 0
     @State private var duration = 0
     
-    init(exercise: Exercise?, onSave: @escaping (Exercise) -> Void) {
+    init(exercise: Exercise?, onSave: @escaping (Exercise) -> Void, onDelete: (() -> Void)? = nil) {
         self.exercise = exercise
         self.onSave = onSave
-        
+        self.onDelete = onDelete
+    }
+    
+    private func loadInitialExerciseDetails() {
         if let exercise = exercise {
             name = exercise.name
             imageName = exercise.imageName ?? ""
@@ -42,6 +46,16 @@ struct ExerciseFormView: View {
         }
     }
     
+    private func saveExercise() {
+        if isRepBased {
+            let exercise = ExerciseRepBased(name: name, imageName: imageName, instructions: instructions, sets: sets, reps: reps, weight: weight)
+            onSave(exercise)
+        } else {
+            let exercise = ExerciseTimeBased(name: name, imageName: imageName, instructions: instructions, duration: duration)
+            onSave(exercise)
+        }
+    }
+    
     var body: some View {
         NavigationView {
             Form {
@@ -50,10 +64,10 @@ struct ExerciseFormView: View {
                     TextField("Image Name", text: $imageName)
                     TextField("Instructions", text: $instructions)
                     
-                    Picker("Type", selection: $isRepBased) {
+                    Picker("Type", selection: $isRepBased.animation()) {
                         Text("Rep Based").tag(true)
                         Text("Time Based").tag(false)
-                    }.pickerStyle(SegmentedPickerStyle())
+                    }.pickerStyle(.segmented)
                 }
                 
                 if isRepBased {
@@ -76,27 +90,27 @@ struct ExerciseFormView: View {
                     }
                 }
                 
-                Button(action: saveExercise) {
-                    Text("Save")
-                }
             }
+            .onAppear(perform: loadInitialExerciseDetails)
             .navigationTitle(exercise == nil ? "New Exercise" : "Edit Exercise")
-        }
-    }
-    
-    private func saveExercise() {
-        if isRepBased {
-            let exercise = ExerciseRepBased(name: name, imageName: imageName, instructions: instructions, sets: sets, reps: reps, weight: weight)
-            onSave(exercise)
-        } else {
-            let exercise = ExerciseTimeBased(name: name, imageName: imageName, instructions: instructions, duration: duration)
-            onSave(exercise)
+            .navigationBarItems(
+                leading: exercise == nil || onDelete == nil ? nil : Button("Delete", action: onDelete!)
+                    .foregroundColor(Color.red),
+                trailing: Button("Save", action: saveExercise)
+            )
         }
     }
 }
 
-#Preview {
+#Preview("New") {
     ExerciseFormView(exercise: nil, onSave: { exercise in
         print(exercise)
     })
+}
+
+#Preview("Edit") {
+    ExerciseFormView(
+        exercise: ExerciseRepBased(name: "Bench Press", imageName: "bench_press", instructions: "Lie on a bench and press the bar up", sets: 3, reps: 10, weight: 100),
+        onSave: { exercise in print(exercise) }
+    )
 }

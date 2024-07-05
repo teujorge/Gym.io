@@ -107,9 +107,15 @@ struct WorkoutView: View {
             .cornerRadius(20)
         })
         .sheet(isPresented: $isPresentingWorkoutForm) {
-            WorkoutFormView(workout: workout, onSave: { workout in
-                isPresentingWorkoutForm = false
-            })
+            WorkoutFormView(
+                workout: workout,
+                onSave: { workout in
+                    isPresentingWorkoutForm = false
+                },
+                onDelete: {
+                    isPresentingWorkoutForm = false
+                }
+            )
         }
     }
 }
