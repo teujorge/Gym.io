@@ -18,15 +18,17 @@ struct ContentView: View {
                 }
             
             // Workouts
-            WorkoutsView(workouts: [])
+            WorkoutsView(workouts: _previewWorkouts)
                 .tabItem {
-                    Image(systemName: "list.bullet")
+                    Image(systemName: "dumbbell.fill")
+                    Text("Workouts")
                 }
             
             // Profile
-            EmptyView()
+            ProfileView()
                 .tabItem {
                     Image(systemName: "person.fill")
+                    Text("Profile")
                 }
         }
     }
