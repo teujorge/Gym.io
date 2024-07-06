@@ -12,13 +12,23 @@ class Workout: Identifiable, ObservableObject {
     @Published var title: String
     @Published var description: String?
     @Published var exercises: [Exercise]
-    @Published var completedDate: Date?
 
-    init(id: UUID = UUID(), title: String, description: String? = nil, exercises: [Exercise], completedDate: Date? = nil) {
+    init(id: UUID = UUID(), title: String, description: String? = nil, exercises: [Exercise]) {
         self.id = id
         self.title = title
         self.description = description
         self.exercises = exercises
-        self.completedDate = completedDate
+    }
+}
+
+class WorkoutCompleted: Identifiable, ObservableObject {
+    let id: UUID
+    let date: Date
+    let workout: Workout
+    
+    init(id: UUID = UUID(), date: Date, workout: Workout) {
+        self.id = id
+        self.date = date
+        self.workout = workout
     }
 }

@@ -74,7 +74,7 @@ struct ChallengesView: View {
     }
     
     private func createNewChallenge(title: String, description: String) {
-        let newChallenge = Challenge(title: title, description: description, goal: Goal(weightPerPoint: 50, repsPerPoint: 5, durationPerPoint: 120), startDate: Date(), endDate: Date().addingTimeInterval(60 * 60 * 24 * 7))
+        let newChallenge = Challenge(title: title, description: description, rules: Rules(pointsPerHundredKgs: 50, pointsPerHundredReps: 5, pointsPerHour: 120), startDate: Date(), endDate: Date().addingTimeInterval(60 * 60 * 24 * 7))
         challenges.append(newChallenge)
     }
     
@@ -132,6 +132,6 @@ struct ChallengeCardView: View {
 
 let _previewChallenges: [Challenge] = [
     _previewChallenge,
-    Challenge(title: "Weekly Running", description: "Run 5 miles every day for a week!", goal: Goal(weightPerPoint: 0, repsPerPoint: 0, durationPerPoint: 0), startDate: Date(), endDate: Date().addingTimeInterval(60 * 60 * 24 * 7)),
-    Challenge(title: "100 Pushups Everyday", description: "Can you do 100 pushups for a week", goal: Goal(weightPerPoint: 0, repsPerPoint: 100, durationPerPoint: 0), startDate: Date(), endDate: Date().addingTimeInterval(60 * 60 * 24 * 7))
+    Challenge(title: "Weekly Running", description: "Run 5 miles every day for a week!", rules: Rules(pointsPerHundredKgs: 0, pointsPerHundredReps: 0, pointsPerHour: 0), startDate: Date(), endDate: Date().addingTimeInterval(60 * 60 * 24 * 7)),
+    Challenge(title: "100 Pushups Everyday", description: "Can you do 100 pushups for a week", rules: Rules(pointsPerHundredKgs: 0, pointsPerHundredReps: 100, pointsPerHour: 0), startDate: Date(), endDate: Date().addingTimeInterval(60 * 60 * 24 * 7))
 ]

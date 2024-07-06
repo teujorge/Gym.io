@@ -54,13 +54,13 @@ struct ChallengeView: View {
                 
                 // Point System
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Goal:")
+                    Text("Point System:")
                         .font(.headline)
-                    Text("Weight Per Point: \(challenge.goal.weightPerPoint)")
+                    Text("Points per 100 kg -> \(challenge.rules.pointsPerHundredKgs)")
                         .font(.subheadline)
-                    Text("Reps Per Point: \(challenge.goal.repsPerPoint)")
+                    Text("Points per 100 reps -> \(challenge.rules.pointsPerHundredReps)")
                         .font(.subheadline)
-                    Text("Duration Per Point: \(challenge.goal.durationPerPoint) seconds")
+                    Text("Points per hour -> \(challenge.rules.pointsPerHour)")
                         .font(.subheadline)
                 }
                 
@@ -82,12 +82,20 @@ struct ChallengeView: View {
 let _previewChallenge = Challenge(
     title: "30-Day Fitness",
     description: "Join us in this 30-day fitness challenge!",
-    goal: Goal(weightPerPoint: 50, repsPerPoint: 5, durationPerPoint: 120),
-    startDate: Date(),
+    rules: Rules(pointsPerHundredKgs: 50, pointsPerHundredReps: 5, pointsPerHour: 120),
+    startDate: Date().addingTimeInterval(-60 * 60 * 24 * 10),
     endDate: Date().addingTimeInterval(60 * 60 * 24 * 30),
     participants: [
-        User(name: "Alice", workouts: _previewWorkouts),
+        User(name: "Alice", completedWorkouts: _previewWorkoutsCompleted),
         User(name: "Bob"),
         User(name: "Charlie")
     ]
 )
+
+// map through _previewWorkouts and create a WorkoutCompleted with random date
+let _previewWorkoutsCompleted = _previewWorkouts.map { workout in
+    WorkoutCompleted(
+        date: Date().addingTimeInterval(-Double.random(in: 0...(60 * 60 * 24 * 10))),
+        workout: workout
+    )
+}

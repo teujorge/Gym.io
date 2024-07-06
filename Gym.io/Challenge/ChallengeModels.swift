@@ -7,17 +7,17 @@
 
 import Foundation
 
-class Goal: Identifiable, ObservableObject {
+class Rules: Identifiable, ObservableObject {
     let id: UUID
-    @Published var weightPerPoint: Double
-    @Published var repsPerPoint: Int
-    @Published var durationPerPoint: Int // Duration in seconds
+    @Published var pointsPerHundredKgs: Double
+    @Published var pointsPerHundredReps: Int
+    @Published var pointsPerHour: Int
 
-    init(id: UUID = UUID(), weightPerPoint: Double, repsPerPoint: Int, durationPerPoint: Int) {
+    init(id: UUID = UUID(), pointsPerHundredKgs: Double, pointsPerHundredReps: Int, pointsPerHour: Int) {
         self.id = id
-        self.weightPerPoint = weightPerPoint
-        self.repsPerPoint = repsPerPoint
-        self.durationPerPoint = durationPerPoint
+        self.pointsPerHundredKgs = pointsPerHundredKgs
+        self.pointsPerHundredReps = pointsPerHundredReps
+        self.pointsPerHour = pointsPerHour
     }
 }
 
@@ -25,7 +25,7 @@ class Challenge: Identifiable, ObservableObject {
     let id: UUID
     @Published var title: String
     @Published var description: String
-    @Published var goal: Goal
+    @Published var rules: Rules
     @Published var participants: [User]
     @Published var startDate: Date
     @Published var endDate: Date
@@ -34,45 +34,50 @@ class Challenge: Identifiable, ObservableObject {
         participants.sorted(by: { calculatePoints(for: $0) > calculatePoints(for: $1) })
     }
 
-    init(id: UUID = UUID(), title: String, description: String, goal: Goal, startDate: Date, endDate: Date, participants: [User] = []) {
+    init(id: UUID = UUID(), title: String, description: String, rules: Rules, startDate: Date, endDate: Date, participants: [User] = []) {
         self.id = id
         self.title = title
         self.description = description
-        self.goal = goal
+        self.rules = rules
         self.startDate = startDate
         self.endDate = endDate
         self.participants = participants
     }
 
     func calculatePoints(for user: User) -> Int {
-        let workoutsInRange = user.workouts.filter { workout in
-            if let completedDate = workout.completedDate {
-                return completedDate >= startDate && completedDate <= endDate
-            }
-            return false
+        print()
+        print("Calculating points for \(user.name)")
+        let workoutsInRange = user.completedWorkouts.filter { completed in
+            return completed.date >= startDate && completed.date <= endDate
         }
         
-        let totalWeight = workoutsInRange.reduce(0) { total, workout in
-            total + workout.exercises.compactMap { exercise in
+        let totalWeight = workoutsInRange.reduce(0) { total, completed in
+            total + completed.workout.exercises.compactMap { exercise in
                 (exercise as? ExerciseRepBased)?.weight
             }.reduce(0, +)
         }
-        let weightPoints = Double(totalWeight) / goal.weightPerPoint
+        let weightPoints = Double(totalWeight) / rules.pointsPerHundredKgs
+        print("Weight points: \(weightPoints)")
         
-        let totalReps = workoutsInRange.reduce(0) { total, workout in
-            total + workout.exercises.compactMap { exercise in
+        let totalReps = workoutsInRange.reduce(0) { total, completed in
+            total + completed.workout.exercises.compactMap { exercise in
                 (exercise as? ExerciseRepBased)?.reps
             }.reduce(0, +)
         }
-        let repsPoints = Double(totalReps) / Double(goal.repsPerPoint)
+        let repsPoints = Double(totalReps) / Double(rules.pointsPerHundredReps)
+        print("Reps points: \(repsPoints)")
         
-        let totalDuration = workoutsInRange.reduce(0) { total, workout in
-            total + workout.exercises.compactMap { exercise in
+        let totalDuration = workoutsInRange.reduce(0) { total, completed in
+            total + completed.workout.exercises.compactMap { exercise in
                 (exercise as? ExerciseTimeBased)?.duration
             }.reduce(0, +)
         }
-        let durationPoints = Double(totalDuration) / Double(goal.durationPerPoint)
+        let durationPoints = Double(totalDuration) / Double(rules.pointsPerHour)
+        print("Duration points: \(durationPoints)")
         
-        return Int(weightPoints + repsPoints + durationPoints)
+        let totalPoints = weightPoints + repsPoints + durationPoints
+        print("Total points: \(totalPoints)")
+        print()
+        return Int(totalPoints)
     }
 }
