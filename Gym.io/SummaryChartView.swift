@@ -103,11 +103,12 @@ struct SummaryChartView: View {
             .pickerStyle(.segmented)
             .padding()
             
-            HStack {
+            HStack(alignment: .bottom) {
                 Text(summaryString)
                     .fontWeight(.semibold)
-                Text("\(range == .pastMonth ? "this" : "these") \(range.rawValue.lowercased())")
+                Text("\(range == .pastMonth ? "this month" : "these past \(range.rawValue.lowercased())")")
                     .foregroundColor(.secondary)
+                    .font(.footnote)
                 Spacer()
             }
             
