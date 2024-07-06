@@ -72,7 +72,7 @@ class Challenge: Identifiable, ObservableObject {
                 (exercise as? ExerciseTimeBased)?.duration
             }.reduce(0, +)
         }
-        let durationPoints = Double(totalDuration) / Double(rules.pointsPerHour)
+        let durationPoints = Double(totalDuration / (60 * 60)) / Double(rules.pointsPerHour)
         print("Duration points: \(durationPoints)")
         
         let totalPoints = weightPoints + repsPoints + durationPoints

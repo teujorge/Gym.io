@@ -82,7 +82,7 @@ struct ChallengeView: View {
 let _previewChallenge = Challenge(
     title: "30-Day Fitness",
     description: "Join us in this 30-day fitness challenge!",
-    rules: Rules(pointsPerHundredKgs: 50, pointsPerHundredReps: 5, pointsPerHour: 120),
+    rules: Rules(pointsPerHundredKgs: 10, pointsPerHundredReps: 5, pointsPerHour: 100),
     startDate: Date().addingTimeInterval(-60 * 60 * 24 * 10),
     endDate: Date().addingTimeInterval(60 * 60 * 24 * 30),
     participants: [

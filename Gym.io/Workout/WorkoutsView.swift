@@ -88,7 +88,7 @@ let _previewWorkouts = [
         title: "Ricardo's workout",
         description: "pussy shit",
         exercises: [
-            ExerciseTimeBased(name: "sit on 8=D", duration: 9999999999)
+            ExerciseTimeBased(name: "sit on 8=D", duration: 60)
         ]
     ),
     Workout(
