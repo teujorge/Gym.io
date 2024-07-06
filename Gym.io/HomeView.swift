@@ -1,5 +1,5 @@
 //
-//  MainView.swift
+//  HomeView.swift
 //  Gym.io
 //
 //  Created by Matheus Jorge on 7/4/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct MainView: View {
+struct HomeView: View {
     var body: some View {
         NavigationView {
             ScrollView {
@@ -116,5 +116,5 @@ struct MainView: View {
 
 
 #Preview {
-    MainView()
+    HomeView()
 }

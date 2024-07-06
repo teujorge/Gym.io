@@ -10,25 +10,28 @@ import SwiftUI
 struct ContentView: View {
     var body: some View {
         TabView {
-            // Home
-            MainView()
+            HomeView()
                 .tabItem {
                     Image(systemName: "house.fill")
                     Text("Home")
                 }
             
-            // Workouts
             WorkoutsView(workouts: _previewWorkouts)
                 .tabItem {
                     Image(systemName: "dumbbell.fill")
                     Text("Workouts")
                 }
             
-            // Profile
             ProfileView()
                 .tabItem {
                     Image(systemName: "person.fill")
                     Text("Profile")
+                }
+            
+            ChallengesView()
+                .tabItem {
+                    Image(systemName: "flag.fill")
+                    Text("Challenges")
                 }
         }
     }

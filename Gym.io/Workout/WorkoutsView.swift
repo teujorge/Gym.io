@@ -75,9 +75,7 @@ struct WorkoutsView: View {
 }
 
 #Preview {
-    NavigationView {
-        WorkoutsView(workouts: _previewWorkouts)
-    }
+    WorkoutsView(workouts: _previewWorkouts)
 }
 
 let _previewWorkouts = [
@@ -93,4 +91,21 @@ let _previewWorkouts = [
             ExerciseTimeBased(name: "sit on 8=D", duration: 9999999999)
         ]
     ),
+    Workout(
+        title: "Common Workout",
+        exercises: [
+            ExerciseRepBased(name: "Squats", sets: 3, reps: 10, weight: 50),
+            ExerciseRepBased(name: "Push-ups", sets: 3, reps: 15, weight: 0),
+            ExerciseTimeBased(name: "Plank", duration: 60)
+        ],
+        completedDate: Date().addingTimeInterval(60 * 60 * 24 * 2)
+    ),
+    Workout(
+        title: "Common Workout 2",
+        exercises: [
+            ExerciseRepBased(name: "Pull-ups", sets: 3, reps: 15, weight: 0),
+            ExerciseRepBased(name: "Stip-ups", sets: 3, reps: 15, weight: 0),
+        ],
+        completedDate: Date().addingTimeInterval(60 * 60 * 24 * 1)
+    )
 ]
