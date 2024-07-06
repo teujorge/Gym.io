@@ -66,7 +66,7 @@ struct WorkoutsView: View {
             .background(Color(.systemBackground))
             .navigationTitle("Workouts")
             .sheet(isPresented: $isPresentingWorkoutForm) {
-                WorkoutFormView(workout: nil, onSave: { workout in
+                WorkoutFormView(onSave: { workout in
                     isPresentingWorkoutForm = false
                 })
             }
@@ -75,7 +75,9 @@ struct WorkoutsView: View {
 }
 
 #Preview {
-    WorkoutsView(workouts: _previewWorkouts)
+    NavigationView {
+        WorkoutsView(workouts: _previewWorkouts)
+    }
 }
 
 let _previewWorkouts = [

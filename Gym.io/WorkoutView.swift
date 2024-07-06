@@ -112,7 +112,7 @@ struct WorkoutView: View {
                 onSave: { workout in
                     isPresentingWorkoutForm = false
                 },
-                onDelete: {
+                onDelete: { workout in
                     isPresentingWorkoutForm = false
                 }
             )
@@ -122,14 +122,16 @@ struct WorkoutView: View {
 
 
 #Preview {
-    WorkoutView(
-        workout:
-            Workout(
-                title: "Full Body Workout",
-                description: "A complete workout targeting all major muscle groups.",
-                exercises: _previewExercises
-            )
-    )
+    NavigationView {
+        WorkoutView(
+            workout:
+                Workout(
+                    title: "Full Body Workout",
+                    description: "A complete workout targeting all major muscle groups.",
+                    exercises: _previewExercises
+                )
+        )
+    }
 }
 
 var _previewExercises: [Exercise] = [

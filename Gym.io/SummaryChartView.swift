@@ -174,4 +174,6 @@ extension Button {
 
 #Preview {
     SummaryChartView()
+        .padding()
+        .frame(maxHeight: 500)
 }
