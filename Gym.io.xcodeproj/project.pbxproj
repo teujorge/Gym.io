@@ -22,7 +22,7 @@
 		F5B5714C2C36D43500062087 /* WorkoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5B5714B2C36D43500062087 /* WorkoutView.swift */; };
 		F5B5714E2C36E90400062087 /* ExerciseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5B5714D2C36E90400062087 /* ExerciseView.swift */; };
 		F5D4A4062C3962E200E880A7 /* ChallengesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5D4A4052C3962E200E880A7 /* ChallengesView.swift */; };
-		F5D4A4082C396CCC00E880A7 /* ChallengesFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5D4A4072C396CCC00E880A7 /* ChallengesFormView.swift */; };
+		F5D4A4082C396CCC00E880A7 /* ChallengeFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5D4A4072C396CCC00E880A7 /* ChallengeFormView.swift */; };
 		F5D4A40B2C398C0F00E880A7 /* WorkoutModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5D4A40A2C398C0F00E880A7 /* WorkoutModels.swift */; };
 		F5D4A40F2C398C6E00E880A7 /* ExerciseModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5D4A40E2C398C6E00E880A7 /* ExerciseModels.swift */; };
 		F5D4A4122C398C9D00E880A7 /* ProfileModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5D4A4112C398C9D00E880A7 /* ProfileModels.swift */; };
@@ -45,7 +45,7 @@
 		F5B5714B2C36D43500062087 /* WorkoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutView.swift; sourceTree = "<group>"; };
 		F5B5714D2C36E90400062087 /* ExerciseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseView.swift; sourceTree = "<group>"; };
 		F5D4A4052C3962E200E880A7 /* ChallengesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengesView.swift; sourceTree = "<group>"; };
-		F5D4A4072C396CCC00E880A7 /* ChallengesFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengesFormView.swift; sourceTree = "<group>"; };
+		F5D4A4072C396CCC00E880A7 /* ChallengeFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeFormView.swift; sourceTree = "<group>"; };
 		F5D4A40A2C398C0F00E880A7 /* WorkoutModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutModels.swift; sourceTree = "<group>"; };
 		F5D4A40E2C398C6E00E880A7 /* ExerciseModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseModels.swift; sourceTree = "<group>"; };
 		F5D4A4112C398C9D00E880A7 /* ProfileModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModels.swift; sourceTree = "<group>"; };
@@ -138,7 +138,7 @@
 			children = (
 				F5379E4B2C3993F20054E7A8 /* ChallengeView.swift */,
 				F5D4A4052C3962E200E880A7 /* ChallengesView.swift */,
-				F5D4A4072C396CCC00E880A7 /* ChallengesFormView.swift */,
+				F5D4A4072C396CCC00E880A7 /* ChallengeFormView.swift */,
 				F54B3C572C386B3A00171A6F /* ChallengeModels.swift */,
 			);
 			path = Challenge;
@@ -221,7 +221,7 @@
 				F5D4A40F2C398C6E00E880A7 /* ExerciseModels.swift in Sources */,
 				F5379E4C2C3993F20054E7A8 /* ChallengeView.swift in Sources */,
 				F54B3C5C2C3870BB00171A6F /* ProfileView.swift in Sources */,
-				F5D4A4082C396CCC00E880A7 /* ChallengesFormView.swift in Sources */,
+				F5D4A4082C396CCC00E880A7 /* ChallengeFormView.swift in Sources */,
 				F54B3C5A2C386C3300171A6F /* ExerciseFormView.swift in Sources */,
 				F54B3C5E2C387C7D00171A6F /* SummaryChartView.swift in Sources */,
 				F54B3C552C386A9D00171A6F /* WorkoutFormView.swift in Sources */,

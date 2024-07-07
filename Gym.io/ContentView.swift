@@ -22,16 +22,16 @@ struct ContentView: View {
                     Text("Workouts")
                 }
             
-            ProfileView()
-                .tabItem {
-                    Image(systemName: "person.fill")
-                    Text("Profile")
-                }
-            
             ChallengesView()
                 .tabItem {
                     Image(systemName: "flag.fill")
                     Text("Challenges")
+                }
+            
+            ProfileView()
+                .tabItem {
+                    Image(systemName: "person.fill")
+                    Text("Profile")
                 }
         }
     }

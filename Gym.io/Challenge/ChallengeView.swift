@@ -10,6 +10,8 @@ import SwiftUI
 struct ChallengeView: View {
     let challenge: Challenge
     
+    @State var isPresentingWorkoutForm = false
+    
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
@@ -67,8 +69,25 @@ struct ChallengeView: View {
                 
             }
             .padding()
+            .sheet(isPresented: $isPresentingWorkoutForm) {
+                ChallengeFormView(
+                    onSave: { workout in
+                        isPresentingWorkoutForm = false
+                    }
+                )
+            }
         }
         .navigationTitle(challenge.title)
+        .navigationBarItems(
+            trailing: HStack {
+                Button("Edit") {
+                    isPresentingWorkoutForm.toggle()
+                }
+                Button("Delete") {
+                    // Handle delete action
+                }
+            }
+        )
     }
 }
 
@@ -85,12 +104,14 @@ let _previewChallenge = Challenge(
     rules: Rules(pointsPerHundredKgs: 10, pointsPerHundredReps: 5, pointsPerHour: 100),
     startDate: Date().addingTimeInterval(-60 * 60 * 24 * 10),
     endDate: Date().addingTimeInterval(60 * 60 * 24 * 30),
-    participants: [
-        User(name: "Alice", completedWorkouts: _previewWorkoutsCompleted),
-        User(name: "Bob"),
-        User(name: "Charlie")
-    ]
+    participants: _previewParticipants
 )
+
+let _previewParticipants = [
+    User(name: "Alice", completedWorkouts: _previewWorkoutsCompleted),
+    User(name: "Bob"),
+    User(name: "Charlie")
+]
 
 // map through _previewWorkouts and create a WorkoutCompleted with random date
 let _previewWorkoutsCompleted = _previewWorkouts.map { workout in

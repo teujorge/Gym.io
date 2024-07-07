@@ -55,13 +55,13 @@ struct ChallengesView: View {
                 }
             )
             .sheet(isPresented: $isPresentingChallengesForm) {
-                ChallengesFormView { title, description in
+                ChallengeFormView { challenge in
                     if let selectedChallenge = selectedChallenge {
                         // Update the existing challenge
-                        updateChallenge(selectedChallenge, title: title, description: description)
+                        updateChallenge(oldChallenge: selectedChallenge, newChallenge: challenge)
                     } else {
                         // Create a new challenge
-                        createNewChallenge(title: title, description: description)
+                        createNewChallenge(newChallenge: challenge)
                     }
                     isPresentingChallengesForm = false
                 }
@@ -73,15 +73,13 @@ struct ChallengesView: View {
         challenges = _previewChallenges
     }
     
-    private func createNewChallenge(title: String, description: String) {
-        let newChallenge = Challenge(title: title, description: description, rules: Rules(pointsPerHundredKgs: 50, pointsPerHundredReps: 5, pointsPerHour: 120), startDate: Date(), endDate: Date().addingTimeInterval(60 * 60 * 24 * 7))
+    private func createNewChallenge(newChallenge: Challenge) {
         challenges.append(newChallenge)
     }
     
-    private func updateChallenge(_ challenge: Challenge, title: String, description: String) {
-        if let index = challenges.firstIndex(where: { $0.id == challenge.id }) {
-            challenges[index].title = title
-            challenges[index].description = description
+    private func updateChallenge(oldChallenge: Challenge, newChallenge: Challenge) {
+        if let index = challenges.firstIndex(where: { $0.id == oldChallenge.id }) {
+            challenges[index] = newChallenge
         }
     }
     

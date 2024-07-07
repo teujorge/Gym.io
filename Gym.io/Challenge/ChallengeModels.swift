@@ -9,11 +9,11 @@ import Foundation
 
 class Rules: Identifiable, ObservableObject {
     let id: UUID
-    @Published var pointsPerHundredKgs: Double
+    @Published var pointsPerHundredKgs: Int
     @Published var pointsPerHundredReps: Int
     @Published var pointsPerHour: Int
 
-    init(id: UUID = UUID(), pointsPerHundredKgs: Double, pointsPerHundredReps: Int, pointsPerHour: Int) {
+    init(id: UUID = UUID(), pointsPerHundredKgs: Int, pointsPerHundredReps: Int, pointsPerHour: Int) {
         self.id = id
         self.pointsPerHundredKgs = pointsPerHundredKgs
         self.pointsPerHundredReps = pointsPerHundredReps
@@ -56,7 +56,7 @@ class Challenge: Identifiable, ObservableObject {
                 (exercise as? ExerciseRepBased)?.weight
             }.reduce(0, +)
         }
-        let weightPoints = Double(totalWeight) / rules.pointsPerHundredKgs
+        let weightPoints = totalWeight / rules.pointsPerHundredKgs
         print("Weight points: \(weightPoints)")
         
         let totalReps = workoutsInRange.reduce(0) { total, completed in
@@ -64,7 +64,7 @@ class Challenge: Identifiable, ObservableObject {
                 (exercise as? ExerciseRepBased)?.reps
             }.reduce(0, +)
         }
-        let repsPoints = Double(totalReps) / Double(rules.pointsPerHundredReps)
+        let repsPoints = totalReps / rules.pointsPerHundredReps
         print("Reps points: \(repsPoints)")
         
         let totalDuration = workoutsInRange.reduce(0) { total, completed in
@@ -72,7 +72,7 @@ class Challenge: Identifiable, ObservableObject {
                 (exercise as? ExerciseTimeBased)?.duration
             }.reduce(0, +)
         }
-        let durationPoints = Double(totalDuration / (60 * 60)) / Double(rules.pointsPerHour)
+        let durationPoints = (totalDuration / (60 * 60)) / rules.pointsPerHour
         print("Duration points: \(durationPoints)")
         
         let totalPoints = weightPoints + repsPoints + durationPoints
