@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct ChallengeView: View {
-    let challenge: Challenge
-    
+    @State var challenge: Challenge
     @State var isPresentingWorkoutForm = false
     
     var body: some View {
@@ -71,7 +70,12 @@ struct ChallengeView: View {
             .padding()
             .sheet(isPresented: $isPresentingWorkoutForm) {
                 ChallengeFormView(
-                    onSave: { workout in
+                    challenge: challenge,
+                    onSave: { newChallenge in
+                        challenge = newChallenge
+                        isPresentingWorkoutForm = false
+                    },
+                    onDelete: { challenge in
                         isPresentingWorkoutForm = false
                     }
                 )
@@ -79,14 +83,14 @@ struct ChallengeView: View {
         }
         .navigationTitle(challenge.title)
         .navigationBarItems(
-            trailing: HStack {
-                Button("Edit") {
-                    isPresentingWorkoutForm.toggle()
-                }
-                Button("Delete") {
-                    // Handle delete action
-                }
+            trailing: Button(action: { isPresentingWorkoutForm.toggle() }) {
+                Text("Edit")
+                Image(systemName: "pencil")
             }
+                .padding(.vertical, 4)
+                .padding(.horizontal, 8)
+                .background(Color.blue.opacity(0.2))
+                .cornerRadius(20)
         )
     }
 }
