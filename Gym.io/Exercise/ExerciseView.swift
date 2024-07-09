@@ -41,26 +41,21 @@ struct ExerciseView: View {
                 }
                 
                 // MARK: Details
-                // Sets and Reps
-                if let repBasedExercise = exercise as? ExerciseRepBased {
                     VStack(alignment: .leading, spacing: 10) {
-                        Text("Sets and Reps")
+                        Text("Details")
                             .font(.headline)
-                        Text("Sets: \(repBasedExercise.sets)")
-                        Text("Reps: \(repBasedExercise.reps)")
-                        Text("Weight: \(repBasedExercise.weight) lbs")
+                        Text("Sets: \(exercise.sets)")
+                        if let reps = exercise.reps  {
+                            Text("Reps: \(reps)")
+                        }
+                        if let weight = exercise.weight  {
+                            Text("Weight: \(weight) lbs")
+                        }
+                        if let duration = exercise.duration  {
+                            Text("Duration: \(duration) seconds")
+                        }
                     }
                     .padding()
-                }
-                // Duration
-                else if let timeBasedExercise = exercise as? ExerciseTimeBased {
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Duration")
-                            .font(.headline)
-                        Text("Duration: \(timeBasedExercise.duration) seconds")
-                    }
-                    .padding()
-                }
                 
                 // MARK: Footer
                 Spacer()
@@ -114,7 +109,7 @@ struct ExerciseView: View {
 #Preview {
     NavigationView {
         ExerciseView(
-            //        exercise: ExerciseRepBased(
+            //        exercise: Exercise(
             //        name: "Bench Press",
             //        imageName: "dumbbell",
             //        instructions: "Lie on the bench with your feet flat on the ground. Grip the barbell with your hands slightly wider than shoulder-width apart. Lower the barbell to your chest, then push it back up to the starting position.",
@@ -123,12 +118,12 @@ struct ExerciseView: View {
             //        weight: 135,
             //        caloriesPerRep: 5
             //    )
-            exercise: ExerciseTimeBased(
-                name: "Bench Press",
+            exercise: Exercise(
+                name: "Planck",
                 imageName: "dumbbell",
-                instructions: "Lie on the bench with your feet flat on the ground. Grip the barbell with your hands slightly wider than shoulder-width apart. Lower the barbell to your chest, then push it back up to the starting position.",
+                sets: 2,
                 duration: 30,
-                caloriesPerMinute: 5
+                intensity: .low
             )
         )
     }

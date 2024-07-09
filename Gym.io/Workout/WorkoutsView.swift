@@ -90,22 +90,22 @@ let _previewWorkouts = [
         title: "Ricardo's workout",
         description: "pussy shit",
         exercises: [
-            ExerciseTimeBased(name: "sit on 8=D", duration: 60)
+            Exercise(name: "sit on 8=D", sets: 2, duration: 60, intensity: .high)
         ]
     ),
     Workout(
         title: "Common Workout",
         exercises: [
-            ExerciseRepBased(name: "Squats", sets: 3, reps: 10, weight: 50),
-            ExerciseRepBased(name: "Push-ups", sets: 3, reps: 15, weight: 0),
-            ExerciseTimeBased(name: "Plank", duration: 60)
+            Exercise(name: "Squats", sets: 3, reps: 10, weight: 50),
+            Exercise(name: "Push-ups", sets: 3, reps: 15, weight: 0),
+            Exercise(name: "Plank", sets:1, duration: 60, intensity: .moderate)
         ]
     ),
     Workout(
         title: "Common Workout 2",
         exercises: [
-            ExerciseRepBased(name: "Pull-ups", sets: 3, reps: 15, weight: 0),
-            ExerciseRepBased(name: "Stip-ups", sets: 3, reps: 15, weight: 0),
+            Exercise(name: "Pull-ups", sets: 3, reps: 15, weight: 0),
+            Exercise(name: "Stip-ups", sets: 3, reps: 15, weight: 0),
         ]
     )
 ]

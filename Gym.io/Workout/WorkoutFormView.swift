@@ -136,7 +136,7 @@ struct WorkoutFormView: View {
     }
     
     private func addExercise() {
-        selectedExercise = Exercise(name: "")
+        selectedExercise = Exercise(name: "", sets: 0, reps: 0, weight: 0)
         isPresentingExerciseForm = true
     }
     

@@ -34,20 +34,28 @@ struct WorkoutView: View {
                                     .font(.title2)
                                     .fontWeight(.semibold)
                                     .foregroundColor(.blue)
-                                if let repBasedExercise = exercise as? ExerciseRepBased {
-                                    HStack {
-                                        Text("\(repBasedExercise.sets) sets")
-                                        Text("\(repBasedExercise.reps) reps")
-                                        Text("\(repBasedExercise.weight) lbs")
+                                
+                                HStack {
+                                    Text("\(exercise.sets) sets")
+                                    
+                                    if let reps = exercise.reps {
+                                        Text("\(reps) reps")
                                     }
-                                    .foregroundColor(.secondary)
-                                }
-                                else if let timeBasedExercise = exercise as? ExerciseTimeBased {
-                                    HStack {
-                                        Text("Duration: \(timeBasedExercise.duration) seconds")
+                                    if let weight = exercise.weight {
+                                        Text("\(weight) lbs")
                                     }
-                                    .foregroundColor(.secondary)
+                                    if let caloriesPerRep = exercise.caloriesPerRep {
+                                        Text("\(caloriesPerRep) cal")
+                                    }
+                                    
+                                    if let duration = exercise.duration {
+                                        Text("Duration: \(duration) seconds")
+                                    }
+                                    if let caloriesPerMinute = exercise.caloriesPerMinute {
+                                        Text("\(caloriesPerMinute) cal/min")
+                                    }
                                 }
+                                .foregroundColor(.secondary)
                             }
                             .frame(maxWidth: .infinity, alignment: .leading)
                         }
@@ -64,12 +72,12 @@ struct WorkoutView: View {
             NavigationLink(destination: WorkoutStartedView(workout: workout))
             {
                 
-                    Text("Start Workout")
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
+                Text("Start Workout")
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
                 
             }
             .padding()
@@ -136,9 +144,10 @@ struct WorkoutView: View {
 }
 
 var _previewExercises: [Exercise] = [
-    ExerciseRepBased(name: "Bench Press", instructions: "Lie on a flat bench with your feet flat on the floor. Grip the barbell with your hands slightly wider than shoulder-width apart. Lower the bar to your chest, then press it back up.",sets: 4, reps: 10, weight: 135),
-    ExerciseRepBased(name: "Squats", instructions: "Stand with your feet shoulder-width apart. Lower your body as if you were sitting back into a chair. Push through your heels to return to the starting position.", sets: 3, reps: 12, weight: 185),
-    ExerciseRepBased(name: "Deadlift", instructions: "Stand with your feet hip-width apart. Bend at the hips and knees to grip the barbell. Keep your back straight as you lift the barbell off the ground.", sets: 3, reps: 8, weight: 225),
-    ExerciseRepBased(name: "Pull-ups", sets: 3, reps: 10, weight: 0),
-    ExerciseTimeBased(name: "Plank", duration: 30, caloriesPerMinute: 10),
+    Exercise(name: "Bench Press", instructions: "Lie on a flat bench with your feet flat on the floor. Grip the barbell with your hands slightly wider than shoulder-width apart. Lower the bar to your chest, then press it back up.",sets: 4, reps: 10, weight: 135),
+    Exercise(name: "Squats", instructions: "Stand with your feet shoulder-width apart. Lower your body as if you were sitting back into a chair. Push through your heels to return to the starting position.", sets: 3, reps: 12, weight: 185),
+    Exercise(name: "Plank", sets: 2, duration: 30, intensity: .low),
+    Exercise(name: "Deadlift", instructions: "Stand with your feet hip-width apart. Bend at the hips and knees to grip the barbell. Keep your back straight as you lift the barbell off the ground.", sets: 3, reps: 8, weight: 225),
+    Exercise(name: "Pull-ups", sets: 3, reps: 10, weight: 0),
+
 ]

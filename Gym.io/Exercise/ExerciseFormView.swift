@@ -15,10 +15,12 @@ struct ExerciseFormView: View {
     @State private var name = ""
     @State private var imageName = ""
     @State private var instructions = ""
-    @State private var isRepBased = true
     @State private var sets = 0
+    @State private var isRepBased = true
+    
     @State private var reps = 0
     @State private var weight = 0
+    
     @State private var duration = 0
     
     // Initializer with save functionality only
@@ -112,26 +114,20 @@ struct ExerciseFormView: View {
             name = exercise.name
             imageName = exercise.imageName ?? ""
             instructions = exercise.instructions ?? ""
-            
-            if let repBasedExercise = exercise as? ExerciseRepBased {
-                isRepBased = true
-                sets = repBasedExercise.sets
-                reps = repBasedExercise.reps
-                weight = repBasedExercise.weight
-            } else if let timeBasedExercise = exercise as? ExerciseTimeBased {
-                isRepBased = false
-                duration = timeBasedExercise.duration
-            }
+            sets = exercise.sets
+            reps = exercise.reps ?? 0
+            weight = exercise.weight ?? 0
+            duration = exercise.duration ?? 0
         }
     }
     
     // Save exercise details
     private func handleSaveExercise() {
         if isRepBased {
-            let exercise = ExerciseRepBased(name: name, imageName: imageName, instructions: instructions, sets: sets, reps: reps, weight: weight)
+            let exercise = Exercise(name: name, imageName: imageName, instructions: instructions, sets: sets, reps: reps, weight: weight)
             onSave(exercise)
         } else {
-            let exercise = ExerciseTimeBased(name: name, imageName: imageName, instructions: instructions, duration: duration)
+            let exercise = Exercise(name: name, imageName: imageName, instructions: instructions, sets: sets, duration: duration, intensity: .moderate) // TODO: Add intensity picker
             onSave(exercise)
         }
     }
@@ -147,7 +143,7 @@ struct ExerciseFormView: View {
 
 #Preview("Edit") {
     ExerciseFormView(
-        exercise: ExerciseRepBased(name: "Bench Press", imageName: "bench_press", instructions: "Lie on a bench and press the bar up", sets: 3, reps: 10, weight: 100),
+        exercise: Exercise(name: "Bench Press", imageName: "bench_press", instructions: "Lie on a bench and press the bar up", sets: 3, reps: 10, weight: 100),
         onSave: { exercise in print("Save \(exercise)") },
         onDelete: { exercise in print("Delete \(exercise)") }
     )

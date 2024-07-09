@@ -53,7 +53,7 @@ class Challenge: Identifiable, ObservableObject {
         
         let totalWeight = workoutsInRange.reduce(0) { total, completed in
             total + completed.workout.exercises.compactMap { exercise in
-                (exercise as? ExerciseRepBased)?.weight
+                exercise.weight
             }.reduce(0, +)
         }
         let weightPoints = totalWeight / rules.pointsPerHundredKgs
@@ -61,7 +61,7 @@ class Challenge: Identifiable, ObservableObject {
         
         let totalReps = workoutsInRange.reduce(0) { total, completed in
             total + completed.workout.exercises.compactMap { exercise in
-                (exercise as? ExerciseRepBased)?.reps
+                exercise.reps
             }.reduce(0, +)
         }
         let repsPoints = totalReps / rules.pointsPerHundredReps
@@ -69,7 +69,7 @@ class Challenge: Identifiable, ObservableObject {
         
         let totalDuration = workoutsInRange.reduce(0) { total, completed in
             total + completed.workout.exercises.compactMap { exercise in
-                (exercise as? ExerciseTimeBased)?.duration
+                exercise.duration
             }.reduce(0, +)
         }
         let durationPoints = (totalDuration / (60 * 60)) / rules.pointsPerHour

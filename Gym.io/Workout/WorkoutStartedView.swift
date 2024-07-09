@@ -15,22 +15,15 @@ struct WorkoutStartedView: View {
     @State private var counter = 0
     @State private var timerCancellable: Cancellable? = nil
     
+    private var formattedTime: String {
+        let minutes = counter / 60
+        let seconds = counter % 60
+        return String(format: "%02d:%02d", minutes, seconds)
+    }
     
     var body: some View {
         ScrollView {
-            
-            VStack(alignment: .center, spacing: 20){
-                
-                HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/){
-                    
-                    Text("Duration: ").fontWeight(.semibold)
-                    + Text(formattedTime).foregroundColor(.blue)
-                    Spacer()
-                    Text("Weight:").fontWeight(.semibold)
-                    Spacer()
-                    Text("Sets:").fontWeight(.semibold)
-                }
-                .padding()
+            VStack(alignment: .center, spacing: 20) {
                 
                 ForEach(workout.exercises, id: \.id) { exercise in
                     VStack(alignment: .leading) {
@@ -40,49 +33,51 @@ struct WorkoutStartedView: View {
                             .fontWeight(.semibold)
                             .foregroundColor(.blue)
                         
-                        if let repBasedExercise = exercise as? ExerciseRepBased {
-                            LazyVGrid(columns: [
-                                GridItem(.flexible()),
-                                
-                                GridItem(.flexible()),
-                                GridItem(.flexible())
-                            ]) {
-                                Text("sets")
-                                    .font(.title3)
-                                    .fontWeight(.semibold)
+                        LazyVGrid(columns: detailColumns(for: exercise)) {
+                            Text("sets")
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                            
+                            if exercise.reps != nil {
                                 Text("reps")
                                     .font(.title3)
                                     .fontWeight(.semibold)
-                                Text("lbs")
+                            }
+                            if exercise.weight != nil {
+                                Text("weight")
                                     .font(.title3)
                                     .fontWeight(.semibold)
-                                
-                                ForEach(0..<repBasedExercise.sets, id: \.self) { setIndex in
-                                    
-                                    Text("\(setIndex + 1)")
+                            }
+                            if exercise.duration != nil {
+                                Text("duration")
+                                    .font(.title3)
+                                    .fontWeight(.semibold)
+                            }
+
+                            ForEach(0..<exercise.sets, id: \.self) { setIndex in
+                                Text("\(setIndex + 1)")
+                                    .foregroundColor(.secondary)
+
+                                if let reps = exercise.reps {
+                                    Text("\(reps)")
                                         .foregroundColor(.secondary)
-                                    
-                                    
-                                    Text("\(repBasedExercise.reps)")
-                                        .foregroundColor(.secondary)
-                                    
-                                    Text("\(repBasedExercise.weight)")
-                                        .foregroundColor(.secondary)
-                                    
                                 }
-                                
+
+                                if let weight = exercise.weight {
+                                    Text("\(weight) kg")
+                                        .foregroundColor(.secondary)
+                                }
+
+                                if let duration = exercise.duration {
+                                    Text("\(duration) s")
+                                        .foregroundColor(.secondary)
+                                }
                             }
-                        }
-                        else if let timeBasedExercise = exercise as? ExerciseTimeBased {
-                            HStack {
-                                Text("Duration: \(timeBasedExercise.duration) seconds")
-                            }
-                            .foregroundColor(.secondary)
                         }
                         
-                        HStack(){
+                        HStack() {
                             Spacer()
-                            Button(action:{}){
+                            Button(action: { }) {
                                 Text("New set")
                                 Image(systemName: "plus.circle")
                                     .foregroundColor(.blue)
@@ -95,27 +90,34 @@ struct WorkoutStartedView: View {
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    
                     .padding()
                     .background(Color(.systemGray6))
                     .cornerRadius(10)
                 }
                 
-                Button(action: {
-                    stopTimer()
-                }) {
-                    Text("Comoplete workout")
+                Button(action: stopTimer) {
+                    Text("Complete workout")
                         .padding()
                         .background(Color.green)
                         .foregroundColor(.white)
                         .cornerRadius(10)
                 }
             }
-            .onAppear(perform: startTimer)
+            .padding()
+            
         }
-        .padding()
+        .onAppear(perform: startTimer)
+        .navigationTitle(workout.title)
+        .navigationBarItems(trailing: Text(formattedTime).foregroundColor(.blue))
     }
     
+    private func detailColumns(for exercise: Exercise) -> [GridItem] {
+        if exercise.reps != nil && exercise.weight != nil {
+            return [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
+        } else {
+            return [GridItem(.flexible()), GridItem(.flexible())]
+        }
+    }
     
     private func startTimer() {
         timerCancellable?.cancel()  // Cancel any existing timer
@@ -127,21 +129,17 @@ struct WorkoutStartedView: View {
                 counter += 1
             }
     }
+    
     private func stopTimer() {
         timerCancellable?.cancel()  // Cancel the timer
         timerCancellable = nil  // Set the cancellable to nil
     }
     
-    var formattedTime: String {
-        let minutes = counter / 60
-        let seconds = counter % 60
-        return String(format: "%02d:%02d", minutes, seconds)
-    }
-    
-    
 }
 
 #Preview {
-    WorkoutStartedView(workout: _previewWorkouts[0])
+    NavigationView {
+        WorkoutStartedView(workout: _previewWorkouts[0])
+    }
 }
 
