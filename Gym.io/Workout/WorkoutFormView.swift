@@ -71,7 +71,14 @@ struct WorkoutFormView: View {
                     // Exercises section
                     Section(header: Text("Exercises")) {
                         ForEach(exercises, id: \.id) { exercise in
-                            Text(exercise.name)
+                            HStack{
+                                Text(exercise.name)
+                                Spacer()
+                                Image(systemName: "line.horizontal.3")
+                                    .foregroundColor(.blue)
+                            }
+                            
+                        
                                 .swipeActions {
                                     Button(action: { editExercise(exercise) }) {
                                         Label("Edit", systemImage: "pencil")
@@ -86,6 +93,7 @@ struct WorkoutFormView: View {
                                     }
                                 }
                         }
+                        .onMove(perform: moveExercise)
                         .onDelete(perform: deleteExercise)
                     }
                     
@@ -131,6 +139,10 @@ struct WorkoutFormView: View {
         selectedExercise = Exercise(name: "")
         isPresentingExerciseForm = true
     }
+    
+    private func moveExercise(from source: IndexSet, to destination: Int) {
+            exercises.move(fromOffsets: source, toOffset: destination)
+        }
     
     private func deleteExercise(at offsets: IndexSet) {
         exercises.remove(atOffsets: offsets)

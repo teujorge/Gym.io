@@ -17,19 +17,21 @@ struct WorkoutsView: View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 20) {
-                    TextField("Search", text: $searchText)
+                    HStack{
+                        TextField("Search", text: $searchText)
+                            .padding()
+                            .background(Color.blue.opacity(0.2))
+                            .cornerRadius(20)
+                        
+                        Button(action: { isPresentingWorkoutForm.toggle() }) {
+                            Text("New Exercise")
+                            Image(systemName: "plus.circle")
+                                .foregroundColor(.blue)
+                        }
                         .padding()
                         .background(Color.blue.opacity(0.2))
                         .cornerRadius(20)
-                    
-                    Button(action: { isPresentingWorkoutForm.toggle() }) {
-                        Text("New Exercise")
-                        Image(systemName: "plus.circle")
-                            .foregroundColor(.blue)
                     }
-                    .padding()
-                    .background(Color.blue.opacity(0.2))
-                    .cornerRadius(20)
                     
                     ForEach(workouts) { workout in
                         NavigationLink(destination: WorkoutView(workout: workout)) {

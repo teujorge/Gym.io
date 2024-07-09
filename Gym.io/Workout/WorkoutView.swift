@@ -61,15 +61,16 @@ struct WorkoutView: View {
             .padding()
             
             // Start Workout Button
-            Button(action: {
-                // Start workout action
-            }) {
-                Text("Start Workout")
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
+            NavigationLink(destination: WorkoutStartedView(workout: workout))
+            {
+                
+                    Text("Start Workout")
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                
             }
             .padding()
             
