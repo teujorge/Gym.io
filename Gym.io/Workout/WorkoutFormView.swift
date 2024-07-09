@@ -33,30 +33,6 @@ struct WorkoutFormView: View {
         self.onDelete = onDelete
     }
     
-    // Navigation bar leading item
-    private var leadingNavigationBarItem: some View {
-        Group {
-            if let workout = workout, let onDelete = onDelete {
-                Button("Delete") { onDelete(workout) }
-                    .foregroundColor(.red)
-            } else {
-                EmptyView()
-            }
-        }
-    }
-    
-    // Navigation bar trailing item
-    private var trailingNavigationBarItem: some View {
-        Button("Save") {
-            let newWorkout = Workout(
-                title: title,
-                description: description.isEmpty ? nil : description,
-                exercises: exercises
-            )
-            onSave(newWorkout)
-        }
-    }
-    
     // MARK: - Body
     var body: some View {
         NavigationView {
@@ -78,20 +54,20 @@ struct WorkoutFormView: View {
                                     .foregroundColor(.blue)
                             }
                             
-                        
-                                .swipeActions {
-                                    Button(action: { editExercise(exercise) }) {
-                                        Label("Edit", systemImage: "pencil")
-                                    }
-                                    
-                                    Button(role: .destructive, action: {
-                                        if let index = exercises.firstIndex(where: { $0.id == exercise.id }) {
-                                            exercises.remove(at: index)
-                                        }
-                                    }) {
-                                        Label("Delete", systemImage: "trash")
-                                    }
+                            
+                            .swipeActions {
+                                Button(action: { editExercise(exercise) }) {
+                                    Label("Edit", systemImage: "pencil")
                                 }
+                                
+                                Button(role: .destructive, action: {
+                                    if let index = exercises.firstIndex(where: { $0.id == exercise.id }) {
+                                        exercises.remove(at: index)
+                                    }
+                                }) {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                            }
                         }
                         .onMove(perform: moveExercise)
                         .onDelete(perform: deleteExercise)
@@ -105,10 +81,24 @@ struct WorkoutFormView: View {
                 .onAppear(perform: loadInitialWorkoutData)
             }
             .navigationTitle(workout == nil ? "New Workout" : "Edit Workout")
-            .navigationBarItems(
-                leading: leadingNavigationBarItem,
-                trailing: trailingNavigationBarItem
-            )
+            .toolbar {
+                ToolbarItem(placement: .destructiveAction) {
+                    if let workout = workout, let onDelete = onDelete {
+                        Button("Delete") { onDelete(workout) }
+                            .foregroundColor(.red)
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        let newWorkout = Workout(
+                            title: title,
+                            description: description.isEmpty ? nil : description,
+                            exercises: exercises
+                        )
+                        onSave(newWorkout)
+                    }
+                }
+            }
             .sheet(isPresented: $isPresentingExerciseForm) {
                 if let selectedExercise = selectedExercise {
                     ExerciseFormView(
@@ -141,8 +131,8 @@ struct WorkoutFormView: View {
     }
     
     private func moveExercise(from source: IndexSet, to destination: Int) {
-            exercises.move(fromOffsets: source, toOffset: destination)
-        }
+        exercises.move(fromOffsets: source, toOffset: destination)
+    }
     
     private func deleteExercise(at offsets: IndexSet) {
         exercises.remove(atOffsets: offsets)

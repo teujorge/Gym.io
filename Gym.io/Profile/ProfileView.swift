@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ProfileView: View {
+    @EnvironmentObject var currentUser: User
+
     var body: some View {
         NavigationView {
             ScrollView {
@@ -19,7 +21,7 @@ struct ProfileView: View {
                             .frame(width: 100, height: 100)
                             .clipShape(Circle())
                             .padding(.bottom, 10)
-                        Text("Davi Guimell")
+                        Text(currentUser.name)
                             .font(.title)
                             .fontWeight(.bold)
                         HStack {
@@ -147,27 +149,29 @@ struct ProfileView: View {
                 }
                 .padding()
             }
-            .navigationTitle("username-here")
+            .navigationTitle(currentUser.username)
             .navigationBarTitleDisplayMode(.inline)
-            .navigationBarItems(
-                leading: Button(action: { }) {
-                    HStack {
-                        Text("Edit")
-                            .font(.caption)
-                            .fontWeight(.bold)
-                            .foregroundColor(.blue)
-                        Image(systemName: "pencil")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 12, height: 12)
-                            .foregroundColor(.blue)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(action: { }) {
+                        HStack {
+                            Text("Edit")
+                                .font(.caption)
+                                .fontWeight(.bold)
+                                .foregroundColor(.blue)
+                            Image(systemName: "pencil")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 12, height: 12)
+                                .foregroundColor(.blue)
+                        }
+                        .padding(.vertical, 4)
+                        .padding(.horizontal, 8)
+                        .background(Color.blue.opacity(0.2))
+                        .cornerRadius(20)
                     }
-                    .padding(.vertical, 4)
-                    .padding(.horizontal, 8)
-                    .background(Color.blue.opacity(0.2))
-                    .cornerRadius(20)
-                },
-                trailing: HStack(spacing: 0) {
+                }
+                ToolbarItemGroup(placement: .topBarTrailing) {
                     Button(action: { }) {
                         Image(systemName: "square.and.arrow.up")
                             .resizable()
@@ -185,7 +189,7 @@ struct ProfileView: View {
                             .padding(.horizontal, 4)
                     }
                 }
-            )
+            }
         }
     }
 }
@@ -193,4 +197,5 @@ struct ProfileView: View {
 
 #Preview {
     ProfileView()
+        .environmentObject(_previewParticipants[0])
 }

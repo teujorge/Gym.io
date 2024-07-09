@@ -99,10 +99,14 @@ struct ChallengeFormView: View {
             }
             .onAppear(perform: loadInitialChallengeData)
             .navigationTitle(challenge == nil ? "New Challenge" : "Edit Challenge")
-            .navigationBarItems(
-                leading: leadingNavigationBarItem,
-                trailing: trailingNavigationBarItem
-            )
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    leadingNavigationBarItem
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    trailingNavigationBarItem
+                }
+            }
         }
     }
     

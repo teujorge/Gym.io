@@ -108,7 +108,12 @@ struct WorkoutStartedView: View {
         }
         .onAppear(perform: startTimer)
         .navigationTitle(workout.title)
-        .navigationBarItems(trailing: Text(formattedTime).foregroundColor(.blue))
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Text(formattedTime)
+                    .foregroundColor(.blue)
+            }
+        }
     }
     
     private func detailColumns(for exercise: Exercise) -> [GridItem] {

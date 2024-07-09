@@ -41,21 +41,21 @@ struct ExerciseView: View {
                 }
                 
                 // MARK: Details
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Details")
-                            .font(.headline)
-                        Text("Sets: \(exercise.sets)")
-                        if let reps = exercise.reps  {
-                            Text("Reps: \(reps)")
-                        }
-                        if let weight = exercise.weight  {
-                            Text("Weight: \(weight) lbs")
-                        }
-                        if let duration = exercise.duration  {
-                            Text("Duration: \(duration) seconds")
-                        }
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Details")
+                        .font(.headline)
+                    Text("Sets: \(exercise.sets)")
+                    if let reps = exercise.reps  {
+                        Text("Reps: \(reps)")
                     }
-                    .padding()
+                    if let weight = exercise.weight  {
+                        Text("Weight: \(weight) lbs")
+                    }
+                    if let duration = exercise.duration  {
+                        Text("Duration: \(duration) seconds")
+                    }
+                }
+                .padding()
                 
                 // MARK: Footer
                 Spacer()
@@ -84,23 +84,25 @@ struct ExerciseView: View {
             }
         }
         .navigationTitle(exercise.name)
-        .navigationBarItems(trailing: Button(action: { isPresentingExerciseForm.toggle() }) {
-            HStack {
-                Text("Edit")
-                    .font(.caption)
-                    .fontWeight(.bold)
-                    .foregroundColor(.blue)
-                Image(systemName: "gear")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 12, height: 12)
-                    .foregroundColor(.blue)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(action: { isPresentingExerciseForm.toggle() }) {
+                    Text("Edit")
+                        .font(.caption)
+                        .fontWeight(.bold)
+                        .foregroundColor(.blue)
+                    Image(systemName: "pencil")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 12, height: 12)
+                        .foregroundColor(.blue)
+                }
+                .padding(.vertical, 4)
+                .padding(.horizontal, 8)
+                .background(Color.blue.opacity(0.2))
+                .cornerRadius(20)
             }
-            .padding(.vertical, 4)
-            .padding(.horizontal, 8)
-            .background(Color.blue.opacity(0.2))
-            .cornerRadius(20)
-        })
+        }
     }
     
 }

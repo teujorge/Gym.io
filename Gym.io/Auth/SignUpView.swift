@@ -8,69 +8,57 @@
 import SwiftUI
 
 struct SignUpView: View {
-    @StateObject private var viewModel = SignUpViewModel()
+    @ObservedObject var viewModel: SignUpViewModel
     
     var body: some View {
-        ScrollView {
-            Text("Please enter your username")
-                .font(.title2)
-                .foregroundColor(.secondary)
-                .padding(.top)
-                .padding(.horizontal)
-            
-            TextField("Username", text: $viewModel.username)
+        VStack {
+            Text("Welcome!")
+                .font(.title)
+                .fontWeight(.bold)
                 .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(10)
-                .padding(.bottom)
-                .padding(.horizontal)
             
-            Text("Please enter your name")
-                .font(.title2)
-                .foregroundColor(.secondary)
-                .padding(.horizontal)
-            
-            HStack {
-                TextField("First name", text: $viewModel.firstName)
-                    .padding()
-                    .background(Color(.systemGray6))
-                    .cornerRadius(10)
+            VStack(alignment: .leading) {
+                Text("Full name (optional):")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                TextField("Enter your full Name", text: $viewModel.newName)
+                    .textFieldStyle(.roundedBorder)
                     .padding(.bottom)
-                    .padding(.leading)
-                TextField("Last name", text: $viewModel.lastName)
-                    .padding()
-                    .background(Color(.systemGray6))
-                    .cornerRadius(10)
-                    .padding(.bottom)
-                    .padding(.trailing)
             }
+            .padding(.horizontal)
             
-            Button(action: viewModel.createAccount) {
-                VStack {
-                    if viewModel.isCreatingAccount {
-                        ProgressView()
+            VStack(alignment: .leading) {
+                Text("Username:")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                TextField("Enter a username", text: $viewModel.newUsername)
+                    .textFieldStyle(.roundedBorder)
+                    .padding(.bottom)
+                    .onChange(of: viewModel.newUsername) {
+                        viewModel.checkUsernameAvailability()
                     }
-                    else {
-                        Text("Create account")
-                            .padding()
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
+                    .background(viewModel.isNewUsernameisAvailable ? Color.clear : Color.red.opacity(0.2))
+            }
+            .padding(.horizontal)
+            
+            if viewModel.isSearchingUsers {
+                ProgressView()
+                    .padding()
+            } else {
+                Button("Continue") {
+                    Task {
+                        await viewModel.createUser()
                     }
                 }
-                .animation(.easeInOut, value: viewModel.isCreatingAccount)
+                .disabled(!viewModel.isNewUsernameisAvailable || viewModel.newUsername.isEmpty)
             }
-            .disabled(viewModel.isCreatingAccount)
         }
-        .navigationTitle("Sign Up")
+        .padding()
     }
-    
 }
-
-
 
 #Preview {
     NavigationView {
-        SignUpView()
+        SignUpView(viewModel: SignUpViewModel(authState: _previewAuthCreateAccountState))
     }
 }

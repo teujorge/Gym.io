@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-import SwiftUI
-
 @main
 struct Gym_ioApp: App {
     @StateObject private var authState = AuthState()
@@ -27,22 +25,14 @@ struct RootView: View {
     var body: some View {
         ZStack {
             if authState.isSignedIn {
-                ContentView()
+                ContentView(currentUser: authState.currentUser!)
                     .transition(.move(edge: .top))
             } else {
-                AuthView()
+                AuthView(authState: authState)
                     .transition(.move(edge: .bottom))
             }
         }
         .animation(.easeInOut(duration: 0.5), value: authState.isSignedIn)
-    }
-}
-
-class AuthState: ObservableObject {
-    @Published var currentUser: User?
-    
-    var isSignedIn: Bool {
-        return currentUser != nil
     }
 }
 

@@ -82,16 +82,18 @@ struct ChallengeView: View {
             }
         }
         .navigationTitle(challenge.title)
-        .navigationBarItems(
-            trailing: Button(action: { isPresentingWorkoutForm.toggle() }) {
-                Text("Edit")
-                Image(systemName: "pencil")
-            }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(action: { isPresentingWorkoutForm.toggle() }) {
+                    Text("Edit")
+                    Image(systemName: "pencil")
+                }
                 .padding(.vertical, 4)
                 .padding(.horizontal, 8)
                 .background(Color.blue.opacity(0.2))
                 .cornerRadius(20)
-        )
+            }
+        }
     }
 }
 
@@ -112,9 +114,10 @@ let _previewChallenge = Challenge(
 )
 
 let _previewParticipants = [
-    User(name: "Alice", username: "alice", completedWorkouts: _previewWorkoutsCompleted),
+    User(name:"Matheus Jorge", username: "teujorge", completedWorkouts: _previewWorkoutsCompleted),
+    User(name: "Alice", username: "alice"),
     User(name: "Bob", username: "bobby"),
-    User(name: "Charlie", username: "ccc")
+    User(name: "Charlie", username: "ccc", completedWorkouts: _previewWorkoutsCompleted)
 ]
 
 // map through _previewWorkouts and create a WorkoutCompleted with random date

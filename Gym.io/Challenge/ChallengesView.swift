@@ -35,25 +35,27 @@ struct ChallengesView: View {
                 .onAppear(perform: loadInitialChallenges)
             }
             .navigationTitle("Challenges")
-            .navigationBarItems(
-                trailing: Button(action: { isPresentingChallengesForm = true }) {
-                    HStack {
-                        Text("New")
-                            .font(.caption)
-                            .fontWeight(.bold)
-                            .foregroundColor(.blue)
-                        Image(systemName: "star")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 12, height: 12)
-                            .foregroundColor(.blue)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: { isPresentingChallengesForm = true }) {
+                        HStack {
+                            Text("New")
+                                .font(.caption)
+                                .fontWeight(.bold)
+                                .foregroundColor(.blue)
+                            Image(systemName: "star")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 12, height: 12)
+                                .foregroundColor(.blue)
+                        }
+                        .padding(.vertical, 4)
+                        .padding(.horizontal, 8)
+                        .background(Color.blue.opacity(0.2))
+                        .cornerRadius(20)
                     }
-                    .padding(.vertical, 4)
-                    .padding(.horizontal, 8)
-                    .background(Color.blue.opacity(0.2))
-                    .cornerRadius(20)
                 }
-            )
+            }
             .sheet(isPresented: $isPresentingChallengesForm) {
                 ChallengeFormView { challenge in
                     if let selectedChallenge = selectedChallenge {

@@ -8,14 +8,14 @@
 import Foundation
 
 class User: Identifiable, Decodable, ObservableObject {
-    let id: UUID
+    let id: String
     @Published var name: String
     @Published var username: String
     @Published var workouts: [Workout]
     @Published var completedWorkouts: [WorkoutCompleted]
     @Published var challenges: [Challenge]
 
-    init(id: UUID = UUID(), name: String, username: String, workouts: [Workout] = [], completedWorkouts: [WorkoutCompleted] = [], challenges: [Challenge] = []) {
+    init(id: String = UUID().uuidString, name: String, username: String, workouts: [Workout] = [], completedWorkouts: [WorkoutCompleted] = [], challenges: [Challenge] = []) {
         self.id = id
         self.name = name
         self.username = username
@@ -30,7 +30,7 @@ class User: Identifiable, Decodable, ObservableObject {
 
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        id = try container.decode(UUID.self, forKey: .id)
+        id = try container.decode(String.self, forKey: .id)
         name = try container.decode(String.self, forKey: .name)
         username = try container.decode(String.self, forKey: .username)
         workouts = []

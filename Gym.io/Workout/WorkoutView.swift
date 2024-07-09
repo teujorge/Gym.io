@@ -98,23 +98,25 @@ struct WorkoutView: View {
             Spacer()
         }
         .navigationTitle(workout.title)
-        .navigationBarItems(trailing: Button(action: { isPresentingWorkoutForm.toggle() }) {
-            HStack {
-                Text("Edit")
-                    .font(.caption)
-                    .fontWeight(.bold)
-                    .foregroundColor(.blue)
-                Image(systemName: "gear")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 12, height: 12)
-                    .foregroundColor(.blue)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(action: { isPresentingWorkoutForm.toggle() }) {
+                    Text("Edit")
+                        .font(.caption)
+                        .fontWeight(.bold)
+                        .foregroundColor(.blue)
+                    Image(systemName: "gear")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 12, height: 12)
+                        .foregroundColor(.blue)
+                }
+                .padding(.vertical, 4)
+                .padding(.horizontal, 8)
+                .background(Color.blue.opacity(0.2))
+                .cornerRadius(20)
             }
-            .padding(.vertical, 4)
-            .padding(.horizontal, 8)
-            .background(Color.blue.opacity(0.2))
-            .cornerRadius(20)
-        })
+        }
         .sheet(isPresented: $isPresentingWorkoutForm) {
             WorkoutFormView(
                 workout: workout,
@@ -149,5 +151,5 @@ var _previewExercises: [Exercise] = [
     Exercise(name: "Plank", sets: 2, duration: 30, intensity: .low),
     Exercise(name: "Deadlift", instructions: "Stand with your feet hip-width apart. Bend at the hips and knees to grip the barbell. Keep your back straight as you lift the barbell off the ground.", sets: 3, reps: 8, weight: 225),
     Exercise(name: "Pull-ups", sets: 3, reps: 10, weight: 0),
-
+    
 ]

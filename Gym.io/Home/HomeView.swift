@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct HomeView: View {
+    @EnvironmentObject var currentUser: User
+    
     var body: some View {
         NavigationView {
             ScrollView {
@@ -17,7 +19,7 @@ struct HomeView: View {
                         VStack(alignment: .leading) {
                             Text("Welcome back,")
                                 .font(.headline)
-                            Text("Matheus")
+                            Text(currentUser.username)
                                 .font(.largeTitle)
                                 .fontWeight(.bold)
                         }
@@ -117,4 +119,5 @@ struct HomeView: View {
 
 #Preview {
     HomeView()
+        .environmentObject(_previewParticipants[0])
 }

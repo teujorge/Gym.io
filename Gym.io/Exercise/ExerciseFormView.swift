@@ -99,10 +99,14 @@ struct ExerciseFormView: View {
             }
             .onAppear(perform: loadInitialExerciseDetails)
             .navigationTitle(exercise == nil ? "New Exercise" : "Edit Exercise")
-            .navigationBarItems(
-                leading: leadingNavigationBarItem,
-                trailing: trailingNavigationBarItem
-            )
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    leadingNavigationBarItem
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    trailingNavigationBarItem
+                }
+            }
         }
     }
     
