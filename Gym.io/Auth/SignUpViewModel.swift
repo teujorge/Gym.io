@@ -7,14 +7,21 @@
 
 import SwiftUI
 
+enum SignUpState: Equatable {
+    case idle
+    case queringUsers
+    case usernameAvailable
+    case usernameNotAvailable
+    case creatingAccount
+    case accountCreated
+    case error(String)
+}
+
 class SignUpViewModel: ObservableObject {
     var userId = ""
     @Published var newName = ""
     @Published var newUsername = ""
-    @Published var isSearchingUsers = false
-    @Published var isCheckingUsername = false
-    @Published var isCreatingAccount = false
-    @Published var isNewUsernameisAvailable = true
+    @Published var state: SignUpState = .idle
     
     @Published var authState: AuthState
     private var debouncer = Debouncer(delay: 0.5)
@@ -28,24 +35,21 @@ class SignUpViewModel: ObservableObject {
             guard let self = self else { return }
             
             DispatchQueue.main.async {
-                self.isCheckingUsername = true
+                self.state = .queringUsers
             }
             
             Task {
                 guard !self.newUsername.isEmpty else {
                     DispatchQueue.main.async {
-                        self.isCheckingUsername = false
-                        self.isNewUsernameisAvailable = false
+                        self.state = .error("Please provide a username")
                     }
-                    print("Please provide a username")
                     return
                 }
                 
                 let users = await self.findUsers(username: self.newUsername)
                 
                 DispatchQueue.main.async {
-                    self.isNewUsernameisAvailable = users.isEmpty
-                    self.isCheckingUsername = false
+                    self.state = users.isEmpty ? .usernameAvailable : .usernameNotAvailable
                 }
                 
                 print("checkUsernameAvailability: \(users)")
@@ -57,7 +61,7 @@ class SignUpViewModel: ObservableObject {
         var users = [User]()
         
         DispatchQueue.main.async {
-            self.isSearchingUsers = true
+            self.state = .queringUsers
         }
         
         var components = URLComponents(string: "https://gym-io-api.vercel.app/api/users")!
@@ -71,7 +75,7 @@ class SignUpViewModel: ObservableObject {
         guard let url = components.url else {
             print("Invalid URL")
             DispatchQueue.main.async {
-                self.isSearchingUsers = false
+                self.state = .error("Invalid URL")
             }
             return []
         }
@@ -84,7 +88,6 @@ class SignUpViewModel: ObservableObject {
             let (data, _) = try await URLSession.shared.data(for: request)
             print("findUsersRaw: \(String(data: data, encoding: .utf8)!)")
             
-            // Try to decode the JSON
             do {
                 let decodedResponse = try JSONDecoder().decode([String: [User]].self, from: data)
                 users = decodedResponse["result"] ?? []
@@ -94,10 +97,13 @@ class SignUpViewModel: ObservableObject {
             }
         } catch {
             print("Failed to fetch users: \(error.localizedDescription)")
+            DispatchQueue.main.async {
+                self.state = .error(error.localizedDescription)
+            }
         }
         
         DispatchQueue.main.async {
-            self.isSearchingUsers = false
+            self.state = .idle
         }
         
         return users
@@ -106,11 +112,14 @@ class SignUpViewModel: ObservableObject {
     func createUser() async -> User? {
         guard !userId.isEmpty && !newName.isEmpty && !newUsername.isEmpty else {
             print("Please provide all required information")
+            DispatchQueue.main.async {
+                self.state = .error("Please provide all required information")
+            }
             return nil
         }
         
         DispatchQueue.main.async {
-            self.isCreatingAccount = true
+            self.state = .creatingAccount
         }
         
         let url = URL(string: "https://gym-io-api.vercel.app/api/users")!
@@ -129,14 +138,13 @@ class SignUpViewModel: ObservableObject {
             let (data, _) = try await URLSession.shared.data(for: request)
             print("createUserRaw: \(String(data: data, encoding: .utf8)!)")
             
-            // Try to decode the JSON
             do {
                 let decodedResponse = try JSONDecoder().decode([String: User].self, from: data)
                 if let user = decodedResponse["result"] {
                     print("User created: \(user)")
                     DispatchQueue.main.async {
                         self.authState.currentUser = user
-                        self.isCreatingAccount = false
+                        self.state = .accountCreated
                     }
                     return user
                 } else {
@@ -144,13 +152,19 @@ class SignUpViewModel: ObservableObject {
                 }
             } catch let decodeError {
                 print("Failed to decode user: \(decodeError)")
+                DispatchQueue.main.async {
+                    self.state = .error(decodeError.localizedDescription)
+                }
             }
         } catch {
             print("Failed to create user: \(error.localizedDescription)")
+            DispatchQueue.main.async {
+                self.state = .error(error.localizedDescription)
+            }
         }
         
         DispatchQueue.main.async {
-            self.isCreatingAccount = false
+            self.state = .idle
         }
         
         return nil

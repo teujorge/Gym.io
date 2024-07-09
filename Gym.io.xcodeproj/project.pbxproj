@@ -13,6 +13,7 @@
 		F50097762C3D575D00D799C4 /* AuthState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50097752C3D575D00D799C4 /* AuthState.swift */; };
 		F50097792C3D701D00D799C4 /* Debounce.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50097782C3D701D00D799C4 /* Debounce.swift */; };
 		F500977D2C3D7AC300D799C4 /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F500977C2C3D7AC300D799C4 /* SignUpViewModel.swift */; };
+		F50097822C3DAA7300D799C4 /* UserDefaultsKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50097812C3DAA7300D799C4 /* UserDefaultsKeys.swift */; };
 		F5379E4C2C3993F20054E7A8 /* ChallengeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5379E4B2C3993F20054E7A8 /* ChallengeView.swift */; };
 		F54B3C532C384B7600171A6F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54B3C522C384B7600171A6F /* ContentView.swift */; };
 		F54B3C552C386A9D00171A6F /* WorkoutFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54B3C542C386A9D00171A6F /* WorkoutFormView.swift */; };
@@ -43,6 +44,7 @@
 		F50097772C3D5ADB00D799C4 /* Gym.io.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Gym.io.entitlements; sourceTree = "<group>"; };
 		F50097782C3D701D00D799C4 /* Debounce.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debounce.swift; sourceTree = "<group>"; };
 		F500977C2C3D7AC300D799C4 /* SignUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
+		F50097812C3DAA7300D799C4 /* UserDefaultsKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsKeys.swift; sourceTree = "<group>"; };
 		F5379E4B2C3993F20054E7A8 /* ChallengeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeView.swift; sourceTree = "<group>"; };
 		F54B3C522C384B7600171A6F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F54B3C542C386A9D00171A6F /* WorkoutFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutFormView.swift; sourceTree = "<group>"; };
@@ -81,6 +83,7 @@
 			isa = PBXGroup;
 			children = (
 				F50097782C3D701D00D799C4 /* Debounce.swift */,
+				F50097812C3DAA7300D799C4 /* UserDefaultsKeys.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -277,6 +280,7 @@
 				F50097792C3D701D00D799C4 /* Debounce.swift in Sources */,
 				F54B3C5A2C386C3300171A6F /* ExerciseFormView.swift in Sources */,
 				F5D91C1D2C3CF144004356BC /* SignUpView.swift in Sources */,
+				F50097822C3DAA7300D799C4 /* UserDefaultsKeys.swift in Sources */,
 				F54B3C5E2C387C7D00171A6F /* SummaryChartView.swift in Sources */,
 				F54B3C552C386A9D00171A6F /* WorkoutFormView.swift in Sources */,
 				F500977D2C3D7AC300D799C4 /* SignUpViewModel.swift in Sources */,

@@ -33,15 +33,15 @@ struct SignUpView: View {
                     .foregroundColor(.secondary)
                 TextField("Enter a username", text: $viewModel.newUsername)
                     .textFieldStyle(.roundedBorder)
+                    .foregroundColor(viewModel.state == .usernameNotAvailable ? Color.red.opacity(0.2) : Color.clear)
                     .padding(.bottom)
                     .onChange(of: viewModel.newUsername) {
                         viewModel.checkUsernameAvailability()
                     }
-                    .background(viewModel.isNewUsernameisAvailable ? Color.clear : Color.red.opacity(0.2))
             }
             .padding(.horizontal)
             
-            if viewModel.isSearchingUsers {
+            if viewModel.state == .queringUsers || viewModel.state == .creatingAccount {
                 ProgressView()
                     .padding()
             } else {
@@ -50,7 +50,13 @@ struct SignUpView: View {
                         await viewModel.createUser()
                     }
                 }
-                .disabled(!viewModel.isNewUsernameisAvailable || viewModel.newUsername.isEmpty)
+                .disabled(viewModel.state != .usernameAvailable || viewModel.newUsername.isEmpty)
+            }
+            
+            if case .error(let message) = viewModel.state {
+                Text(message)
+                    .foregroundColor(.red)
+                    .padding()
             }
         }
         .padding()

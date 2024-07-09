@@ -22,26 +22,24 @@ struct AuthView: View {
     var body: some View {
         NavigationView {
             VStack(alignment: .center) {
-                if viewModel.isAuthenticating {
+                switch viewModel.viewState {
+                case .authenticating:
                     ProgressView()
                         .transition(.opacity)
-                } else {
-                    if viewModel.showSignUpView {
-                        SignUpView(viewModel: viewModel.signUpViewModel)
-                            .transition(.opacity)
-                    }
-                    else {
-                        SignInView(viewModel: viewModel)
-                            .transition(.opacity)
-                    }
+                case .signUp:
+                    SignUpView(viewModel: viewModel.signUpViewModel)
+                        .transition(.opacity)
+                case .signIn:
+                    SignInView(viewModel: viewModel)
+                        .transition(.opacity)
                 }
             }
-            .animation(.default, value: viewModel.showSignUpView)
+            .animation(.default, value: viewModel.viewState)
             .navigationTitle("Gym.io")
             .toolbar {
                 ToolbarItem(placement: .navigation) {
-                    if viewModel.showSignUpView {
-                        Button(action: { viewModel.showSignUpView = false }) {
+                    if viewModel.viewState == .signUp {
+                        Button(action: { viewModel.viewState = .signIn }) {
                             Image(systemName: "chevron.backward")
                                 .font(.caption)
                                 .accessibilityLabel("Back")
@@ -54,6 +52,7 @@ struct AuthView: View {
             }
         }
         .environmentObject(viewModel.authState)
+        .onAppear(perform: viewModel.autoSignIn)
     }
     
     struct SignInView: View {
@@ -84,9 +83,7 @@ struct AuthView: View {
             .padding()
         }
     }
-    
 }
-
 
 #Preview("signed out") {
     AuthView(authState: AuthState())
@@ -95,7 +92,7 @@ struct AuthView: View {
 
 #Preview("register") {
     let viewModel = AuthViewModel(authState: _previewAuthCreateAccountState)
-    viewModel.showSignUpView = true
+    viewModel.viewState = .signUp
     viewModel.signUpViewModel.userId = UUID().uuidString
     viewModel.signUpViewModel.newName = "Matheus Jorge"
     return AuthView(authModel: viewModel)
