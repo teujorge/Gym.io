@@ -25,6 +25,11 @@ class AuthViewModel: ObservableObject {
     }
     
     func autoSignIn() {
+        guard viewState != .signUp else {
+            print("Auto sign cancelled -> user is in sign up")
+            return
+        }
+        
         print("Auto sign")
         if let userId = UserDefaults.standard.string(forKey: .userId) {
             DispatchQueue.main.async {
