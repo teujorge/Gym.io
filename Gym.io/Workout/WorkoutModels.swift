@@ -13,7 +13,7 @@ class Workout: Identifiable, ObservableObject {
     @Published var description: String?
     @Published var exercises: [Exercise]
 
-    init(id: UUID = UUID(), title: String, description: String? = nil, exercises: [Exercise]) {
+    init(id: UUID = UUID(), title: String, description: String? = nil, exercises: [Exercise] = []) {
         self.id = id
         self.title = title
         self.description = description
