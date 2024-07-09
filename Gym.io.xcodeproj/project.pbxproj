@@ -160,6 +160,8 @@
 			dependencies = (
 			);
 			name = Gym.io;
+			packageProductDependencies = (
+			);
 			productName = Gym.io;
 			productReference = F552225E2C36CD5E0057C0E5 /* Gym.io.app */;
 			productType = "com.apple.product-type.application";
@@ -188,6 +190,8 @@
 				Base,
 			);
 			mainGroup = F55222552C36CD5E0057C0E5;
+			packageReferences = (
+			);
 			productRefGroup = F552225F2C36CD5E0057C0E5 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
