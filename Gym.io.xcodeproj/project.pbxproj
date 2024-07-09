@@ -77,6 +77,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		F50097802C3DA58B00D799C4 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				F50097782C3D701D00D799C4 /* Debounce.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
 		F55222552C36CD5E0057C0E5 = {
 			isa = PBXGroup;
 			children = (
@@ -97,6 +105,7 @@
 			isa = PBXGroup;
 			children = (
 				F50097772C3D5ADB00D799C4 /* Gym.io.entitlements */,
+				F50097802C3DA58B00D799C4 /* Utils */,
 				F5D91C192C3CF0F8004356BC /* Auth */,
 				F5D4A4132C398CAD00E880A7 /* Challenge */,
 				F5D4A4102C398C8200E880A7 /* Profile */,
@@ -107,7 +116,6 @@
 				F54B3C522C384B7600171A6F /* ContentView.swift */,
 				F55222652C36CD5F0057C0E5 /* Assets.xcassets */,
 				F55222672C36CD5F0057C0E5 /* Preview Content */,
-				F50097782C3D701D00D799C4 /* Debounce.swift */,
 			);
 			path = Gym.io;
 			sourceTree = "<group>";
