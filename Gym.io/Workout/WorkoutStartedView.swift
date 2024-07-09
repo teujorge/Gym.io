@@ -19,15 +19,16 @@ struct WorkoutStartedView: View {
     var body: some View {
         ScrollView {
             
-            VStack(alignment: .leading, spacing: 20){
+            VStack(alignment: .center, spacing: 20){
                 
-                HStack{
+                HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/){
                     
-                    Text("Duration: \(formattedTime)")
+                    Text("Duration: ").fontWeight(.semibold)
+                    + Text(formattedTime).foregroundColor(.blue)
                     Spacer()
-                    Text("Weight:")
+                    Text("Weight:").fontWeight(.semibold)
                     Spacer()
-                    Text("Sets:")
+                    Text("Sets:").fontWeight(.semibold)
                 }
                 .padding()
                 
@@ -42,6 +43,7 @@ struct WorkoutStartedView: View {
                         if let repBasedExercise = exercise as? ExerciseRepBased {
                             LazyVGrid(columns: [
                                 GridItem(.flexible()),
+                                
                                 GridItem(.flexible()),
                                 GridItem(.flexible())
                             ]) {
@@ -85,6 +87,7 @@ struct WorkoutStartedView: View {
                                 Image(systemName: "plus.circle")
                                     .foregroundColor(.blue)
                             }
+                            .frame(maxWidth:.infinity)
                             .padding(6)
                             .background(Color.blue.opacity(0.2))
                             .cornerRadius(20)
@@ -141,3 +144,4 @@ struct WorkoutStartedView: View {
 #Preview {
     WorkoutStartedView(workout: _previewWorkouts[0])
 }
+
