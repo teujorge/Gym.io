@@ -25,6 +25,11 @@ class AuthViewModel: ObservableObject {
     }
     
     func autoSignIn() {
+        guard viewState == .signIn else {
+            print("Not in sign in, will skip auto sign")
+            return
+        }
+        
         print("Auto sign")
         if let userId = UserDefaults.standard.string(forKey: .userId) {
             DispatchQueue.main.async {
