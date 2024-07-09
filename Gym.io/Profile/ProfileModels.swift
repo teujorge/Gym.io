@@ -7,18 +7,34 @@
 
 import Foundation
 
-class User: Identifiable, ObservableObject {
+class User: Identifiable, Decodable, ObservableObject {
     let id: UUID
     @Published var name: String
+    @Published var username: String
     @Published var workouts: [Workout]
     @Published var completedWorkouts: [WorkoutCompleted]
     @Published var challenges: [Challenge]
 
-    init(id: UUID = UUID(), name: String, workouts: [Workout] = [], completedWorkouts: [WorkoutCompleted] = [], challenges: [Challenge] = []) {
+    init(id: UUID = UUID(), name: String, username: String, workouts: [Workout] = [], completedWorkouts: [WorkoutCompleted] = [], challenges: [Challenge] = []) {
         self.id = id
         self.name = name
+        self.username = username
         self.workouts = workouts
         self.completedWorkouts = completedWorkouts
         self.challenges = challenges
+    }
+    
+    private enum CodingKeys: String, CodingKey {
+        case id, name, username
+    }
+
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(UUID.self, forKey: .id)
+        name = try container.decode(String.self, forKey: .name)
+        username = try container.decode(String.self, forKey: .username)
+        workouts = []
+        completedWorkouts = []
+        challenges = []
     }
 }

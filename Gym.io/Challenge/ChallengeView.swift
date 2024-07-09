@@ -112,9 +112,9 @@ let _previewChallenge = Challenge(
 )
 
 let _previewParticipants = [
-    User(name: "Alice", completedWorkouts: _previewWorkoutsCompleted),
-    User(name: "Bob"),
-    User(name: "Charlie")
+    User(name: "Alice", username: "alice", completedWorkouts: _previewWorkoutsCompleted),
+    User(name: "Bob", username: "bobby"),
+    User(name: "Charlie", username: "ccc")
 ]
 
 // map through _previewWorkouts and create a WorkoutCompleted with random date
