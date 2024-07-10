@@ -10,83 +10,35 @@ import SwiftUI
 struct SignUpView: View {
     @ObservedObject var viewModel: SignUpViewModel
     
-    @State private var showError: Bool = false
-    
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 16) {
             Text("Welcome!")
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .foregroundColor(.blue)
-                .padding(.top, 20)
+                .padding(.top)
             
-            VStack(alignment: .leading, spacing: 10) {
-                Text("Full name (optional):")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                TextField("Enter your full Name", text: $viewModel.newName)
-                    .textFieldStyle(.roundedBorder)
-                    .padding(.bottom, 10)
-            }
-            .padding(.horizontal)
+            LabeledTextField(
+                label: "Full name (optional):",
+                placeholder: "Enter your full Name",
+                text: $viewModel.newName
+            )
             
-            VStack(alignment: .leading, spacing: 10) {
-                Text("Username:")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                TextField("Enter a username", text: $viewModel.newUsername)
-                    .textFieldStyle(.roundedBorder)
-                    .padding(.bottom, 10)
-                    .foregroundColor(viewModel.state == .usernameNotAvailable ? Color.red : Color.primary)
-                    .onChange(of: viewModel.newUsername) {                        viewModel.checkUsernameAvailability()
-                    }
-            }
-            .padding(.horizontal)
+            LabeledTextField(
+                label: "Username:",
+                placeholder: "Enter a username",
+                text: $viewModel.newUsername,
+                error: viewModel.errorMessage,
+                onChange: { _ in viewModel.checkUsernameAvailability() }
+            )
             
-            if viewModel.state == .queringUsers || viewModel.state == .creatingAccount {
-                ProgressView()
-                    .padding()
-                    .transition(.scale)
-            } else {
-                Button(action: {
-                    Task {
-                        await viewModel.createUser()
-                    }
-                }) {
-                    Text("Continue")
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(viewModel.state == .usernameAvailable && !viewModel.newUsername.isEmpty ? Color.blue : Color.gray)
-                        .cornerRadius(10)
-                        .shadow(radius: 5)
-                        
-                }
-                .transition(.opacity)
-                .disabled(viewModel.state != .usernameAvailable || viewModel.newUsername.isEmpty)
-                .padding()
-            }
-            
-            if case .error(let message) = viewModel.state {
-                Text(message)
-                    .foregroundColor(.red)
-                    .padding()
-                    .transition(.slide)
-                    .onAppear {
-                        withAnimation {
-                            showError = true
-                        }
-                    }
-                    .onDisappear {
-                        withAnimation {
-                            showError = false
-                        }
-                    }
-            }
-
+            LoadingButton(
+                action: { Task { await viewModel.createUser() } },
+                isLoading: viewModel.state == .queringUsers || viewModel.state == .creatingAccount,
+                isEnabled: viewModel.state == .usernameAvailable && !viewModel.newUsername.isEmpty,
+                title: "Continue"
+            )
         }
-        
         .background(Color(.systemGroupedBackground))
         .cornerRadius(15)
         .shadow(radius: 10)

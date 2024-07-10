@@ -16,6 +16,8 @@
 		F50097822C3DAA7300D799C4 /* UserDefaultsKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50097812C3DAA7300D799C4 /* UserDefaultsKeys.swift */; };
 		F5379E4C2C3993F20054E7A8 /* ChallengeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5379E4B2C3993F20054E7A8 /* ChallengeView.swift */; };
 		F53B94E62C3E152800C79FAB /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F53B94E52C3E152800C79FAB /* ProfileViewModel.swift */; };
+		F53B94E92C3E2C3400C79FAB /* LabeledTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = F53B94E82C3E2C3400C79FAB /* LabeledTextField.swift */; };
+		F53B94EB2C3E2C6200C79FAB /* LoadingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F53B94EA2C3E2C6200C79FAB /* LoadingButton.swift */; };
 		F54B3C532C384B7600171A6F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54B3C522C384B7600171A6F /* ContentView.swift */; };
 		F54B3C552C386A9D00171A6F /* WorkoutFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54B3C542C386A9D00171A6F /* WorkoutFormView.swift */; };
 		F54B3C582C386B3A00171A6F /* ChallengeModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54B3C572C386B3A00171A6F /* ChallengeModels.swift */; };
@@ -48,6 +50,8 @@
 		F50097812C3DAA7300D799C4 /* UserDefaultsKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsKeys.swift; sourceTree = "<group>"; };
 		F5379E4B2C3993F20054E7A8 /* ChallengeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeView.swift; sourceTree = "<group>"; };
 		F53B94E52C3E152800C79FAB /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
+		F53B94E82C3E2C3400C79FAB /* LabeledTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabeledTextField.swift; sourceTree = "<group>"; };
+		F53B94EA2C3E2C6200C79FAB /* LoadingButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingButton.swift; sourceTree = "<group>"; };
 		F54B3C522C384B7600171A6F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F54B3C542C386A9D00171A6F /* WorkoutFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutFormView.swift; sourceTree = "<group>"; };
 		F54B3C572C386B3A00171A6F /* ChallengeModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeModels.swift; sourceTree = "<group>"; };
@@ -90,6 +94,15 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
+		F53B94E72C3E2BE900C79FAB /* CommonViews */ = {
+			isa = PBXGroup;
+			children = (
+				F53B94E82C3E2C3400C79FAB /* LabeledTextField.swift */,
+				F53B94EA2C3E2C6200C79FAB /* LoadingButton.swift */,
+			);
+			path = CommonViews;
+			sourceTree = "<group>";
+		};
 		F55222552C36CD5E0057C0E5 = {
 			isa = PBXGroup;
 			children = (
@@ -109,6 +122,7 @@
 		F55222602C36CD5E0057C0E5 /* Gym.io */ = {
 			isa = PBXGroup;
 			children = (
+				F53B94E72C3E2BE900C79FAB /* CommonViews */,
 				F50097772C3D5ADB00D799C4 /* Gym.io.entitlements */,
 				F50097802C3DA58B00D799C4 /* Utils */,
 				F5D91C192C3CF0F8004356BC /* Auth */,
@@ -279,6 +293,7 @@
 				F5379E4C2C3993F20054E7A8 /* ChallengeView.swift in Sources */,
 				53EB001A2C3C6859001E7C15 /* WorkoutStartedView.swift in Sources */,
 				F54B3C5C2C3870BB00171A6F /* ProfileView.swift in Sources */,
+				F53B94EB2C3E2C6200C79FAB /* LoadingButton.swift in Sources */,
 				F5D4A4082C396CCC00E880A7 /* ChallengeFormView.swift in Sources */,
 				F50097792C3D701D00D799C4 /* Debounce.swift in Sources */,
 				F53B94E62C3E152800C79FAB /* ProfileViewModel.swift in Sources */,
@@ -294,6 +309,7 @@
 				F5B5714C2C36D43500062087 /* WorkoutView.swift in Sources */,
 				F5D91C182C3CE70F004356BC /* AuthView.swift in Sources */,
 				F55222622C36CD5E0057C0E5 /* Gym_ioApp.swift in Sources */,
+				F53B94E92C3E2C3400C79FAB /* LabeledTextField.swift in Sources */,
 				F50097762C3D575D00D799C4 /* AuthState.swift in Sources */,
 				F5D4A4122C398C9D00E880A7 /* ProfileModels.swift in Sources */,
 				F50097742C3D56C600D799C4 /* AuthViewModel.swift in Sources */,

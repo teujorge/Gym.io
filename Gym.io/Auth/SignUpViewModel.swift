@@ -11,7 +11,6 @@ enum SignUpState: Equatable {
     case idle
     case queringUsers
     case usernameAvailable
-    case usernameNotAvailable
     case creatingAccount
     case accountCreated
     case error(String)
@@ -30,26 +29,34 @@ class SignUpViewModel: ObservableObject {
         self.authState = authState
     }
     
+    var errorMessage: String? {
+        if case .error(let message) = state {
+            return message
+        } else {
+            return nil
+        }
+    }
+    
     func checkUsernameAvailability() {
         debouncer.debounce { [weak self] in
             guard let self = self else { return }
+            
+            guard !self.newUsername.isEmpty else {
+                DispatchQueue.main.async {
+                    self.state = .error("Please provide a username")
+                }
+                return
+            }
             
             DispatchQueue.main.async {
                 self.state = .queringUsers
             }
             
             Task {
-                guard !self.newUsername.isEmpty else {
-                    DispatchQueue.main.async {
-                        self.state = .error("Please provide a username")
-                    }
-                    return
-                }
-                
                 let users = await self.findUsers(username: self.newUsername)
                 
                 DispatchQueue.main.async {
-                    self.state = users.isEmpty ? .usernameAvailable : .usernameNotAvailable
+                    self.state = users.isEmpty ? .usernameAvailable : .error("Username already taken")
                 }
                 
                 print("checkUsernameAvailability: \(users)")
