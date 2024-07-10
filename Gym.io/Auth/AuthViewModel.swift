@@ -12,6 +12,7 @@ enum AuthViewState: Equatable {
     case signIn
     case signUp
     case authenticating
+    case authenticated
 }
 
 class AuthViewModel: ObservableObject {
@@ -38,11 +39,13 @@ class AuthViewModel: ObservableObject {
             print("User ID: \(userId)")
             
             Task {
-                let dbUsers = await signUpViewModel.findUsers(id: userId)
+                let dbUser = await signUpViewModel.findUser(id: userId)
                 DispatchQueue.main.async {
-                    if let user = dbUsers.first {
-                        self.authState.currentUser = user
-                        self.viewState = .signIn
+                    if let user = dbUser {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            self.authState.currentUser = user
+                        }
+                        self.viewState = .authenticated
                     } else {
                         self.viewState = .signIn
                     }
@@ -66,26 +69,28 @@ class AuthViewModel: ObservableObject {
             print("Authorization successful.")
             if let credential = authResults.credential as? ASAuthorizationAppleIDCredential {
                 let appleUserID = credential.user
-                let appleName = credential.fullName
+                // let appleName = credential.fullName
                 
-                DispatchQueue.main.async {
-                    self.signUpViewModel.newName = appleName.map { "\($0.givenName ?? "") \($0.familyName ?? "")" } ?? ""
-                    self.signUpViewModel.newUsername = appleName?.nickname ?? ""
-                }
+                // DispatchQueue.main.async {
+                //     self.signUpViewModel.newName = appleName.map { "\($0.givenName ?? "") \($0.familyName ?? "")" } ?? ""
+                //     self.signUpViewModel.newUsername = appleName?.nickname ?? ""
+                // }
                 
                 signUpViewModel.userId = appleUserID
                 UserDefaults.standard.set(appleUserID, forKey: .userId)
                 
                 Task {
-                    let dbUsers = await self.signUpViewModel.findUsers(id: appleUserID)
+                    let dbUser = await self.signUpViewModel.findUser(id: appleUserID)
                     DispatchQueue.main.async {
-                        if dbUsers.isEmpty {
+                        if let user = dbUser {
+                            print("User found in the database")
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                self.authState.currentUser = user
+                            }
+                            self.viewState = .authenticated
+                        } else {
                             print("User not found in the database")
                             self.viewState = .signUp
-                        } else {
-                            print("User found in the database")
-                            self.authState.currentUser = dbUsers.first
-                            self.viewState = .signIn
                         }
                     }
                 }

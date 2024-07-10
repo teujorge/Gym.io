@@ -23,8 +23,16 @@ struct AuthView: View {
         NavigationView {
             VStack(alignment: .center) {
                 switch viewModel.viewState {
+                case .authenticated:
+                    Image(systemName: "checkmark.seal.fill")
+                        .resizable()
+                        .frame(width: 100, height: 100)
+                        .foregroundColor(.green)
+                        .transition(.scale)
                 case .authenticating:
                     ProgressView()
+                        .progressViewStyle(.circular)
+                        .scaleEffect(1.5, anchor: .center)
                         .transition(.opacity)
                 case .signUp:
                     SignUpView(viewModel: viewModel.signUpViewModel)

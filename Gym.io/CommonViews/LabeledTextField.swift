@@ -13,6 +13,8 @@ struct LabeledTextField: View {
     @Binding var text: String
     var error: String? = nil
     var onChange: ((String) -> Void)? = nil
+    var isDisabled: Bool = false
+    var keyboardType: UIKeyboardType = .default
     
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
@@ -21,6 +23,8 @@ struct LabeledTextField: View {
                 .foregroundColor(error == nil ? .secondary : .red)
             
             TextField(placeholder, text: $text)
+                .disabled(isDisabled)
+                .keyboardType(keyboardType)
                 .padding(10)
                 .background(
                     RoundedRectangle(cornerRadius: 10)
@@ -38,6 +42,7 @@ struct LabeledTextField: View {
                     .transition(.opacity)
             }
         }
+        .opacity(isDisabled ? 0.5 : 1.0)
         .padding(.horizontal)
     }
 }
