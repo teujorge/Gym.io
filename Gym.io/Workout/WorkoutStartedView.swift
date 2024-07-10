@@ -35,45 +35,7 @@ struct WorkoutStartedView: View {
                             .fontWeight(.semibold)
                             .foregroundColor(.blue)
                         
-                        LazyVGrid(columns: detailColumns(for: exercise)) {
-                            Text("sets")
-                                .font(.title3)
-                                .fontWeight(.semibold)
-                            
-                            if exercise.sets[0].reps != nil {
-                                Text("reps")
-                                    .font(.title3)
-                                    .fontWeight(.semibold)
-                            }
-                            if exercise.sets[0].weight != nil {
-                                Text("weight")
-                                    .font(.title3)
-                                    .fontWeight(.semibold)
-                            }
-                            if exercise.sets[0].duration != nil {
-                                Text("duration")
-                                    .font(.title3)
-                                    .fontWeight(.semibold)
-                            }
-                            
-                            ForEach(0..<exercise.sets.count, id: \.self) { setIndex in
-                                setsDetailsView(index: setIndex, set: exercise.sets[setIndex])
-                            }
-                        }
-                        
-                        HStack {
-                            Spacer()
-                            Button(action: { }) {
-                                Text("New set")
-                                Image(systemName: "plus.circle")
-                                    .foregroundColor(.blue)
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding(6)
-                            .background(Color.blue.opacity(0.2))
-                            .cornerRadius(20)
-                            Spacer()
-                        }
+                        ExerciseSetsDetailView(exercise: $exercise)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
@@ -102,39 +64,6 @@ struct WorkoutStartedView: View {
             }
         }
     }
-    
-    struct setsDetailsView: View {
-        let index: Int
-        let set: ExerciseSet
-        
-        var body: some View {
-            Text("\(index + 1)")
-                .foregroundColor(.secondary)
-            
-            if let reps = set.reps {
-                Text("\(reps)")
-                    .foregroundColor(.secondary)
-            }
-            
-            if let weight = set.weight {
-                Text("\(weight) kg")
-                    .foregroundColor(.secondary)
-            }
-            
-            if let duration = set.duration {
-                Text("\(duration) s")
-                    .foregroundColor(.secondary)
-            }
-        }
-    }
-    
-    private func detailColumns(for exercise: Exercise) -> [GridItem] {
-         if exercise.sets[0].reps != nil && exercise.sets[0].weight != nil {
-             return [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
-         } else {
-             return [GridItem(.flexible()), GridItem(.flexible())]
-         }
-     }
     
     private func startTimer() {
         timerCancellable?.cancel()  // Cancel any existing timer

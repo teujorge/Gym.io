@@ -47,15 +47,15 @@ struct ExerciseView: View {
                     
                     ForEach(exercise.sets) { set in
                         Text("Sets: \(exercise.sets.count)")
-                        if let reps = set.reps  {
-                            Text("Reps: \(reps)")
+                        
+                        if exercise.isRepBased {
+                            Text("Reps: \(set.reps)")
+                            Text("Weight: \(set.weight) lbs")
+                        } else {
+                            Text("Duration: \(set.duration) seconds")
+                            Text("Intensity: \(set.intensity)")
                         }
-                        if let weight = set.weight  {
-                            Text("Weight: \(weight) lbs")
-                        }
-                        if let duration = set.duration  {
-                            Text("Duration: \(duration) seconds")
-                        }
+                        
                     }
                 }
                 .padding()

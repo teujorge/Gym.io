@@ -18,6 +18,7 @@ class Exercise: Decodable, Identifiable, ObservableObject {
     @Published var notes: String?
     @Published var completedAt: Date?
     @Published var sets: [ExerciseSet]
+    @Published var isRepBased: Bool
     
     init(
         createdAt: Date = Date(),
@@ -28,7 +29,8 @@ class Exercise: Decodable, Identifiable, ObservableObject {
         imageName: String? = nil,
         notes: String? = nil,
         completedAt: Date? = nil,
-        sets: [ExerciseSet] = []
+        sets: [ExerciseSet] = [],
+        isRepBased: Bool
     ) {
         self.createdAt = createdAt
         self.updatedAt = updatedAt
@@ -39,6 +41,7 @@ class Exercise: Decodable, Identifiable, ObservableObject {
         self.notes = notes
         self.completedAt = completedAt
         self.sets = sets
+        self.isRepBased = isRepBased
     }
     
     enum CodingKeys: String, CodingKey {
@@ -51,6 +54,7 @@ class Exercise: Decodable, Identifiable, ObservableObject {
         case notes
         case completedAt
         case sets
+        case isRepBased
     }
     
     required init(from decoder: Decoder) throws {
@@ -64,6 +68,7 @@ class Exercise: Decodable, Identifiable, ObservableObject {
         notes = try container.decodeIfPresent(String.self, forKey: .notes)
         completedAt = try container.decodeIfPresent(Date.self, forKey: .completedAt)
         sets = try container.decodeIfPresent([ExerciseSet].self, forKey: .sets) ?? []
+        isRepBased = try container.decode(Bool.self, forKey: .isRepBased)
     }
 }
 
@@ -72,10 +77,10 @@ class ExerciseSet: Decodable, Identifiable, ObservableObject {
     @Published var updatedAt: Date
     @Published var id: String
     @Published var index: Int
-    @Published var reps: Int?
-    @Published var weight: Int?
-    @Published var duration: Int?
-    @Published var intensity: Intensity?
+    @Published var reps: Int
+    @Published var weight: Int
+    @Published var duration: Int
+    @Published var intensity: Intensity
     @Published var completedAt: Date?
     
     init(
@@ -83,10 +88,10 @@ class ExerciseSet: Decodable, Identifiable, ObservableObject {
         updatedAt: Date = Date(),
         id: String = UUID().uuidString,
         index: Int,
-        reps: Int? = nil,
-        weight: Int? = nil,
-        duration: Int? = nil,
-        intensity: Intensity? = nil,
+        reps: Int = 0,
+        weight: Int = 0,
+        duration: Int = 0,
+        intensity: Intensity = .medium,
         completedAt: Date? = nil
     ) {
         self.createdAt = createdAt
@@ -118,16 +123,18 @@ class ExerciseSet: Decodable, Identifiable, ObservableObject {
         updatedAt = try decodeDate(from: container, forKey: .updatedAt)
         id = try container.decode(String.self, forKey: .id)
         index = try container.decode(Int.self, forKey: .index)
-        reps = try container.decodeIfPresent(Int.self, forKey: .reps)
-        weight = try container.decodeIfPresent(Int.self, forKey: .weight)
-        duration = try container.decodeIfPresent(Int.self, forKey: .duration)
-        intensity = try container.decodeIfPresent(Intensity.self, forKey: .intensity)
-        completedAt = try container.decodeIfPresent(Date.self, forKey: .completedAt)
+        reps = try container.decode(Int.self, forKey: .reps)
+        weight = try container.decode(Int.self, forKey: .weight)
+        duration = try container.decode(Int.self, forKey: .duration)
+        intensity = try container.decode(Intensity.self, forKey: .intensity)
+        completedAt = try container.decode(Date.self, forKey: .completedAt)
     }
 }
 
-enum Intensity: String, Codable {
+enum Intensity: String, Codable, CaseIterable, Identifiable {
     case low = "LOW"
     case medium = "MEDIUM"
     case high = "HIGH"
+    
+    var id: Self { self }
 }

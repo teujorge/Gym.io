@@ -28,46 +28,27 @@ struct WorkoutView: View {
                     Text("Exercises")
                         .font(.headline)
                     ForEach($workout.exercises, id: \.id) { $exercise in
-                        NavigationLink(destination: ExerciseView(exercise: exercise)) {
-                            VStack(alignment: .leading) {
+
+                        VStack(alignment: .leading) {
+                            NavigationLink(destination: ExerciseView(exercise: exercise)) {
                                 Text(exercise.name)
                                     .font(.title2)
                                     .fontWeight(.semibold)
                                     .foregroundColor(.blue)
-                                
-                                ForEach(Array(exercise.sets.enumerated()), id: \.element.id) { (i, set) in
-                                    HStack {
-                                        Text("\(i)")
-                                        
-                                        if let reps = exercise.sets[i].reps {
-                                            Text("\(reps) reps")
-                                        }
-                                        if let weight = exercise.sets[i].weight {
-                                            Text("\(weight) lbs")
-                                        }
-                                        
-                                        if let duration = exercise.sets[i].duration {
-                                            Text("Duration: \(duration) seconds")
-                                        }
-                                    }
-                                    .foregroundColor(.secondary)
-                                }
                             }
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                            ExerciseSetsDetailView(exercise: $exercise)
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
                         .padding()
                         .background(Color(.systemGray6))
                         .cornerRadius(10)
                     }
-                    
                 }
             }
             .padding()
             
             // Start Workout Button
-            NavigationLink(destination: WorkoutStartedView(workout: workout))
-            {
-                
+            NavigationLink(destination: WorkoutStartedView(workout: workout)) {
                 Text("Start Workout")
                     .padding()
                     .frame(maxWidth: .infinity)
@@ -152,7 +133,8 @@ var _previewExercises: [Exercise] = [
             ExerciseSet(index: 2, reps: 10, weight: 185),
             ExerciseSet(index: 3, reps: 12, weight: 185),
             ExerciseSet(index: 4, reps: 10, weight: 185),
-        ]
+        ],
+        isRepBased: true
     ),
     Exercise(
         index: 3,
@@ -160,7 +142,8 @@ var _previewExercises: [Exercise] = [
         sets: [
             ExerciseSet(index: 1, duration: 45, intensity: .low),
             ExerciseSet(index: 2, duration: 35, intensity: .low),
-        ]
+        ],
+        isRepBased: false
     ),
     Exercise(
         index: 1,
@@ -171,7 +154,8 @@ var _previewExercises: [Exercise] = [
             ExerciseSet(index: 2, reps: 8, weight: 135),
             ExerciseSet(index: 3, reps: 10, weight: 135),
             ExerciseSet(index: 4, reps: 8, weight: 135),
-        ]
+        ],
+        isRepBased: true
     ),
     Exercise(
         index: 4,
@@ -181,6 +165,7 @@ var _previewExercises: [Exercise] = [
             ExerciseSet(index: 1, reps: 8, weight: 225),
             ExerciseSet(index: 2, reps: 8, weight: 225),
             ExerciseSet(index: 3, reps: 8, weight: 225),
-        ]
+        ],
+        isRepBased: true
     )
 ]

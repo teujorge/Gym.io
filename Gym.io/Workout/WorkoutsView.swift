@@ -24,7 +24,7 @@ struct WorkoutsView: View {
                             .cornerRadius(20)
                         
                         Button(action: { isPresentingWorkoutForm.toggle() }) {
-                            Text("New Exercise")
+                            Text("New Workout")
                             Image(systemName: "plus.circle")
                                 .foregroundColor(.blue)
                         }
@@ -99,7 +99,8 @@ let _previewWorkouts = [
                     ExerciseSet(index: 1, reps: 6, weight: 35),
                     ExerciseSet(index: 1, reps: 5, weight: 30),
                     ExerciseSet(index: 1, reps: 4, weight: 25)
-                ]
+                ],
+                isRepBased: true
             )
         ]
     )
