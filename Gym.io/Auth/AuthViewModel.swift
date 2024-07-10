@@ -25,8 +25,8 @@ class AuthViewModel: ObservableObject {
     }
     
     func autoSignIn() {
-        guard viewState == .signIn else {
-            print("Not in sign in, will skip auto sign")
+        guard viewState != .signUp else {
+            print("Auto sign cancelled -> user is in sign up")
             return
         }
         
