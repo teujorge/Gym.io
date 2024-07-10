@@ -8,8 +8,10 @@
 import SwiftUI
 
 struct ProfileView: View {
+    @EnvironmentObject var authState: AuthState
     @EnvironmentObject var currentUser: User
-
+    @StateObject var viewModel = ProfileViewModel()
+    
     var body: some View {
         NavigationView {
             ScrollView {
@@ -146,6 +148,44 @@ struct ProfileView: View {
                     .padding(.horizontal)
                     
                     Spacer()
+                    
+                    HStack {
+                        Button(action: {
+                            UserDefaults.standard.removeObject(forKey: .userId)
+                            DispatchQueue.main.async {
+                                authState.currentUser = nil
+                            }
+                        }) {
+                            Text("Sign Out")
+                                .font(.headline)
+                                .fontWeight(.bold)
+                                .foregroundColor(.red)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(Color.red.opacity(0.2))
+                                .cornerRadius(10)
+                        }
+                        Button(action: {
+                            Task {
+                                let isDeleted = await viewModel.deleteUser()
+                                if isDeleted {
+                                    UserDefaults.standard.removeObject(forKey: .userId)
+                                    DispatchQueue.main.async {
+                                        authState.currentUser = nil
+                                    }
+                                }
+                            }
+                        }) {
+                            Text("Delete Account")
+                                .font(.headline)
+                                .fontWeight(.bold)
+                                .foregroundColor(.red)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(Color.red.opacity(0.2))
+                                .cornerRadius(10)
+                        }
+                    }
                 }
                 .padding()
             }
@@ -154,22 +194,20 @@ struct ProfileView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(action: { }) {
-                        HStack {
-                            Text("Edit")
-                                .font(.caption)
-                                .fontWeight(.bold)
-                                .foregroundColor(.blue)
-                            Image(systemName: "pencil")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 12, height: 12)
-                                .foregroundColor(.blue)
-                        }
-                        .padding(.vertical, 4)
-                        .padding(.horizontal, 8)
-                        .background(Color.blue.opacity(0.2))
-                        .cornerRadius(20)
+                        Text("Edit")
+                            .font(.caption)
+                            .fontWeight(.bold)
+                            .foregroundColor(.blue)
+                        Image(systemName: "pencil")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 12, height: 12)
+                            .foregroundColor(.blue)
                     }
+                    .padding(.vertical, 4)
+                    .padding(.horizontal, 8)
+                    .background(Color.blue.opacity(0.2))
+                    .cornerRadius(20)
                 }
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     Button(action: { }) {
@@ -197,5 +235,6 @@ struct ProfileView: View {
 
 #Preview {
     ProfileView()
+        .environmentObject(_previewAuthSignedInState)
         .environmentObject(_previewParticipants[0])
 }

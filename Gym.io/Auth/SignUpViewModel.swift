@@ -90,7 +90,7 @@ class SignUpViewModel: ObservableObject {
             
             do {
                 let decodedResponse = try JSONDecoder().decode([String: [User]].self, from: data)
-                users = decodedResponse["result"] ?? []
+                users = decodedResponse["data"] ?? []
                 print("findUsers: \(users)")
             } catch let decodeError {
                 print("findUsers: Decoding failed! \(decodeError)")
@@ -140,7 +140,7 @@ class SignUpViewModel: ObservableObject {
             
             do {
                 let decodedResponse = try JSONDecoder().decode([String: User].self, from: data)
-                if let user = decodedResponse["result"] {
+                if let user = decodedResponse["data"] {
                     print("User created: \(user)")
                     DispatchQueue.main.async {
                         self.authState.currentUser = user

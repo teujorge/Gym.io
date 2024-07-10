@@ -19,4 +19,8 @@ extension UserDefaults {
     func string(forKey key: UserDefaultsKeys) -> String? {
         return string(forKey: key.rawValue)
     }
+    
+    func removeObject(forKey key: UserDefaultsKeys) {
+        removeObject(forKey: key.rawValue)
+    }
 }
