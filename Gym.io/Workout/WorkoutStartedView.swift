@@ -10,8 +10,8 @@ import Combine
 
 struct WorkoutStartedView: View {
     
-    let workout: Workout
-    
+
+    @State var workout: Workout
     @State private var counter = 0
     @State private var timerCancellable: AnyCancellable? = nil
     @State private var repsInputs: [UUID: [Int: String]] = [:]
@@ -27,7 +27,7 @@ struct WorkoutStartedView: View {
         ScrollView {
             VStack(alignment: .center, spacing: 20) {
                 
-                ForEach(workout.exercises, id: \.id) { exercise in
+                ForEach($workout.exercises, id: \.id) { $exercise in
                     VStack(alignment: .leading) {
                         
                         Text(exercise.name)
@@ -40,68 +40,24 @@ struct WorkoutStartedView: View {
                                 .font(.title3)
                                 .fontWeight(.semibold)
                             
-                            if exercise.reps != nil {
+                            if exercise.sets[0].reps != nil {
                                 Text("reps")
                                     .font(.title3)
                                     .fontWeight(.semibold)
                             }
-                            if exercise.weight != nil {
+                            if exercise.sets[0].weight != nil {
                                 Text("weight")
                                     .font(.title3)
                                     .fontWeight(.semibold)
                             }
-                            if exercise.duration != nil {
+                            if exercise.sets[0].duration != nil {
                                 Text("duration")
                                     .font(.title3)
                                     .fontWeight(.semibold)
                             }
-
-                            ForEach(0..<exercise.sets, id: \.self) { setIndex in
-                                Text("\(setIndex + 1)")
-                                    .foregroundColor(.secondary)
-
-                                if let reps = exercise.reps {
-                                    TextField("\(reps)", text: Binding(
-                                        get: {
-                                            repsInputs[exercise.id]?[setIndex] ?? ""
-                                        },
-                                        set: { newValue in
-                                            if repsInputs[exercise.id] == nil {
-                                                repsInputs[exercise.id] = [:]
-                                            }
-                                            repsInputs[exercise.id]?[setIndex] = newValue
-                                        }
-                                    ))
-                                    .textFieldStyle(PlainTextFieldStyle())
-                                    .multilineTextAlignment(.center) // Center align text
-                                    .frame(maxWidth: .infinity) // Fill the available width
-                                    .keyboardType(.numberPad)
-                                    .foregroundColor(.secondary)
-                                }
-
-                                if let weight = exercise.weight {
-                                    TextField("\(weight)", text: Binding(
-                                        get: {
-                                            weightInputs[exercise.id]?[setIndex] ?? ""
-                                        },
-                                        set: { newValue in
-                                            if weightInputs[exercise.id] == nil {
-                                                weightInputs[exercise.id] = [:]
-                                            }
-                                            weightInputs[exercise.id]?[setIndex] = newValue
-                                        }
-                                    ))
-                                    .textFieldStyle(PlainTextFieldStyle())
-                                    .multilineTextAlignment(.center) // Center align text
-                                    .frame(maxWidth: .infinity) // Fill the available width
-                                    .keyboardType(.numberPad)
-                                    .foregroundColor(.secondary)
-                                }
-
-                                if let duration = exercise.duration {
-                                    Text("\(duration) s")
-                                        .foregroundColor(.secondary)
-                                }
+                            
+                            ForEach(0..<exercise.sets.count, id: \.self) { setIndex in
+                                setsDetailsView(index: setIndex, set: exercise.sets[setIndex])
                             }
                         }
                         
@@ -147,21 +103,38 @@ struct WorkoutStartedView: View {
         }
     }
     
-    private func detailColumns(for exercise: Exercise) -> [GridItem] {
-        var columns: [GridItem] = [GridItem(.flexible())]
+    struct setsDetailsView: View {
+        let index: Int
+        let set: ExerciseSet
         
-        if exercise.reps != nil {
-            columns.append(GridItem(.flexible()))
+        var body: some View {
+            Text("\(index + 1)")
+                .foregroundColor(.secondary)
+            
+            if let reps = set.reps {
+                Text("\(reps)")
+                    .foregroundColor(.secondary)
+            }
+            
+            if let weight = set.weight {
+                Text("\(weight) kg")
+                    .foregroundColor(.secondary)
+            }
+            
+            if let duration = set.duration {
+                Text("\(duration) s")
+                    .foregroundColor(.secondary)
+            }
         }
-        if exercise.weight != nil {
-            columns.append(GridItem(.flexible()))
-        }
-        if exercise.duration != nil {
-            columns.append(GridItem(.flexible()))
-        }
-        
-        return columns
     }
+    
+    private func detailColumns(for exercise: Exercise) -> [GridItem] {
+         if exercise.sets[0].reps != nil && exercise.sets[0].weight != nil {
+             return [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
+         } else {
+             return [GridItem(.flexible()), GridItem(.flexible())]
+         }
+     }
     
     private func startTimer() {
         timerCancellable?.cancel()  // Cancel any existing timer

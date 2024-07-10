@@ -26,13 +26,13 @@ struct ChallengeFormView: View {
     }
     
     @State private var title: String = ""
-    @State private var description: String = ""
-    @State private var pointsPerHundredKgs = 10
-    @State private var pointsPerHundredReps = 10
+    @State private var notes: String = ""
+    @State private var pointsPerKg = 10
+    @State private var pointsPerRep = 10
     @State private var pointsPerHour = 10
     @State private var paricipants: [User] = _previewParticipants
-    @State private var startDate = Date()
-    @State private var endDate = Date().addingTimeInterval(60 * 60 * 24 * 7)
+    @State private var startAt = Date()
+    @State private var endAt = Date().addingTimeInterval(60 * 60 * 24 * 7)
     
     // Leading navigation bar item
     private var leadingNavigationBarItem: some View {
@@ -51,11 +51,14 @@ struct ChallengeFormView: View {
     private var trailingNavigationBarItem: some View {
         Button("Save") {
             onSave(Challenge(
+                startAt: startAt,
+                endAt: endAt,
+                pointsPerHour: pointsPerHour,
+                pointsPerRep: pointsPerRep,
+                pointsPerKg: pointsPerKg,
                 title: title,
-                description: description,
-                rules: Rules(pointsPerHundredKgs: pointsPerHundredKgs, pointsPerHundredReps: pointsPerHundredReps, pointsPerHour: pointsPerHour),
-                startDate: startDate,
-                endDate: endDate
+                notes: notes,
+                owner: _previewParticipants[0]
             ))
         }
     }
@@ -65,23 +68,23 @@ struct ChallengeFormView: View {
             Form {
                 Section(header: Text("Challenge Details")) {
                     TextField("Title", text: $title)
-                    TextField("Description", text: $description)
-                    DatePicker("Start Date", selection: $startDate, displayedComponents: .date)
-                    DatePicker("End Date", selection: $endDate, displayedComponents: .date)
+                    TextField("Description", text: $notes)
+                    DatePicker("Start Date", selection: $startAt, displayedComponents: .date)
+                    DatePicker("End Date", selection: $endAt, displayedComponents: .date)
                 }
                                 
                 Section(header: Text("Rules")) {
-                    Stepper(value: $pointsPerHundredKgs, in: 0...100) {
+                    Stepper(value: $pointsPerKg, in: 0...100) {
                         HStack {
-                            Text(pointsPerHundredKgs.description)
+                            Text(pointsPerKg.description)
                             Text("points per 100 kgs")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
                     }
-                    Stepper(value: $pointsPerHundredReps, in: 0...100) {
+                    Stepper(value: $pointsPerRep, in: 0...100) {
                         HStack {
-                            Text(pointsPerHundredReps.description)
+                            Text(pointsPerRep.description)
                             Text("points per 100 reps")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
@@ -114,12 +117,12 @@ struct ChallengeFormView: View {
         guard let challenge = challenge else { return }
         
         title = challenge.title
-        description = challenge.description
-        pointsPerHundredKgs = challenge.rules.pointsPerHundredKgs
-        pointsPerHundredReps = challenge.rules.pointsPerHundredReps
-        pointsPerHour = challenge.rules.pointsPerHour
-        startDate = challenge.startDate
-        endDate = challenge.endDate
+        notes = challenge.notes ?? ""
+        pointsPerKg = challenge.pointsPerKg
+        pointsPerRep = challenge.pointsPerRep
+        pointsPerHour = challenge.pointsPerHour
+        startAt = challenge.startAt
+        endAt = challenge.endAt
     }
     
 }

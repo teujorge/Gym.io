@@ -49,7 +49,7 @@ struct WorkoutsView: View {
                                         .foregroundColor(.secondary)
                                 }
                                 
-                                if let description = workout.description {
+                                if let description = workout.notes {
                                     Text(description)
                                         .font(.body)
                                         .foregroundColor(.secondary)
@@ -82,30 +82,25 @@ struct WorkoutsView: View {
 
 let _previewWorkouts = [
     Workout(
+        ownerId: "1",
         title: "Davi's workout",
-        description: "A challenging workout to test your limits.",
+        notes: "A challenging workout to test your limits.",
         exercises: _previewExercises
     ),
     Workout(
+        ownerId: "1",
         title: "Ricardo's workout",
-        description: "pussy shit",
+        notes: "pussy shit",
         exercises: [
-            Exercise(name: "sit on 8=D", sets: 2, duration: 60, intensity: .high)
-        ]
-    ),
-    Workout(
-        title: "Common Workout",
-        exercises: [
-            Exercise(name: "Squats", sets: 3, reps: 10, weight: 50),
-            Exercise(name: "Push-ups", sets: 3, reps: 15, weight: 0),
-            Exercise(name: "Plank", sets:1, duration: 60, intensity: .moderate)
-        ]
-    ),
-    Workout(
-        title: "Common Workout 2",
-        exercises: [
-            Exercise(name: "Pull-ups", sets: 3, reps: 15, weight: 0),
-            Exercise(name: "Stip-ups", sets: 3, reps: 15, weight: 0),
+            Exercise(
+                index: 1,
+                name: "sit on 8=D",
+                sets: [
+                    ExerciseSet(index: 1, reps: 6, weight: 35),
+                    ExerciseSet(index: 1, reps: 5, weight: 30),
+                    ExerciseSet(index: 1, reps: 4, weight: 25)
+                ]
+            )
         ]
     )
 ]

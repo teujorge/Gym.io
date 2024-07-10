@@ -30,7 +30,7 @@ struct ExerciseView: View {
                 .padding()
                 
                 // MARK: Instructions
-                if let instructions = exercise.instructions {
+                if let instructions = exercise.notes {
                     VStack(alignment: .leading, spacing: 10) {
                         Text("Instructions")
                             .font(.headline)
@@ -44,15 +44,18 @@ struct ExerciseView: View {
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Details")
                         .font(.headline)
-                    Text("Sets: \(exercise.sets)")
-                    if let reps = exercise.reps  {
-                        Text("Reps: \(reps)")
-                    }
-                    if let weight = exercise.weight  {
-                        Text("Weight: \(weight) lbs")
-                    }
-                    if let duration = exercise.duration  {
-                        Text("Duration: \(duration) seconds")
+                    
+                    ForEach(exercise.sets) { set in
+                        Text("Sets: \(exercise.sets.count)")
+                        if let reps = set.reps  {
+                            Text("Reps: \(reps)")
+                        }
+                        if let weight = set.weight  {
+                            Text("Weight: \(weight) lbs")
+                        }
+                        if let duration = set.duration  {
+                            Text("Duration: \(duration) seconds")
+                        }
                     }
                 }
                 .padding()
@@ -111,22 +114,7 @@ struct ExerciseView: View {
 #Preview {
     NavigationView {
         ExerciseView(
-            //        exercise: Exercise(
-            //        name: "Bench Press",
-            //        imageName: "dumbbell",
-            //        instructions: "Lie on the bench with your feet flat on the ground. Grip the barbell with your hands slightly wider than shoulder-width apart. Lower the barbell to your chest, then push it back up to the starting position.",
-            //        sets: 4,
-            //        reps: 10,
-            //        weight: 135,
-            //        caloriesPerRep: 5
-            //    )
-            exercise: Exercise(
-                name: "Planck",
-                imageName: "dumbbell",
-                sets: 2,
-                duration: 30,
-                intensity: .low
-            )
+            exercise: _previewExercises[1]
         )
     }
 }

@@ -15,21 +15,23 @@ struct ChallengeView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 
-                // Details
-                Text(challenge.description)
-                    .font(.body)
+                if let notes = challenge.notes {
+                    Text(notes)
+                        .font(.body)
+                }
                 
                 // Participants/Ranking
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Participants")
                         .font(.headline)
                     
-                    ForEach(challenge.ranking, id: \.id) { user in
+                    ForEach($challenge.participants, id: \.id) { $user in
                         HStack {
-                            Text(user.name)
+                            Text(user.username)
                                 .font(.body)
                             Spacer()
-                            Text("\(challenge.calculatePoints(for: user)) pts")
+                            // Text("\(challenge.calculatePoints(for: user)) pts")
+                            Text("calculatePoints")
                                 .font(.body)
                                 .foregroundColor(.secondary)
                         }
@@ -42,13 +44,13 @@ struct ChallengeView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Start Date:")
                         .font(.headline)
-                    Text(challenge.startDate, style: .date)
+                    Text(challenge.startAt, style: .date)
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                     
                     Text("End Date:")
                         .font(.headline)
-                    Text(challenge.endDate, style: .date)
+                    Text(challenge.endAt, style: .date)
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                 }
@@ -57,11 +59,11 @@ struct ChallengeView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Point System:")
                         .font(.headline)
-                    Text("Points per 100 kg -> \(challenge.rules.pointsPerHundredKgs)")
+                    Text("Points per kg -> \(challenge.pointsPerKg)")
                         .font(.subheadline)
-                    Text("Points per 100 reps -> \(challenge.rules.pointsPerHundredReps)")
+                    Text("Points per rep -> \(challenge.pointsPerRep)")
                         .font(.subheadline)
-                    Text("Points per hour -> \(challenge.rules.pointsPerHour)")
+                    Text("Points per hour -> \(challenge.pointsPerHour)")
                         .font(.subheadline)
                 }
                 
@@ -105,25 +107,20 @@ struct ChallengeView: View {
 }
 
 let _previewChallenge = Challenge(
+    startAt: Date().addingTimeInterval(-60 * 60 * 24 * 10),
+    endAt: Date().addingTimeInterval(60 * 60 * 24 * 30),
+    pointsPerHour: 100,
+    pointsPerRep: 5,
+    pointsPerKg: 10,
     title: "30-Day Fitness",
-    description: "Join us in this 30-day fitness challenge!",
-    rules: Rules(pointsPerHundredKgs: 10, pointsPerHundredReps: 5, pointsPerHour: 100),
-    startDate: Date().addingTimeInterval(-60 * 60 * 24 * 10),
-    endDate: Date().addingTimeInterval(60 * 60 * 24 * 30),
-    participants: _previewParticipants
+    notes: "Join us in this 30-day fitness challenge!",
+    owner: _previewParticipants[0]
+//    participants: _previewParticipants
 )
 
 let _previewParticipants = [
-    User(name:"Matheus Jorge", username: "teujorge", completedWorkouts: _previewWorkoutsCompleted),
-    User(name: "Alice", username: "alice"),
-    User(name: "Bob", username: "bobby"),
-    User(name: "Charlie", username: "ccc", completedWorkouts: _previewWorkoutsCompleted)
+    User(username: "teujorge", name:"Matheus Jorge"),
+    User(username: "alice", name: "Alice"),
+    User(username: "bobby", name: "Bob"),
+    User(username: "ccc", name: "Charlie")
 ]
-
-// map through _previewWorkouts and create a WorkoutCompleted with random date
-let _previewWorkoutsCompleted = _previewWorkouts.map { workout in
-    WorkoutCompleted(
-        date: Date().addingTimeInterval(-Double.random(in: 0...(60 * 60 * 24 * 10))),
-        workout: workout
-    )
-}

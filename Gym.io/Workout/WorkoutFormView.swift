@@ -13,7 +13,7 @@ struct WorkoutFormView: View {
     let onDelete: ((Workout) -> Void)?
     
     @State private var title = ""
-    @State private var description = ""
+    @State private var notes = ""
     @State private var exercises = [Exercise]()
     
     @State private var isPresentingExerciseForm = false
@@ -41,7 +41,7 @@ struct WorkoutFormView: View {
                     // Workout details section
                     Section(header: Text("Workout Details")) {
                         TextField("Title", text: $title)
-                        TextField("Description", text: $description)
+                        TextField("Description", text: $notes)
                     }
                     
                     // Exercises section
@@ -82,17 +82,18 @@ struct WorkoutFormView: View {
             }
             .navigationTitle(workout == nil ? "New Workout" : "Edit Workout")
             .toolbar {
-                ToolbarItem(placement: .destructiveAction) {
-                    if let workout = workout, let onDelete = onDelete {
-                        Button("Delete") { onDelete(workout) }
-                            .foregroundColor(.red)
-                    }
-                }
+//                if let workout = workout, let onDelete = onDelete {
+//                    ToolbarItem(placement: .destructiveAction) {
+//                        Button("Delete") { onDelete(workout) }
+//                            .foregroundColor(.red)
+//                    }
+//                }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
                         let newWorkout = Workout(
+                            ownerId: workout?.ownerId ?? UserDefaults.standard.string(forKey: .userId) ?? "",
                             title: title,
-                            description: description.isEmpty ? nil : description,
+                            notes: notes.isEmpty ? nil : notes,
                             exercises: exercises
                         )
                         onSave(newWorkout)
@@ -120,13 +121,13 @@ struct WorkoutFormView: View {
     private func loadInitialWorkoutData() {
         if let workout = workout {
             title = workout.title
-            description = workout.description ?? ""
+            notes = workout.notes ?? ""
             exercises = workout.exercises
         }
     }
     
     private func addExercise() {
-        selectedExercise = Exercise(name: "", sets: 0, reps: 0, weight: 0)
+        selectedExercise = Exercise(index: 1, name: "", sets: [])
         isPresentingExerciseForm = true
     }
     
