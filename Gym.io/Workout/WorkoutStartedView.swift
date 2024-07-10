@@ -10,10 +10,12 @@ import Combine
 
 struct WorkoutStartedView: View {
     
-    let workout:Workout
+    let workout: Workout
     
     @State private var counter = 0
-    @State private var timerCancellable: Cancellable? = nil
+    @State private var timerCancellable: AnyCancellable? = nil
+    @State private var repsInputs: [UUID: [Int: String]] = [:]
+    @State private var weightInputs: [UUID: [Int: String]] = [:]
     
     private var formattedTime: String {
         let minutes = counter / 60
@@ -59,13 +61,41 @@ struct WorkoutStartedView: View {
                                     .foregroundColor(.secondary)
 
                                 if let reps = exercise.reps {
-                                    Text("\(reps)")
-                                        .foregroundColor(.secondary)
+                                    TextField("\(reps)", text: Binding(
+                                        get: {
+                                            repsInputs[exercise.id]?[setIndex] ?? ""
+                                        },
+                                        set: { newValue in
+                                            if repsInputs[exercise.id] == nil {
+                                                repsInputs[exercise.id] = [:]
+                                            }
+                                            repsInputs[exercise.id]?[setIndex] = newValue
+                                        }
+                                    ))
+                                    .textFieldStyle(PlainTextFieldStyle())
+                                    .multilineTextAlignment(.center) // Center align text
+                                    .frame(maxWidth: .infinity) // Fill the available width
+                                    .keyboardType(.numberPad)
+                                    .foregroundColor(.secondary)
                                 }
 
                                 if let weight = exercise.weight {
-                                    Text("\(weight) kg")
-                                        .foregroundColor(.secondary)
+                                    TextField("\(weight)", text: Binding(
+                                        get: {
+                                            weightInputs[exercise.id]?[setIndex] ?? ""
+                                        },
+                                        set: { newValue in
+                                            if weightInputs[exercise.id] == nil {
+                                                weightInputs[exercise.id] = [:]
+                                            }
+                                            weightInputs[exercise.id]?[setIndex] = newValue
+                                        }
+                                    ))
+                                    .textFieldStyle(PlainTextFieldStyle())
+                                    .multilineTextAlignment(.center) // Center align text
+                                    .frame(maxWidth: .infinity) // Fill the available width
+                                    .keyboardType(.numberPad)
+                                    .foregroundColor(.secondary)
                                 }
 
                                 if let duration = exercise.duration {
@@ -75,14 +105,14 @@ struct WorkoutStartedView: View {
                             }
                         }
                         
-                        HStack() {
+                        HStack {
                             Spacer()
                             Button(action: { }) {
                                 Text("New set")
                                 Image(systemName: "plus.circle")
                                     .foregroundColor(.blue)
                             }
-                            .frame(maxWidth:.infinity)
+                            .frame(maxWidth: .infinity)
                             .padding(6)
                             .background(Color.blue.opacity(0.2))
                             .cornerRadius(20)
@@ -107,6 +137,7 @@ struct WorkoutStartedView: View {
             
         }
         .onAppear(perform: startTimer)
+        .onDisappear(perform: stopTimer)
         .navigationTitle(workout.title)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -117,11 +148,19 @@ struct WorkoutStartedView: View {
     }
     
     private func detailColumns(for exercise: Exercise) -> [GridItem] {
-        if exercise.reps != nil && exercise.weight != nil {
-            return [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
-        } else {
-            return [GridItem(.flexible()), GridItem(.flexible())]
+        var columns: [GridItem] = [GridItem(.flexible())]
+        
+        if exercise.reps != nil {
+            columns.append(GridItem(.flexible()))
         }
+        if exercise.weight != nil {
+            columns.append(GridItem(.flexible()))
+        }
+        if exercise.duration != nil {
+            columns.append(GridItem(.flexible()))
+        }
+        
+        return columns
     }
     
     private func startTimer() {
@@ -147,4 +186,3 @@ struct WorkoutStartedView: View {
         WorkoutStartedView(workout: _previewWorkouts[0])
     }
 }
-
