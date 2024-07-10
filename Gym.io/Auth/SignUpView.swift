@@ -10,6 +10,10 @@ import SwiftUI
 struct SignUpView: View {
     @ObservedObject var viewModel: SignUpViewModel
     
+    var isDisabled: Bool {
+        viewModel.state == .creatingAccount || viewModel.state == .accountCreated
+    }
+        
     var body: some View {
         VStack(spacing: 16) {
             Text("Welcome!")
@@ -21,7 +25,8 @@ struct SignUpView: View {
             LabeledTextField(
                 label: "Full name (optional):",
                 placeholder: "Enter your full Name",
-                text: $viewModel.newName
+                text: $viewModel.newName,
+                isDisabled: isDisabled
             )
             
             LabeledTextField(
@@ -29,15 +34,26 @@ struct SignUpView: View {
                 placeholder: "Enter a username",
                 text: $viewModel.newUsername,
                 error: viewModel.errorMessage,
-                onChange: { _ in viewModel.checkUsernameAvailability() }
+                onChange: { _ in viewModel.checkUsernameAvailability() },
+                isDisabled: isDisabled,
+                keyboardType: .namePhonePad
             )
             
-            LoadingButton(
-                action: { Task { await viewModel.createUser() } },
-                isLoading: viewModel.state == .queringUsers || viewModel.state == .creatingAccount,
-                isEnabled: viewModel.state == .usernameAvailable && !viewModel.newUsername.isEmpty,
-                title: "Continue"
-            )
+            if viewModel.state == .accountCreated {
+                Image(systemName: "checkmark.seal.fill")
+                    .resizable()
+                    .frame(width: 50, height: 50)
+                    .foregroundColor(.green)
+                    .transition(.scale)
+                    .padding()
+            } else  {
+                LoadingButton(
+                    action: { Task { await viewModel.createUser() } },
+                    isLoading: viewModel.state == .queringUsers || viewModel.state == .creatingAccount,
+                    isEnabled: viewModel.state == .usernameAvailable && !viewModel.newUsername.isEmpty,
+                    title: "Continue"
+                )
+            }
         }
         .background(Color(.systemGroupedBackground))
         .cornerRadius(15)

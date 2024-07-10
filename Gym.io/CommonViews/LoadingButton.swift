@@ -30,6 +30,7 @@ struct LoadingButton: View {
                     .shadow(radius: 5)
             }
         }
+        .frame(height: 50)
         .transition(.opacity)
         .disabled(!isEnabled)
         .padding()

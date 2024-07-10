@@ -53,19 +53,19 @@ class SignUpViewModel: ObservableObject {
             }
             
             Task {
-                let users = await self.findUsers(username: self.newUsername)
+                let user = await self.findUser(username: self.newUsername)
                 
                 DispatchQueue.main.async {
-                    self.state = users.isEmpty ? .usernameAvailable : .error("Username already taken")
+                    self.state = user == nil ? .usernameAvailable : .error("Username already taken")
                 }
                 
-                print("checkUsernameAvailability: \(users)")
+                print("checkUsernameAvailability: \(String(describing: user?.username))")
             }
         }
     }
     
-    func findUsers(id: String? = nil, name: String? = nil, username: String? = nil) async -> [User] {
-        var users = [User]()
+    func findUser(id: String? = nil, name: String? = nil, username: String? = nil) async -> User? {
+        var user: User?
         
         DispatchQueue.main.async {
             self.state = .queringUsers
@@ -84,7 +84,7 @@ class SignUpViewModel: ObservableObject {
             DispatchQueue.main.async {
                 self.state = .error("Invalid URL")
             }
-            return []
+            return nil
         }
         
         var request = URLRequest(url: url)
@@ -93,17 +93,17 @@ class SignUpViewModel: ObservableObject {
         
         do {
             let (data, _) = try await URLSession.shared.data(for: request)
-            print("findUsersRaw: \(String(data: data, encoding: .utf8)!)")
+            print("findUserRaw: \(String(data: data, encoding: .utf8)!)")
             
             do {
-                let decodedResponse = try JSONDecoder().decode([String: [User]].self, from: data)
-                users = decodedResponse["data"] ?? []
-                print("findUsers: \(users)")
+                let decodedResponse = try JSONDecoder().decode([String: User?].self, from: data)
+                user = decodedResponse["data"] ?? nil
+                print("findUser: \(String(describing: user))")
             } catch let decodeError {
-                print("findUsers: Decoding failed! \(decodeError)")
+                print("findUser: Decoding failed! \(decodeError)")
             }
         } catch {
-            print("Failed to fetch users: \(error.localizedDescription)")
+            print("Failed to findUser: \(error.localizedDescription)")
             DispatchQueue.main.async {
                 self.state = .error(error.localizedDescription)
             }
@@ -113,7 +113,7 @@ class SignUpViewModel: ObservableObject {
             self.state = .idle
         }
         
-        return users
+        return user
     }
     
     func createUser() async -> User? {
@@ -150,7 +150,9 @@ class SignUpViewModel: ObservableObject {
                 if let user = decodedResponse["data"] {
                     print("User created: \(user)")
                     DispatchQueue.main.async {
-                        self.authState.currentUser = user
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            self.authState.currentUser = user
+                        }
                         self.state = .accountCreated
                     }
                     return user
