@@ -22,17 +22,9 @@ struct AuthView: View {
     var body: some View {
         NavigationView {
             VStack(alignment: .center) {
-                switch viewModel.viewState {
-                case .authenticated:
-                    Image(systemName: "checkmark.seal.fill")
-                        .resizable()
-                        .frame(width: 100, height: 100)
-                        .foregroundColor(.green)
-                        .transition(.scale)
-                case .authenticating:
-                    ProgressView()
-                        .progressViewStyle(.circular)
-                        .scaleEffect(1.5, anchor: .center)
+                switch viewModel.state {                    
+                case .authenticating, .authenticated:
+                    LoaderView(size: 100, weight: .thin, state: viewModel.state == .authenticating ? .loading : .success)
                         .transition(.opacity)
                 case .signUp:
                     SignUpView(viewModel: viewModel.signUpViewModel)
@@ -42,12 +34,12 @@ struct AuthView: View {
                         .transition(.opacity)
                 }
             }
-            .animation(.default, value: viewModel.viewState)
+            .animation(.default, value: viewModel.state)
             .navigationTitle("Gym.io")
             .toolbar {
                 ToolbarItem(placement: .navigation) {
-                    if viewModel.viewState == .signUp {
-                        Button(action: { viewModel.viewState = .signIn }) {
+                    if viewModel.state == .signUp {
+                        Button(action: { viewModel.state = .signIn }) {
                             Image(systemName: "chevron.backward")
                                 .font(.caption)
                                 .accessibilityLabel("Back")
@@ -100,7 +92,7 @@ struct AuthView: View {
 
 #Preview("register") {
     let viewModel = AuthViewModel(authState: _previewAuthCreateAccountState)
-    viewModel.viewState = .signUp
+    viewModel.state = .signUp
     viewModel.signUpViewModel.userId = UUID().uuidString
     viewModel.signUpViewModel.newName = "Matheus Jorge"
     return AuthView(authModel: viewModel)

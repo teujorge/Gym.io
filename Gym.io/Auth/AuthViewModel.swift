@@ -18,7 +18,7 @@ enum AuthViewState: Equatable {
 class AuthViewModel: ObservableObject {
     @Published var authState: AuthState
     @Published var signUpViewModel: SignUpViewModel
-    @Published var viewState: AuthViewState = .authenticating
+    @Published var state: AuthViewState = .authenticating
     
     init(authState: AuthState) {
         self.authState = authState
@@ -26,7 +26,7 @@ class AuthViewModel: ObservableObject {
     }
     
     func autoSignIn() {
-        guard viewState != .signUp else {
+        guard state != .signUp else {
             print("Auto sign cancelled -> user is in sign up")
             return
         }
@@ -34,7 +34,7 @@ class AuthViewModel: ObservableObject {
         print("Auto sign")
         if let userId = UserDefaults.standard.string(forKey: .userId) {
             DispatchQueue.main.async {
-                self.viewState = .authenticating
+                self.state = .authenticating
             }
             print("User ID: \(userId)")
             
@@ -45,15 +45,15 @@ class AuthViewModel: ObservableObject {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                             self.authState.currentUser = user
                         }
-                        self.viewState = .authenticated
+                        self.state = .authenticated
                     } else {
-                        self.viewState = .signIn
+                        self.state = .signIn
                     }
                 }
             }
         } else {
             DispatchQueue.main.async {
-                self.viewState = .signIn
+                self.state = .signIn
             }
             print("No user ID saved")
         }
@@ -61,7 +61,7 @@ class AuthViewModel: ObservableObject {
     
     func handleSignInWithApple(result: Result<ASAuthorization, Error>) {
         DispatchQueue.main.async {
-            self.viewState = .authenticating
+            self.state = .authenticating
         }
         
         switch result {
@@ -87,17 +87,17 @@ class AuthViewModel: ObservableObject {
                             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                                 self.authState.currentUser = user
                             }
-                            self.viewState = .authenticated
+                            self.state = .authenticated
                         } else {
                             print("User not found in the database")
-                            self.viewState = .signUp
+                            self.state = .signUp
                         }
                     }
                 }
             }
         case .failure(let error):
             DispatchQueue.main.async {
-                self.viewState = .signIn
+                self.state = .signIn
             }
             print("Authorization failed: \(error.localizedDescription)")
         }

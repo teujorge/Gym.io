@@ -1,5 +1,5 @@
 //
-//  LabeledTextField.swift
+//  LabeledTextFieldView.swift
 //  Gym.io
 //
 //  Created by Matheus Jorge on 7/9/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct LabeledTextField: View {
+struct LabeledTextFieldView: View {
     let label: String
     let placeholder: String
     @Binding var text: String
@@ -48,7 +48,7 @@ struct LabeledTextField: View {
 }
 
 #Preview {
-    LabeledTextField(
+    LabeledTextFieldView(
         label: "Full name (optional):",
         placeholder: "Enter your full Name",
         text: .constant("write here...")

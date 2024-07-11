@@ -13,7 +13,7 @@ struct SignUpView: View {
     var isDisabled: Bool {
         viewModel.state == .creatingAccount || viewModel.state == .accountCreated
     }
-        
+    
     var body: some View {
         VStack(spacing: 16) {
             Text("Welcome!")
@@ -22,14 +22,14 @@ struct SignUpView: View {
                 .foregroundColor(.blue)
                 .padding(.top)
             
-            LabeledTextField(
+            LabeledTextFieldView(
                 label: "Full name (optional):",
                 placeholder: "Enter your full Name",
                 text: $viewModel.newName,
                 isDisabled: isDisabled
             )
             
-            LabeledTextField(
+            LabeledTextFieldView(
                 label: "Username:",
                 placeholder: "Enter a username",
                 text: $viewModel.newUsername,
@@ -39,21 +39,12 @@ struct SignUpView: View {
                 keyboardType: .namePhonePad
             )
             
-            if viewModel.state == .accountCreated {
-                Image(systemName: "checkmark.seal.fill")
-                    .resizable()
-                    .frame(width: 50, height: 50)
-                    .foregroundColor(.green)
-                    .transition(.scale)
-                    .padding()
-            } else  {
-                LoadingButton(
-                    action: { Task { await viewModel.createUser() } },
-                    isLoading: viewModel.state == .queringUsers || viewModel.state == .creatingAccount,
-                    isEnabled: viewModel.state == .usernameAvailable && !viewModel.newUsername.isEmpty,
-                    title: "Continue"
-                )
-            }
+            LoadingButtonView(
+                title: "Sign Up",
+                state: viewModel.loaderState,
+                disabled: isDisabled,
+                action: { Task { await viewModel.createUser() } }
+            )
         }
         .background(Color(.systemGroupedBackground))
         .cornerRadius(15)

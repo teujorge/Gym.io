@@ -29,6 +29,19 @@ class SignUpViewModel: ObservableObject {
         self.authState = authState
     }
     
+    var loaderState: LoaderState {
+        switch state {
+        case .idle, .usernameAvailable:
+            return .idle
+        case .queringUsers, .creatingAccount:
+            return .loading
+        case .accountCreated:
+            return .success
+        case .error:
+            return .failure
+        }
+    }
+    
     var errorMessage: String? {
         if case .error(let message) = state {
             return message
