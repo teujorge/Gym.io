@@ -26,13 +26,26 @@ class WorkoutFormViewModel: ObservableObject {
     @Published var selectedExercise: Exercise?
     @Published var state: WorkoutFormViewState = .idle
     
+    @Published var titleText = "" {
+        didSet {
+            workout.title = titleText
+        }
+    }
+    @Published var notesText = "" {
+        didSet {
+            workout.notes = notesText
+        }
+    }
+    
     init(workout: Workout?, onSave: @escaping () -> Void, onDelete: @escaping () -> Void) {
         if let workout = workout {
             self.isEditing = true
             self.workout = workout
+            self.titleText = workout.title
+            self.notesText = workout.notes ?? ""
         } else {
             self.isEditing = false
-            self.workout = Workout(ownerId: UserDefaults.standard.string(forKey: .userId) ?? "" ,title: "-", notes: "-", exercises: [])
+            self.workout = Workout(ownerId: UserDefaults.standard.string(forKey: .userId) ?? "" ,title: "", notes: "", exercises: [])
         }
         self.onSave = onSave
         self.onDelete = onDelete

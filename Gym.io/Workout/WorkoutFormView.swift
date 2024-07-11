@@ -27,8 +27,8 @@ struct WorkoutFormView: View {
                 Form {
                     // Workout details section
                     Section(header: Text("Workout Details")) {
-                        TextField("Title", text: $viewModel.workout.title)
-//                        TextField("Description", text: $viewModel.workout.notes)
+                        TextField("Title", text: $viewModel.titleText)
+                        TextField("Description", text: $viewModel.notesText)
                     }
                     
                     // Exercises section
