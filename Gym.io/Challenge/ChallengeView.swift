@@ -49,12 +49,20 @@ struct ChallengeView: View {
                     Text("Participants")
                         .font(.headline)
                     
-                    ForEach($challenge.participants, id: \.id) { $user in
+                    ForEach(Array($challenge.participants.enumerated()), id: \.element.id) { index, $user in
                         HStack {
-                            Text("1").font(.title)
-                            Image(systemName: "person.circle.fill")
-                                .resizable()
-                                .frame(width:50,height:50)
+                            Text("\(index+1)")
+                                .font(.title)
+                                .fontWeight(.bold)
+                            ZStack(alignment: .bottomLeading) {
+                                Image(systemName: "person.circle.fill")
+                                    .resizable()
+                                Image(systemName: "medal.fill")
+                                    .foregroundColor(.blue)
+                                    .resizable()
+                                    .frame(width:15,height:15)
+                            }
+                            .frame(width:50,height:50)
                                 
                             Text(user.username)
                                 .font(.body)
@@ -160,14 +168,16 @@ struct PointCard: View {
             Text(title)
                 .font(.headline)
                 .foregroundColor(.secondary)
-            Text("\(points, specifier: "%.1f") pts")
+            Text("\(points)")
                 .font(.title2)
                 .fontWeight(.bold)
                 .foregroundColor(.primary)
+            Text("pts")
+               
+                
         }
         .padding()
         .frame(width: 100, height: 120)
-        .background(.gray.opacity(0.2))
         .cornerRadius(10)
        
     }
