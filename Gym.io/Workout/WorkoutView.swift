@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct WorkoutView: View {
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
-    @State var workout: Workout
+    @ObservedObject var workout: Workout
     
     @State var isPresentingWorkoutForm = false
     
@@ -28,7 +29,7 @@ struct WorkoutView: View {
                     Text("Exercises")
                         .font(.headline)
                     ForEach($workout.exercises, id: \.id) { $exercise in
-
+                        
                         VStack(alignment: .leading) {
                             NavigationLink(destination: ExerciseView(exercise: exercise)) {
                                 Text(exercise.name)
@@ -97,12 +98,13 @@ struct WorkoutView: View {
         .sheet(isPresented: $isPresentingWorkoutForm) {
             WorkoutFormView(
                 workout: workout,
-                onSave: { workout in
+                onSave: { DispatchQueue.main.async {
                     isPresentingWorkoutForm = false
-                },
-                onDelete: { workout in
+                }},
+                onDelete: { DispatchQueue.main.async {
                     isPresentingWorkoutForm = false
-                }
+                    presentationMode.wrappedValue.dismiss()
+                }}
             )
         }
     }

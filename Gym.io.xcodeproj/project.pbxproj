@@ -41,6 +41,7 @@
 		F5D91C182C3CE70F004356BC /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5D91C172C3CE70F004356BC /* AuthView.swift */; };
 		F5D91C1D2C3CF144004356BC /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5D91C1C2C3CF144004356BC /* SignUpView.swift */; };
 		F5FAE1F02C3F0DE800DC362A /* ExerciseSetDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5FAE1EF2C3F0DE800DC362A /* ExerciseSetDetailsView.swift */; };
+		F5FAE1F22C3F5D5C00DC362A /* WorkoutsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5FAE1F12C3F5D5C00DC362A /* WorkoutsViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -80,6 +81,7 @@
 		F5D91C172C3CE70F004356BC /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
 		F5D91C1C2C3CF144004356BC /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		F5FAE1EF2C3F0DE800DC362A /* ExerciseSetDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseSetDetailsView.swift; sourceTree = "<group>"; };
+		F5FAE1F12C3F5D5C00DC362A /* WorkoutsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutsViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,6 +164,7 @@
 			children = (
 				F5B5714B2C36D43500062087 /* WorkoutView.swift */,
 				53A28C942C38500A00530B5F /* WorkoutsView.swift */,
+				F5FAE1F12C3F5D5C00DC362A /* WorkoutsViewModel.swift */,
 				F54B3C542C386A9D00171A6F /* WorkoutFormView.swift */,
 				F587500F2C3EF3A6005A54C5 /* WorkoutFormViewModel.swift */,
 				53EB00192C3C6859001E7C15 /* WorkoutStartedView.swift */,
@@ -320,6 +323,7 @@
 				53A28C952C38500A00530B5F /* WorkoutsView.swift in Sources */,
 				F55222642C36CD5E0057C0E5 /* HomeView.swift in Sources */,
 				F5B5714C2C36D43500062087 /* WorkoutView.swift in Sources */,
+				F5FAE1F22C3F5D5C00DC362A /* WorkoutsViewModel.swift in Sources */,
 				F5D91C182C3CE70F004356BC /* AuthView.swift in Sources */,
 				F58750122C3EFCAC005A54C5 /* ExerciseFormViewModel.swift in Sources */,
 				F55222622C36CD5E0057C0E5 /* Gym_ioApp.swift in Sources */,
@@ -471,7 +475,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -502,7 +506,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

@@ -19,7 +19,7 @@ struct ContentView: View {
                 }
                 .environmentObject(currentUser)
             
-            WorkoutsView(workouts: _previewWorkouts)
+            WorkoutsView()
                 .tabItem {
                     Image(systemName: "dumbbell.fill")
                     Text("Workouts")

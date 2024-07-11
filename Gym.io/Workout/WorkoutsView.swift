@@ -9,21 +9,20 @@ import SwiftUI
 
 struct WorkoutsView: View {
     
-    let workouts: [Workout]
-    @State var searchText = ""
-    @State var isPresentingWorkoutForm = false
+    @EnvironmentObject var currentUser: User
+    @StateObject private var viewModel = WorkoutsViewModel()
     
     var body: some View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 20) {
-                    HStack{
-                        TextField("Search", text: $searchText)
+                    HStack {
+                        TextField("Search", text: $viewModel.searchText)
                             .padding()
                             .background(Color.blue.opacity(0.2))
                             .cornerRadius(20)
                         
-                        Button(action: { isPresentingWorkoutForm.toggle() }) {
+                        Button(action: { viewModel.isPresentingWorkoutForm.toggle() }) {
                             Text("New Workout")
                             Image(systemName: "plus.circle")
                                 .foregroundColor(.blue)
@@ -33,33 +32,46 @@ struct WorkoutsView: View {
                         .cornerRadius(20)
                     }
                     
-                    ForEach(workouts) { workout in
-                        NavigationLink(destination: WorkoutView(workout: workout)) {
-                            VStack(alignment: .leading, spacing: 10) {
-                                Text(workout.title)
-                                    .fontWeight(.bold)
-                                    .font(.title2)
-                                    .foregroundColor(.primary)
-                                
-                                HStack {
-                                    Image(systemName: "dumbbell.fill")
-                                        .foregroundColor(.blue)
+                    
+                    if currentUser.workouts.isEmpty {
+                        Image(systemName: "exclamationmark.triangle")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 100, height: 100)
+                            .foregroundColor(.secondary)
+                            .padding(.top, 32)
+                        Text("No workouts found")
+                            .foregroundColor(.secondary)
+                            .padding(.bottom)
+                    } else {
+                        ForEach(currentUser.workouts) { workout in
+                            NavigationLink(destination: WorkoutView(workout: workout)) {
+                                VStack(alignment: .leading, spacing: 10) {
+                                    Text(workout.title)
+                                        .fontWeight(.bold)
+                                        .font(.title2)
+                                        .foregroundColor(.primary)
                                     
-                                    Text("Exercises: \(workout.exercises.count)")
-                                        .foregroundColor(.secondary)
+                                    HStack {
+                                        Image(systemName: "dumbbell.fill")
+                                            .foregroundColor(.blue)
+                                        
+                                        Text("Exercises: \(workout.exercises.count)")
+                                            .foregroundColor(.secondary)
+                                    }
+                                    
+                                    if let description = workout.notes {
+                                        Text(description)
+                                            .font(.body)
+                                            .foregroundColor(.secondary)
+                                            .lineLimit(2)
+                                    }
                                 }
-                                
-                                if let description = workout.notes {
-                                    Text(description)
-                                        .font(.body)
-                                        .foregroundColor(.secondary)
-                                        .lineLimit(2)
-                                }
+                                .padding()
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(Color(.systemGray6))
+                                .cornerRadius(10)
                             }
-                            .padding()
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(Color(.systemGray6))
-                            .cornerRadius(10)
                         }
                     }
                 }
@@ -67,17 +79,33 @@ struct WorkoutsView: View {
             }
             .background(Color(.systemBackground))
             .navigationTitle("Workouts")
-            .sheet(isPresented: $isPresentingWorkoutForm) {
-                WorkoutFormView(onSave: { workout in
-                    isPresentingWorkoutForm = false
-                })
+            .sheet(isPresented: $viewModel.isPresentingWorkoutForm) {
+                WorkoutFormView(onSave: { DispatchQueue.main.async {
+                    viewModel.isPresentingWorkoutForm = false
+                }})
             }
         }
+        .onAppear { Task {
+            let workouts = await viewModel.fetchWorkouts(for: currentUser.id)
+            if let workouts = workouts {
+                currentUser.workouts = workouts
+            }
+        }}
     }
+    
 }
 
+
 #Preview {
-    WorkoutsView(workouts: _previewWorkouts)
+    WorkoutsView()
+        .environmentObject(
+            User(
+                id: "000739.b5fe4b10f0654ffcb1b9c5109c11887c.1710",
+                username: "teujorge",
+                name: "matheus",
+                workouts: []
+            )
+        )
 }
 
 let _previewWorkouts = [

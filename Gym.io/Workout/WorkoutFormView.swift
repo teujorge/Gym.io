@@ -12,12 +12,12 @@ struct WorkoutFormView: View {
     @StateObject private var viewModel: WorkoutFormViewModel
     
     // Initializer with save functionality only
-    init(onSave: @escaping (Workout) -> Void) {
-        _viewModel = StateObject(wrappedValue: WorkoutFormViewModel(workout: nil, onSave: onSave, onDelete: nil))
+    init(onSave: @escaping () -> Void) {
+        _viewModel = StateObject(wrappedValue: WorkoutFormViewModel(workout: nil, onSave: onSave, onDelete: {}))
     }
     
     // Initializer with workout and delete functionality
-    init(workout: Workout, onSave: @escaping (Workout) -> Void, onDelete: @escaping (Workout) -> Void) {
+    init(workout: Workout, onSave: @escaping () -> Void, onDelete: @escaping () -> Void) {
         _viewModel = StateObject(wrappedValue: WorkoutFormViewModel(workout: workout, onSave: onSave, onDelete: onDelete))
     }
     
@@ -68,22 +68,14 @@ struct WorkoutFormView: View {
             }
             .navigationTitle(viewModel.isEditing ? "Edit Workout" : "New Workout")
             .toolbar {
-                if let onDelete = viewModel.onDelete {
+                if viewModel.isEditing {
                     ToolbarItem(placement: .destructiveAction) {
-                        Button("Delete") { onDelete(viewModel.workout) }
+                        Button("Delete") { viewModel.delete() }
                             .foregroundColor(.red)
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        let newWorkout = Workout(
-                            ownerId: currentUser.id,
-                            title: viewModel.workout.title,
-                            notes: viewModel.workout.notes,
-                            exercises: viewModel.workout.exercises
-                        )
-                        viewModel.onSave(newWorkout)
-                    }
+                    Button("Save") { viewModel.save() }
                 }
             }
             .sheet(isPresented: $viewModel.isPresentingExerciseForm) {
@@ -106,19 +98,17 @@ struct WorkoutFormView: View {
 
 
 #Preview("New") {
-    WorkoutFormView(onSave: { workout in
-        print(workout)
-    })
+    WorkoutFormView(onSave: { print("save form") })
 }
 
 #Preview("Edit") {
     WorkoutFormView(
         workout: _previewWorkouts[0],
-        onSave: { workout in
-            print(workout)
-        },
-        onDelete: { workout in
-            print("Deleted workout: \(workout)")
-        }
+        onSave: { DispatchQueue.main.async {
+            print("save form")
+        }},
+        onDelete: { DispatchQueue.main.async {
+            print("del form")
+        }}
     )
 }

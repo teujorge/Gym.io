@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-class Exercise: Decodable, Identifiable, ObservableObject {
+class Exercise: Codable, Identifiable, ObservableObject {
     @Published var createdAt: Date
     @Published var updatedAt: Date
     @Published var id: String
@@ -70,9 +70,23 @@ class Exercise: Decodable, Identifiable, ObservableObject {
         sets = try container.decodeIfPresent([ExerciseSet].self, forKey: .sets) ?? []
         isRepBased = try container.decode(Bool.self, forKey: .isRepBased)
     }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(createdAt, forKey: .createdAt)
+        try container.encode(updatedAt, forKey: .updatedAt)
+        try container.encode(id, forKey: .id)
+        try container.encode(index, forKey: .index)
+        try container.encode(name, forKey: .name)
+        try container.encode(imageName, forKey: .imageName)
+        try container.encode(notes, forKey: .notes)
+        try container.encode(completedAt, forKey: .completedAt)
+        try container.encode(sets, forKey: .sets)
+        try container.encode(isRepBased, forKey: .isRepBased)
+    }
 }
 
-class ExerciseSet: Decodable, Identifiable, ObservableObject {
+class ExerciseSet: Codable, Identifiable, ObservableObject {
     @Published var createdAt: Date
     @Published var updatedAt: Date
     @Published var id: String
@@ -127,7 +141,20 @@ class ExerciseSet: Decodable, Identifiable, ObservableObject {
         weight = try container.decode(Int.self, forKey: .weight)
         duration = try container.decode(Int.self, forKey: .duration)
         intensity = try container.decode(Intensity.self, forKey: .intensity)
-        completedAt = try container.decode(Date.self, forKey: .completedAt)
+        completedAt = try container.decodeIfPresent(Date.self, forKey: .completedAt)
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(createdAt, forKey: .createdAt)
+        try container.encode(updatedAt, forKey: .updatedAt)
+        try container.encode(id, forKey: .id)
+        try container.encode(index, forKey: .index)
+        try container.encode(reps, forKey: .reps)
+        try container.encode(weight, forKey: .weight)
+        try container.encode(duration, forKey: .duration)
+        try container.encode(intensity, forKey: .intensity)
+        try container.encode(completedAt, forKey: .completedAt)
     }
 }
 
