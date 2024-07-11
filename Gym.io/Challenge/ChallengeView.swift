@@ -13,7 +13,31 @@ struct ChallengeView: View {
     
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
+            VStack(alignment: .leading, spacing: 25) {
+                
+                ProgressView(value:0.01).progressViewStyle(.linear)
+                
+                // Dates
+                HStack {
+                    VStack(alignment: .leading , spacing:8 ){
+                        Text("Start Date:")
+                            .font(.headline)
+                        Text(challenge.startAt, style: .date)
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                    Spacer()
+                    
+                    VStack(alignment: .leading , spacing:8 ){
+                        Text("End Date:")
+                            .font(.headline)
+                        Text(challenge.endAt, style: .date)
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                
+              
                 
                 if let notes = challenge.notes {
                     Text(notes)
@@ -27,6 +51,11 @@ struct ChallengeView: View {
                     
                     ForEach($challenge.participants, id: \.id) { $user in
                         HStack {
+                            Text("1").font(.title)
+                            Image(systemName: "person.circle.fill")
+                                .resizable()
+                                .frame(width:50,height:50)
+                                
                             Text(user.username)
                                 .font(.body)
                             Spacer()
@@ -39,33 +68,30 @@ struct ChallengeView: View {
                         Divider()
                     }
                 }
+                .padding()
+                .background(.gray.opacity(0.2))
+                .cornerRadius(15)
                 
-                // Dates
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Start Date:")
-                        .font(.headline)
-                    Text(challenge.startAt, style: .date)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                    
-                    Text("End Date:")
-                        .font(.headline)
-                    Text(challenge.endAt, style: .date)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                }
                 
+                
+                ChallengePointsView(challenge: challenge)
                 // Point System
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Point System:")
-                        .font(.headline)
-                    Text("Points per kg -> \(challenge.pointsPerKg)")
-                        .font(.subheadline)
-                    Text("Points per rep -> \(challenge.pointsPerRep)")
-                        .font(.subheadline)
-                    Text("Points per hour -> \(challenge.pointsPerHour)")
-                        .font(.subheadline)
-                }
+                
+//                VStack(alignment: .leading, spacing: 8) {
+//                    Text("Point System:")
+//                        .font(.headline)
+//                    Text("Points per kg -> \(challenge.pointsPerKg)")
+//                        .font(.subheadline)
+//                    Text("Points per rep -> \(challenge.pointsPerRep)")
+//                        .font(.subheadline)
+//                    Text("Points per hour -> \(challenge.pointsPerHour)")
+//                        .font(.subheadline)
+//                }
+//                .padding()
+//                .frame(maxWidth:.infinity)
+//                .background(.gray.opacity(0.2))
+//                .cornerRadius(15)
+                
                 
                 
             }
@@ -99,6 +125,53 @@ struct ChallengeView: View {
     }
 }
 
+struct ChallengePointsView: View {
+    var challenge: Challenge  // Assuming Challenge has pointsPerKg, pointsPerRep, pointsPerHour
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Point System:")
+                .font(.headline)
+                .padding(.bottom, 5)
+
+            HStack(spacing: 20) {
+                PointCard(icon: "scalemass", title: "Per kg", points: challenge.pointsPerKg)
+                PointCard(icon: "arrow.up.and.down.circle", title: "Per rep", points: challenge.pointsPerRep)
+                PointCard(icon: "clock", title: "Per hour", points: challenge.pointsPerHour)
+            }
+        }
+        .padding()
+        .background(Color(.secondarySystemBackground))
+        .cornerRadius(10)
+        .shadow(radius: 5)
+    }
+}
+
+struct PointCard: View {
+    var icon: String
+    var title: String
+    var points: Int
+
+    var body: some View {
+        VStack {
+            Image(systemName: icon)
+                .font(.largeTitle)
+                .foregroundColor(.blue)
+            Text(title)
+                .font(.headline)
+                .foregroundColor(.secondary)
+            Text("\(points, specifier: "%.1f") pts")
+                .font(.title2)
+                .fontWeight(.bold)
+                .foregroundColor(.primary)
+        }
+        .padding()
+        .frame(width: 100, height: 120)
+        .background(.gray.opacity(0.2))
+        .cornerRadius(10)
+       
+    }
+}
 
 #Preview {
     NavigationView {
@@ -114,8 +187,8 @@ let _previewChallenge = Challenge(
     pointsPerKg: 10,
     title: "30-Day Fitness",
     notes: "Join us in this 30-day fitness challenge!",
-    owner: _previewParticipants[0]
-//    participants: _previewParticipants
+    owner: _previewParticipants[0],
+    participants: _previewParticipants
 )
 
 let _previewParticipants = [

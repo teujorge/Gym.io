@@ -53,7 +53,7 @@ struct ExerciseView: View {
                             Text("Weight: \(set.weight) lbs")
                         } else {
                             Text("Duration: \(set.duration) seconds")
-                            Text("Intensity: \(set.intensity)")
+                            Text("Intensity: \(set.intensity.rawValue)")
                         }
                         
                     }

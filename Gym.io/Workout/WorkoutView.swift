@@ -64,7 +64,7 @@ struct WorkoutView: View {
                 Text("Progress")
                     .font(.headline)
                 ProgressView(value: 0.5)
-                    .progressViewStyle(LinearProgressViewStyle())
+                    .progressViewStyle(.linear)
                     .padding()
             }
             .padding()
