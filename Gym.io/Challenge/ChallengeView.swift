@@ -11,25 +11,35 @@ struct ChallengeView: View {
     @State var challenge: Challenge
     @State var isPresentingWorkoutForm = false
     
+    // dictionary to store user points
+    @State var userPoints: [String: Int] = [:]
+    
+    init(challenge: Challenge) {
+        // sort all participants by points
+        self.challenge = challenge
+        self.challenge.participants.sort { user1, user2 in
+            calculatePoints(for: user1) > calculatePoints(for: user2)
+        }
+    }
+    
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 25) {
-                
-                ProgressView(value:0.01).progressViewStyle(.linear)
+                // Progress Bar
+                ProgressView(value:0.1).progressViewStyle(.linear)
                 
                 // Dates
                 HStack {
-                    VStack(alignment: .leading , spacing:8 ){
-                        Text("Start Date:")
+                    VStack(alignment: .leading) {
+                        Text("Start Date")
                             .font(.headline)
                         Text(challenge.startAt, style: .date)
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                     }
                     Spacer()
-                    
-                    VStack(alignment: .leading , spacing:8 ){
-                        Text("End Date:")
+                    VStack(alignment: .trailing) {
+                        Text("End Date")
                             .font(.headline)
                         Text(challenge.endAt, style: .date)
                             .font(.subheadline)
@@ -37,85 +47,15 @@ struct ChallengeView: View {
                     }
                 }
                 
-              
-                
                 if let notes = challenge.notes {
                     Text(notes)
                         .font(.body)
                 }
                 
-                // Participants/Ranking
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Participants")
-                        .font(.headline)
-                    
-                    ForEach(Array($challenge.participants.enumerated()), id: \.element.id) { index, $user in
-                        HStack {
-                            Text("\(index+1)")
-                                .font(.title)
-                                .fontWeight(.bold)
-                            ZStack(alignment: .bottomLeading) {
-                                Image(systemName: "person.circle.fill")
-                                    .resizable()
-                                Image(systemName: "medal.fill")
-                                    .foregroundColor(.blue)
-                                    .resizable()
-                                    .frame(width:15,height:15)
-                            }
-                            .frame(width:50,height:50)
-                                
-                            Text(user.username)
-                                .font(.body)
-                            Spacer()
-                            // Text("\(challenge.calculatePoints(for: user)) pts")
-                            Text("calculatePoints")
-                                .font(.body)
-                                .foregroundColor(.secondary)
-                        }
-                        .padding(.vertical, 4)
-                        Divider()
-                    }
-                }
-                .padding()
-                .background(.gray.opacity(0.2))
-                .cornerRadius(15)
-                
-                
-                
+                ParticipantRankingsView(challenge: challenge, userPoints: userPoints)
                 ChallengePointsView(challenge: challenge)
-                // Point System
-                
-//                VStack(alignment: .leading, spacing: 8) {
-//                    Text("Point System:")
-//                        .font(.headline)
-//                    Text("Points per kg -> \(challenge.pointsPerKg)")
-//                        .font(.subheadline)
-//                    Text("Points per rep -> \(challenge.pointsPerRep)")
-//                        .font(.subheadline)
-//                    Text("Points per hour -> \(challenge.pointsPerHour)")
-//                        .font(.subheadline)
-//                }
-//                .padding()
-//                .frame(maxWidth:.infinity)
-//                .background(.gray.opacity(0.2))
-//                .cornerRadius(15)
-                
-                
-                
             }
             .padding()
-            .sheet(isPresented: $isPresentingWorkoutForm) {
-                ChallengeFormView(
-                    challenge: challenge,
-                    onSave: { newChallenge in
-                        challenge = newChallenge
-                        isPresentingWorkoutForm = false
-                    },
-                    onDelete: { challenge in
-                        isPresentingWorkoutForm = false
-                    }
-                )
-            }
         }
         .navigationTitle(challenge.title)
         .toolbar {
@@ -130,18 +70,144 @@ struct ChallengeView: View {
                 .cornerRadius(20)
             }
         }
+        .sheet(isPresented: $isPresentingWorkoutForm) {
+            ChallengeFormView(
+                challenge: challenge,
+                onSave: { newChallenge in
+                    challenge = newChallenge
+                    isPresentingWorkoutForm = false
+                },
+                onDelete: { challenge in
+                    isPresentingWorkoutForm = false
+                }
+            )
+        }
+    }
+    
+        func calculatePoints(for user: User) -> Int {
+            print()
+            print("Calculating points for \(user.name)")
+    
+            let workoutsInRange = user.workouts.filter { workout in
+                guard let completedAt = workout.completedAt else {
+                    return false
+                }
+                return challenge.startAt...challenge.endAt ~= completedAt
+            }
+    
+            let totalWeight = workoutsInRange.reduce(0) { total, completed in
+                total + completed.exercises.compactMap { exercise in
+                    exercise.sets.compactMap { set in
+                        set.weight
+                    }.reduce(0, +)
+                }.reduce(0, +)
+            }
+            let weightPoints = totalWeight / challenge.pointsPerKg
+            print("Weight points: \(weightPoints)")
+    
+            let totalReps = workoutsInRange.reduce(0) { total, completed in
+                total + completed.exercises.compactMap { exercise in
+                    exercise.sets.compactMap { set in
+                        set.reps
+                    }.reduce(0, +)
+                }.reduce(0, +)
+            }
+            let repsPoints = totalReps / challenge.pointsPerRep
+            print("Reps points: \(repsPoints)")
+    
+            let totalDuration = workoutsInRange.reduce(0) { total, completed in
+                total + completed.exercises.compactMap { exercise in
+                    exercise.sets.compactMap { set in
+                        set.duration
+                    }.reduce(0, +)
+                }.reduce(0, +)
+            }
+            let durationPoints = (totalDuration / (60 * 60)) / challenge.pointsPerHour
+            print("Duration points: \(durationPoints)")
+    
+            let totalPoints = Int(weightPoints + repsPoints + durationPoints)
+            print("Total points: \(totalPoints)")
+            print()
+            
+            userPoints[user.id] = totalPoints
+            return totalPoints
+        }
+}
+
+struct ParticipantRankingsView: View {
+    var challenge: Challenge
+    var userPoints: [String: Int]
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Participants")
+                .font(.headline)
+            
+            ForEach(Array(challenge.participants.enumerated()), id: \.element.id) { index, user in
+                HStack(spacing: 20) {
+                    Text("\(index + 1)")
+                        .font(.title)
+                        .fontWeight(.bold)
+                    ZStack {
+                        Image(systemName: "person.circle.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 50, height: 50)  // Set appropriate sizing
+                        
+                        if index == 0 {
+                            ZStack(alignment: .bottomTrailing) {
+                                Circle()
+                                    .foregroundColor(Color(UIColor.secondarySystemBackground))
+                                    .frame(width: 20, height: 20)
+                                    .overlay(
+                                        Image(systemName: "medal.fill")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 12, height: 12)
+                                            .foregroundColor(.blue),
+                                        alignment: .center
+                                    )
+                                    .overlay(
+                                        Circle().stroke(.blue, lineWidth: 1)
+                                    )
+                            }
+                            .offset(x: 15, y: 15)
+                        }
+                    }
+                    .frame(width: 38, height: 38)
+                    HStack {
+                        Text(user.username)
+                            .font(.body)
+                        if user.id == challenge.owner.id {
+                            Text("(Owner)")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    Spacer()
+                    Text("\(userPoints[user.id] ?? 0)")
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                }
+                .padding(.vertical, 4)
+                Divider()
+            }
+        }
+        .padding()
+        .background(.gray.opacity(0.2))
+        .cornerRadius(15)
     }
 }
 
 struct ChallengePointsView: View {
-    var challenge: Challenge  // Assuming Challenge has pointsPerKg, pointsPerRep, pointsPerHour
-
+    var challenge: Challenge
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Point System:")
                 .font(.headline)
                 .padding(.bottom, 5)
-
+            
             HStack(spacing: 20) {
                 PointCard(icon: "scalemass", title: "Per kg", points: challenge.pointsPerKg)
                 PointCard(icon: "arrow.up.and.down.circle", title: "Per rep", points: challenge.pointsPerRep)
@@ -159,7 +225,7 @@ struct PointCard: View {
     var icon: String
     var title: String
     var points: Int
-
+    
     var body: some View {
         VStack {
             Image(systemName: icon)
@@ -173,13 +239,12 @@ struct PointCard: View {
                 .fontWeight(.bold)
                 .foregroundColor(.primary)
             Text("pts")
-               
-                
+                .font(.headline)
+                .foregroundColor(.secondary)
         }
         .padding()
         .frame(width: 100, height: 120)
         .cornerRadius(10)
-       
     }
 }
 
