@@ -126,52 +126,24 @@ class WorkoutFormViewModel: ObservableObject {
             self.state = .operating
         }
         
-        let url = URL(string: "https://gym-io-api.vercel.app/api/workouts")!
-        do {
-            let encoder = JSONEncoder()
-            encoder.dateEncodingStrategy = .iso8601
-            
-            let jsonData = try encoder.encode(workout)
-            print("Encoded JSON string: \(String(data: jsonData, encoding: .utf8) ?? "nil")")
-            
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            request.httpBody = jsonData
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            
-            do {
-                let (data, _) = try await URLSession.shared.data(for: request)
-                print("createWorkoutRaw: \(String(data: data, encoding: .utf8)!)")
-                
-                do {
-                    let decodedResponse = try JSONDecoder().decode([String: Workout].self, from: data)
-                    if let workout = decodedResponse["data"] {
-                        print("Workout created: \(workout)")
-                        DispatchQueue.main.async {
-                            self.state = .finished
-                        }
-                        
-                        return workout
-                    } else {
-                        print("Failed to find workout in decoded response")
-                    }
-                } catch let decodeError {
-                    print("Failed to decode workout: \(decodeError)")
-                    DispatchQueue.main.async {
-                        self.state = .error(decodeError.localizedDescription)
-                    }
-                }
-            } catch {
-                print("Failed to create workout: \(error.localizedDescription)")
-                DispatchQueue.main.async {
-                    self.state = .error(error.localizedDescription)
-                }
-            }
-        } catch {
-            print("Failed to encode Workout: \(error)")
-        }
+        let result: HTTPResponse<Workout> = await sendRequest(endpoint: "workouts", body: workout, method: .POST)
         
-        return nil
+        
+        switch result {
+        case .success(let createdWorkout):
+            DispatchQueue.main.async {
+                print("Workout created: \(createdWorkout)")
+                self.state = .finished
+            }
+            return createdWorkout
+        case .failure(let error):
+            DispatchQueue.main.async {
+                print("Failed to create workout: \(error)")
+                self.state = .error(error)
+            }
+            return nil
+            
+        }
     }
     
     func delete() {
@@ -191,26 +163,22 @@ class WorkoutFormViewModel: ObservableObject {
             self.state = .operating
         }
         
-        let url = URL(string: "https://gym-io-api.vercel.app/api/workouts/\(workout.id)")!
-        var request = URLRequest(url: url)
+        let result: HTTPResponse<EmptyBody> = await sendRequest(endpoint: "workouts/\(workout.id)", body: nil, method: .DELETE)
         
-        request.httpMethod = "DELETE"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        do {
-            let (_, _) = try await URLSession.shared.data(for: request)
+        switch result {
+        case .success:
             DispatchQueue.main.async {
+                print("Workout successfully deleted")
                 self.state = .finished
             }
             return true
-        } catch {
-            print("Failed to delete workout: \(error.localizedDescription)")
+        case .failure(let error):
             DispatchQueue.main.async {
-                self.state = .error(error.localizedDescription)
+                print("Failed to delete workout: \(error)")
+                self.state = .error(error)
             }
+            return false
         }
-        
-        return false
     }
     
 }

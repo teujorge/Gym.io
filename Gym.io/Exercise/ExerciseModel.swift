@@ -5,7 +5,7 @@
 //  Created by Matheus Jorge on 7/6/24.
 //
 
-import Foundation
+import SwiftUI
 import Combine
 
 class Exercise: Codable, Identifiable, ObservableObject {
@@ -90,6 +90,7 @@ class ExerciseSet: Codable, Identifiable, ObservableObject {
     @Published var createdAt: Date
     @Published var updatedAt: Date
     @Published var id: String
+    @Published var exerciseId: String
     @Published var index: Int
     @Published var reps: Int
     @Published var weight: Int
@@ -101,6 +102,7 @@ class ExerciseSet: Codable, Identifiable, ObservableObject {
         createdAt: Date = Date(),
         updatedAt: Date = Date(),
         id: String = UUID().uuidString,
+        exerciseId: String = UUID().uuidString,
         index: Int,
         reps: Int = 0,
         weight: Int = 0,
@@ -111,6 +113,7 @@ class ExerciseSet: Codable, Identifiable, ObservableObject {
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.id = id
+        self.exerciseId = exerciseId
         self.index = index
         self.reps = reps
         self.weight = weight
@@ -123,6 +126,7 @@ class ExerciseSet: Codable, Identifiable, ObservableObject {
         case createdAt
         case updatedAt
         case id
+        case exerciseId
         case index
         case reps
         case weight
@@ -136,6 +140,7 @@ class ExerciseSet: Codable, Identifiable, ObservableObject {
         createdAt = try decodeDate(from: container, forKey: .createdAt)
         updatedAt = try decodeDate(from: container, forKey: .updatedAt)
         id = try container.decode(String.self, forKey: .id)
+        exerciseId = try container.decode(String.self, forKey: .exerciseId)
         index = try container.decode(Int.self, forKey: .index)
         reps = try container.decode(Int.self, forKey: .reps)
         weight = try container.decode(Int.self, forKey: .weight)
@@ -149,6 +154,7 @@ class ExerciseSet: Codable, Identifiable, ObservableObject {
         try container.encode(createdAt, forKey: .createdAt)
         try container.encode(updatedAt, forKey: .updatedAt)
         try container.encode(id, forKey: .id)
+        try container.encode(exerciseId, forKey: .exerciseId)
         try container.encode(index, forKey: .index)
         try container.encode(reps, forKey: .reps)
         try container.encode(weight, forKey: .weight)
@@ -164,4 +170,15 @@ enum Intensity: String, Codable, CaseIterable, Identifiable {
     case high = "HIGH"
     
     var id: Self { self }
+    
+    var color: Color {
+        switch self {
+        case .low:
+            return .green
+        case .medium:
+            return .yellow
+        case .high:
+            return .red
+        }
+    }
 }

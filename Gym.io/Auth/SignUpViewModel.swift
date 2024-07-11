@@ -37,8 +37,8 @@ class SignUpViewModel: ObservableObject {
             return .loading
         case .accountCreated:
             return .success
-        case .error:
-            return .failure
+        case .error(let errMessage):
+            return .failure(errMessage)
         }
     }
     
@@ -78,55 +78,34 @@ class SignUpViewModel: ObservableObject {
     }
     
     func findUser(id: String? = nil, name: String? = nil, username: String? = nil) async -> User? {
-        var user: User?
-        
         DispatchQueue.main.async {
             self.state = .queringUsers
         }
         
-        var components = URLComponents(string: "https://gym-io-api.vercel.app/api/users")!
-        components.queryItems = [
+        let result: HTTPResponse<User> = await sendRequest(
+            endpoint: "users",
+            queryItems: [
             URLQueryItem(name: "id", value: id),
             URLQueryItem(name: "name", value: name),
             URLQueryItem(name: "username", value: username),
             URLQueryItem(name: "matchMode", value: "exact")
-        ]
+        ], 
+            method: .GET
+        )
         
-        guard let url = components.url else {
-            print("Invalid URL")
+        switch result {
+        case .success(let user):
             DispatchQueue.main.async {
-                self.state = .error("Invalid URL")
+                self.state = .idle
+            }
+            return user
+        case .failure(let error):
+            print("Failed to find user: \(error)")
+            DispatchQueue.main.async {
+                self.state = .error(error)
             }
             return nil
         }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        do {
-            let (data, _) = try await URLSession.shared.data(for: request)
-            print("findUserRaw: \(String(data: data, encoding: .utf8)!)")
-            
-            do {
-                let decodedResponse = try JSONDecoder().decode([String: User?].self, from: data)
-                user = decodedResponse["data"] ?? nil
-                print("findUser: \(String(describing: user))")
-            } catch let decodeError {
-                print("findUser: Decoding failed! \(decodeError)")
-            }
-        } catch {
-            print("Failed to findUser: \(error.localizedDescription)")
-            DispatchQueue.main.async {
-                self.state = .error(error.localizedDescription)
-            }
-        }
-        
-        DispatchQueue.main.async {
-            self.state = .idle
-        }
-        
-        return user
     }
     
     func createUser() async -> User? {
@@ -141,54 +120,29 @@ class SignUpViewModel: ObservableObject {
         DispatchQueue.main.async {
             self.state = .creatingAccount
         }
-        
-        let url = URL(string: "https://gym-io-api.vercel.app/api/users")!
+    
         let body = [
             "id": userId,
             "name": newName,
             "username": newUsername
         ]
         
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.httpBody = try? JSONSerialization.data(withJSONObject: body)
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        let result: HTTPResponse<User> = await sendRequest(endpoint: "users", body: body, method: .POST)
         
-        do {
-            let (data, _) = try await URLSession.shared.data(for: request)
-            print("createUserRaw: \(String(data: data, encoding: .utf8)!)")
-            
-            do {
-                let decodedResponse = try JSONDecoder().decode([String: User].self, from: data)
-                if let user = decodedResponse["data"] {
-                    print("User created: \(user)")
-                    DispatchQueue.main.async {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                            self.authState.currentUser = user
-                        }
-                        self.state = .accountCreated
-                    }
-                    return user
-                } else {
-                    print("Failed to find user in decoded response")
-                }
-            } catch let decodeError {
-                print("Failed to decode user: \(decodeError)")
-                DispatchQueue.main.async {
-                    self.state = .error(decodeError.localizedDescription)
-                }
-            }
-        } catch {
-            print("Failed to create user: \(error.localizedDescription)")
+        switch result {
+        case .success(let user):
+            print("User created: \(user)")
             DispatchQueue.main.async {
-                self.state = .error(error.localizedDescription)
+                self.authState.currentUser = user
+                self.state = .accountCreated
             }
+            return user
+        case .failure(let error):
+            print("Failed to create user: \(error)")
+            DispatchQueue.main.async {
+                self.state = .error(error)
+            }
+            return nil
         }
-        
-        DispatchQueue.main.async {
-            self.state = .idle
-        }
-        
-        return nil
     }
 }

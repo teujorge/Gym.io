@@ -33,7 +33,7 @@ struct ExerciseFormView: View {
                     }
                     .pickerStyle(.segmented)
                 }
-                ExerciseSetsDetailView(exercise: $viewModel.exercise)
+                SetDetailsView(viewModel: SetDetailsViewModel(exercise: viewModel.exercise))
             }
             .navigationTitle(viewModel.isEditing ? "Edit Exercise" : "New Exercise")
             .toolbar {

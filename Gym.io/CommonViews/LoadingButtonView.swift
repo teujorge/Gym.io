@@ -62,7 +62,7 @@ private struct LoaderButtonPreview: View {
                     loaderState = .success
                 }
                 Button("Failure") {
-                    loaderState = .failure
+                    loaderState = .failure("error messsage")
                 }
                 Button("Disabled") {
                     disabled.toggle()

@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-class Challenge: Decodable, Identifiable, ObservableObject {
+class Challenge: Codable, Identifiable, ObservableObject {
     @Published var id: String
     @Published var startAt: Date
     @Published var endAt: Date
@@ -69,6 +69,20 @@ class Challenge: Decodable, Identifiable, ObservableObject {
         notes = try container.decodeIfPresent(String.self, forKey: .notes)
         owner = try container.decode(User.self, forKey: .owner)
         participants = try container.decodeIfPresent([User].self, forKey: .participants) ?? []
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(startAt, forKey: .startAt)
+        try container.encode(endAt, forKey: .endAt)
+        try container.encode(pointsPerHour, forKey: .pointsPerHour)
+        try container.encode(pointsPerRep, forKey: .pointsPerRep)
+        try container.encode(pointsPerKg, forKey: .pointsPerKg)
+        try container.encode(title, forKey: .title)
+        try container.encodeIfPresent(notes, forKey: .notes)
+        try container.encode(owner, forKey: .owner)
+        try container.encode(participants, forKey: .participants)
     }
 }
 

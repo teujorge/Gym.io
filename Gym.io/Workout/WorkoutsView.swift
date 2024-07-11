@@ -32,7 +32,6 @@ struct WorkoutsView: View {
                         .cornerRadius(20)
                     }
                     
-                    
                     if currentUser.workouts.isEmpty {
                         Image(systemName: "exclamationmark.triangle")
                             .resizable()
@@ -44,10 +43,10 @@ struct WorkoutsView: View {
                             .foregroundColor(.secondary)
                             .padding(.bottom)
                     } else {
-                        ForEach(currentUser.workouts) { workout in
-                            NavigationLink(destination: WorkoutView(workout: workout)) {
+                        ForEach(currentUser.workouts.indices, id: \.self) { index in
+                            NavigationLink(destination: WorkoutView(workout: $currentUser.workouts[index])) {
                                 VStack(alignment: .leading, spacing: 10) {
-                                    Text(workout.title)
+                                    Text(currentUser.workouts[index].title)
                                         .fontWeight(.bold)
                                         .font(.title2)
                                         .foregroundColor(.primary)
@@ -56,11 +55,11 @@ struct WorkoutsView: View {
                                         Image(systemName: "dumbbell.fill")
                                             .foregroundColor(.blue)
                                         
-                                        Text("Exercises: \(workout.exercises.count)")
+                                        Text("Exercises: \(currentUser.workouts[index].exercises.count)")
                                             .foregroundColor(.secondary)
                                     }
                                     
-                                    if let description = workout.notes {
+                                    if let description = currentUser.workouts[index].notes {
                                         Text(description)
                                             .font(.body)
                                             .foregroundColor(.secondary)

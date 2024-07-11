@@ -43,15 +43,15 @@ struct HomeView: View {
                                     .foregroundColor(.secondary)
                             }
                             Spacer()
-                            NavigationLink(destination: {
-                                WorkoutView(workout: _previewWorkouts[0])
-                            }) {
-                                Text("Start")
-                                    .padding()
-                                    .background(Color.blue)
-                                    .foregroundColor(.white)
-                                    .cornerRadius(8)
-                            }
+//                            NavigationLink(destination: {
+//                                WorkoutView(workout: _previewWorkouts[0])
+//                            }) {
+//                                Text("Start")
+//                                    .padding()
+//                                    .background(Color.blue)
+//                                    .foregroundColor(.white)
+//                                    .cornerRadius(8)
+//                            }
                         }
                     }
                     .padding()

@@ -26,6 +26,8 @@
 		F54B3C5A2C386C3300171A6F /* ExerciseFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54B3C592C386C3300171A6F /* ExerciseFormView.swift */; };
 		F54B3C5C2C3870BB00171A6F /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54B3C5B2C3870BB00171A6F /* ProfileView.swift */; };
 		F54B3C5E2C387C7D00171A6F /* SummaryChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54B3C5D2C387C7D00171A6F /* SummaryChartView.swift */; };
+		F54D32FB2C402D7000B1A6B3 /* SetDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54D32FA2C402D7000B1A6B3 /* SetDetailsViewModel.swift */; };
+		F54D32FD2C40348A00B1A6B3 /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54D32FC2C40348A00B1A6B3 /* HTTPClient.swift */; };
 		F55222622C36CD5E0057C0E5 /* Gym_ioApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F55222612C36CD5E0057C0E5 /* Gym_ioApp.swift */; };
 		F55222642C36CD5E0057C0E5 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F55222632C36CD5E0057C0E5 /* HomeView.swift */; };
 		F55222662C36CD5F0057C0E5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F55222652C36CD5F0057C0E5 /* Assets.xcassets */; };
@@ -41,7 +43,7 @@
 		F5D4A4122C398C9D00E880A7 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5D4A4112C398C9D00E880A7 /* ProfileModel.swift */; };
 		F5D91C182C3CE70F004356BC /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5D91C172C3CE70F004356BC /* AuthView.swift */; };
 		F5D91C1D2C3CF144004356BC /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5D91C1C2C3CF144004356BC /* SignUpView.swift */; };
-		F5FAE1F02C3F0DE800DC362A /* ExerciseSetDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5FAE1EF2C3F0DE800DC362A /* ExerciseSetDetailsView.swift */; };
+		F5FAE1F02C3F0DE800DC362A /* SetDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5FAE1EF2C3F0DE800DC362A /* SetDetailsView.swift */; };
 		F5FAE1F22C3F5D5C00DC362A /* WorkoutsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5FAE1F12C3F5D5C00DC362A /* WorkoutsViewModel.swift */; };
 /* End PBXBuildFile section */
 
@@ -66,6 +68,8 @@
 		F54B3C592C386C3300171A6F /* ExerciseFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseFormView.swift; sourceTree = "<group>"; };
 		F54B3C5B2C3870BB00171A6F /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		F54B3C5D2C387C7D00171A6F /* SummaryChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryChartView.swift; sourceTree = "<group>"; };
+		F54D32FA2C402D7000B1A6B3 /* SetDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetDetailsViewModel.swift; sourceTree = "<group>"; };
+		F54D32FC2C40348A00B1A6B3 /* HTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
 		F552225E2C36CD5E0057C0E5 /* Gym.io.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gym.io.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F55222612C36CD5E0057C0E5 /* Gym_ioApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gym_ioApp.swift; sourceTree = "<group>"; };
 		F55222632C36CD5E0057C0E5 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -82,7 +86,7 @@
 		F5D4A4112C398C9D00E880A7 /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		F5D91C172C3CE70F004356BC /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
 		F5D91C1C2C3CF144004356BC /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
-		F5FAE1EF2C3F0DE800DC362A /* ExerciseSetDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseSetDetailsView.swift; sourceTree = "<group>"; };
+		F5FAE1EF2C3F0DE800DC362A /* SetDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetDetailsView.swift; sourceTree = "<group>"; };
 		F5FAE1F12C3F5D5C00DC362A /* WorkoutsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutsViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -103,6 +107,7 @@
 				F50097782C3D701D00D799C4 /* Debounce.swift */,
 				F50097812C3DAA7300D799C4 /* UserDefaultsKeys.swift */,
 				F5482CD42C3EC21900BA2513 /* Utils.swift */,
+				F54D32FC2C40348A00B1A6B3 /* HTTPClient.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -112,7 +117,8 @@
 			children = (
 				F53B94E82C3E2C3400C79FAB /* LabeledTextFieldView.swift */,
 				F53B94EA2C3E2C6200C79FAB /* LoadingButtonView.swift */,
-				F5FAE1EF2C3F0DE800DC362A /* ExerciseSetDetailsView.swift */,
+				F5FAE1EF2C3F0DE800DC362A /* SetDetailsView.swift */,
+				F54D32FA2C402D7000B1A6B3 /* SetDetailsViewModel.swift */,
 				F53E84892C3F89EB0038F82A /* LoaderView.swift */,
 			);
 			path = CommonViews;
@@ -317,6 +323,7 @@
 				F50097792C3D701D00D799C4 /* Debounce.swift in Sources */,
 				F53B94E62C3E152800C79FAB /* ProfileViewModel.swift in Sources */,
 				F54B3C5A2C386C3300171A6F /* ExerciseFormView.swift in Sources */,
+				F54D32FD2C40348A00B1A6B3 /* HTTPClient.swift in Sources */,
 				F5D91C1D2C3CF144004356BC /* SignUpView.swift in Sources */,
 				F50097822C3DAA7300D799C4 /* UserDefaultsKeys.swift in Sources */,
 				F54B3C5E2C387C7D00171A6F /* SummaryChartView.swift in Sources */,
@@ -332,7 +339,8 @@
 				F55222622C36CD5E0057C0E5 /* Gym_ioApp.swift in Sources */,
 				F53B94E92C3E2C3400C79FAB /* LabeledTextFieldView.swift in Sources */,
 				F50097762C3D575D00D799C4 /* AuthState.swift in Sources */,
-				F5FAE1F02C3F0DE800DC362A /* ExerciseSetDetailsView.swift in Sources */,
+				F54D32FB2C402D7000B1A6B3 /* SetDetailsViewModel.swift in Sources */,
+				F5FAE1F02C3F0DE800DC362A /* SetDetailsView.swift in Sources */,
 				F5D4A4122C398C9D00E880A7 /* ProfileModel.swift in Sources */,
 				F53E848A2C3F89EB0038F82A /* LoaderView.swift in Sources */,
 				F50097742C3D56C600D799C4 /* AuthViewModel.swift in Sources */,

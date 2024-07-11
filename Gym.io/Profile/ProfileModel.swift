@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-class User: Decodable, Identifiable, ObservableObject {
+class User: Codable, Identifiable, ObservableObject {
     @Published var createdAt: Date
     @Published var updatedAt: Date
     @Published var id: String
@@ -59,5 +59,17 @@ class User: Decodable, Identifiable, ObservableObject {
         name = try container.decode(String.self, forKey: .name)
         workouts = try container.decodeIfPresent([Workout].self, forKey: .workouts) ?? []
         challenges = try container.decodeIfPresent([Challenge].self, forKey: .challenges) ?? []
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(createdAt, forKey: .createdAt)
+        try container.encode(updatedAt, forKey: .updatedAt)
+        try container.encode(id, forKey: .id)
+        try container.encode(username, forKey: .username)
+        try container.encode(email, forKey: .email)
+        try container.encode(name, forKey: .name)
+        try container.encode(workouts, forKey: .workouts)
+        try container.encode(challenges, forKey: .challenges)
     }
 }

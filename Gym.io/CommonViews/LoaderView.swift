@@ -7,11 +7,11 @@
 
 import SwiftUI
 
-enum LoaderState {
+enum LoaderState: Equatable {
     case idle
     case loading
     case success
-    case failure
+    case failure(String)
 }
 
 struct LoaderView: View {
@@ -101,7 +101,7 @@ private struct LoaderPreview: View {
                     loaderState = .success
                 }
                 Button("Failure") {
-                    loaderState = .failure
+                    loaderState = .failure("error message")
                 }
             }
             .padding()

@@ -10,7 +10,7 @@ import SwiftUI
 struct WorkoutView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
-    @ObservedObject var workout: Workout
+    @Binding var workout: Workout
     
     @State var isPresentingWorkoutForm = false
     
@@ -28,8 +28,7 @@ struct WorkoutView: View {
                 VStack(alignment: .leading, spacing: 15) {
                     Text("Exercises")
                         .font(.headline)
-                    ForEach($workout.exercises, id: \.id) { $exercise in
-                        
+                    ForEach($workout.exercises) { $exercise in
                         VStack(alignment: .leading) {
                             NavigationLink(destination: ExerciseView(exercise: exercise)) {
                                 Text(exercise.name)
@@ -37,7 +36,7 @@ struct WorkoutView: View {
                                     .fontWeight(.semibold)
                                     .foregroundColor(.blue)
                             }
-                            ExerciseSetsDetailView(exercise: $exercise)
+                                SetDetailsView(viewModel: SetDetailsViewModel(exercise: exercise))
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding()
@@ -113,15 +112,12 @@ struct WorkoutView: View {
 
 #Preview {
     NavigationView {
-        WorkoutView(
-            workout:
-                Workout(
-                    ownerId: "1",
-                    title: "Full Body Workout",
-                    notes: "A complete workout targeting all major muscle groups.",
-                    exercises: _previewExercises
-                )
-        )
+        WorkoutView(workout: .constant(Workout(
+            ownerId: "1",
+            title: "Full Body Workout",
+            notes: "A complete workout targeting all major muscle groups.",
+            exercises: _previewExercises
+        )))
     }
 }
 

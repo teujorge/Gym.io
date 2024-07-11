@@ -29,13 +29,11 @@ struct WorkoutStartedView: View {
                 
                 ForEach($workout.exercises, id: \.id) { $exercise in
                     VStack(alignment: .leading) {
-                        
                         Text(exercise.name)
                             .font(.title2)
                             .fontWeight(.semibold)
                             .foregroundColor(.blue)
-                        
-                        ExerciseSetsDetailView(exercise: $exercise)
+                        SetDetailsView(viewModel: SetDetailsViewModel(exercise: exercise))
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
