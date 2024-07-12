@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ChallengesView: View {
     
-    @State private var challenges = [Challenge]()
+    @EnvironmentObject var currentUser: User
     @State private var selectedChallenge: Challenge?
     @State private var isPresentingChallengesForm = false
     
@@ -17,7 +17,7 @@ struct ChallengesView: View {
         NavigationView {
             ScrollView {
                 VStack {
-                    ForEach(challenges, id: \.id) { challenge in
+                    ForEach(currentUser.challenges, id: \.id) { challenge in
                         ChallengeCardView(
                             challenge: challenge,
                             onEdit: {
@@ -32,7 +32,6 @@ struct ChallengesView: View {
                 }
                 .padding()
                 .frame(maxWidth: .infinity)
-                .onAppear(perform: loadInitialChallenges)
             }
             .navigationTitle("Challenges")
             .toolbar {
@@ -57,36 +56,62 @@ struct ChallengesView: View {
                 }
             }
             .sheet(isPresented: $isPresentingChallengesForm) {
-                ChallengeFormView { challenge in
-                    if let selectedChallenge = selectedChallenge {
-                        // Update the existing challenge
-                        updateChallenge(oldChallenge: selectedChallenge, newChallenge: challenge)
-                    } else {
-                        // Create a new challenge
-                        createNewChallenge(newChallenge: challenge)
+                ChallengeFormView(viewModel: ChallengeFormViewModel(
+                    onSave: { challenge in
+                        if let selectedChallenge = selectedChallenge {
+                            // Update the existing challenge
+                            updateChallenge(oldChallenge: selectedChallenge, newChallenge: challenge)
+                        } else {
+                            // Create a new challenge
+                            createNewChallenge(newChallenge: challenge)
+                        }
+                        isPresentingChallengesForm = false
                     }
-                    isPresentingChallengesForm = false
+                ))
+            }
+            .onAppear {
+                Task {
+                    // Load challenges from API
+                    let result: HTTPResponse<[Challenge]> = await sendRequest(
+                        endpoint: "challenges",
+                        queryItems: [
+                            URLQueryItem(name: "includeAll", value: "true"),
+                            URLQueryItem(name: "findMany", value: "true"),
+                            URLQueryItem(name: "ownerId", value: currentUser.id)
+                        ],
+                        method: .GET
+                    )
+                    
+                    // Set challenges to currentUser.challenges
+                    switch result {
+                    case .success(let challenges):
+                        DispatchQueue.main.async {
+                            self.currentUser.challenges = challenges
+                        }
+                    case .failure(let error):
+                        print("Failed to load challenges: \(error)")
+                    }
                 }
             }
         }
     }
     
-    private func loadInitialChallenges() {
-        challenges = _previewChallenges
-    }
+//    private func loadInitialChallenges() {
+//        challenges = _previewChallenges
+//    }
     
     private func createNewChallenge(newChallenge: Challenge) {
-        challenges.append(newChallenge)
+        currentUser.challenges.append(newChallenge)
     }
     
     private func updateChallenge(oldChallenge: Challenge, newChallenge: Challenge) {
-        if let index = challenges.firstIndex(where: { $0.id == oldChallenge.id }) {
-            challenges[index] = newChallenge
+        if let index = currentUser.challenges.firstIndex(where: { $0.id == oldChallenge.id }) {
+            currentUser.challenges[index] = newChallenge
         }
     }
     
     private func deleteChallenge(_ challenge: Challenge) {
-        challenges.removeAll { $0.id == challenge.id }
+        currentUser.challenges.removeAll { $0.id == challenge.id }
     }
 }
 
@@ -98,11 +123,11 @@ struct ChallengeCardView: View {
     var body: some View {
         NavigationLink(destination: ChallengeView(challenge: challenge)) {
             VStack(alignment: .leading) {
-                Text(challenge.title)
+                Text(challenge.name)
                     .font(.headline)
                 
-                if let notes = challenge.notes {
-                    Text(notes)
+                if !challenge.notes.isEmpty {
+                    Text(challenge.notes)
                         .font(.subheadline)
                         .foregroundColor(.gray)
                 }
@@ -130,20 +155,27 @@ struct ChallengeCardView: View {
 }
 
 #Preview {
-    ChallengesView()
+    _ChallengesPreview()
+}
+
+struct _ChallengesPreview: View {
+    var body: some View {
+        ChallengesView()
+            .environmentObject(_previewParticipants[0])
+    }
 }
 
 let _previewChallenges: [Challenge] = [
     _previewChallenge,
     Challenge(
+        ownerId: _previewParticipants[1].id,
         startAt: Date(),
         endAt: Date().addingTimeInterval(60 * 60 * 24 * 7),
         pointsPerHour: 0,
         pointsPerRep: 0,
         pointsPerKg: 0,
-        title: "Weekly Running",
-        notes: "Run 5 miles every day for a week!",
-        owner: _previewParticipants[1]
-//        participants: _previewParticipants
+        name: "Weekly Running",
+        notes: "Run 5 miles every day for a week!"
+        //        participants: _previewParticipants
     )
 ]
