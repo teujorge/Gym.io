@@ -9,133 +9,161 @@ import SwiftUI
 
 struct ChallengeFormView: View {
     
-    var challenge: Challenge?
-    var onSave: (Challenge) -> Void
-    var onDelete: ((Challenge) -> Void)?
-    
-    init(onSave: @escaping (Challenge) -> Void) {
-        self.challenge = nil
-        self.onSave = onSave
-        self.onDelete = nil
-    }
-    
-    init(challenge: Challenge, onSave: @escaping (Challenge) -> Void, onDelete: @escaping (Challenge) -> Void) {
-        self.challenge = challenge
-        self.onSave = onSave
-        self.onDelete = onDelete
-    }
-    
-    @State private var title: String = ""
-    @State private var notes: String = ""
-    @State private var pointsPerKg = 10
-    @State private var pointsPerRep = 10
-    @State private var pointsPerHour = 10
-    @State private var paricipants: [User] = _previewParticipants
-    @State private var startAt = Date()
-    @State private var endAt = Date().addingTimeInterval(60 * 60 * 24 * 7)
-    
-    // Leading navigation bar item
-    private var leadingNavigationBarItem: some View {
-        Group {
-            if let challenge = challenge, let onDelete = onDelete {
-                Button("Delete") {
-                    onDelete(challenge)
-                }
-                .foregroundColor(.red)
-            } else {
-                EmptyView()
-            }
-        }
-    }
-    
-    private var trailingNavigationBarItem: some View {
-        Button("Save") {
-            onSave(Challenge(
-                startAt: startAt,
-                endAt: endAt,
-                pointsPerHour: pointsPerHour,
-                pointsPerRep: pointsPerRep,
-                pointsPerKg: pointsPerKg,
-                title: title,
-                notes: notes,
-                owner: _previewParticipants[0]
-            ))
-        }
-    }
+    @EnvironmentObject var currentUser: User
+    @StateObject var viewModel: ChallengeFormViewModel
     
     var body: some View {
         NavigationView {
             Form {
+                
+                // Details
                 Section(header: Text("Challenge Details")) {
-                    TextField("Title", text: $title)
-                    TextField("Description", text: $notes)
-                    DatePicker("Start Date", selection: $startAt, displayedComponents: .date)
-                    DatePicker("End Date", selection: $endAt, displayedComponents: .date)
+                    TextField("Name", text: $viewModel.challenge.name)
+                    TextField("Description", text: $viewModel.challenge.notes)
+                    DatePicker("Start Date", selection: $viewModel.challenge.startAt, displayedComponents: .date)
+                    DatePicker("End Date", selection: $viewModel.challenge.endAt, displayedComponents: .date)
                 }
-                                
+                
+                // Rules
                 Section(header: Text("Rules")) {
-                    Stepper(value: $pointsPerKg, in: 0...100) {
+                    Stepper(value: $viewModel.challenge.pointsPerKg, in: 0...100) {
                         HStack {
-                            Text(pointsPerKg.description)
-                            Text("points per 100 kgs")
+                            Text(viewModel.challenge.pointsPerKg.description)
+                            Text("points per kgs")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
                     }
-                    Stepper(value: $pointsPerRep, in: 0...100) {
+                    Stepper(value: $viewModel.challenge.pointsPerRep, in: 0...100) {
                         HStack {
-                            Text(pointsPerRep.description)
-                            Text("points per 100 reps")
+                            Text(viewModel.challenge.pointsPerRep.description)
+                            Text("points per reps")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
                     }
-                    Stepper(value: $pointsPerHour, in: 0...100) {
+                    Stepper(value: $viewModel.challenge.pointsPerHour, in: 0...100) {
                         HStack {
-                            Text(pointsPerHour.description)
+                            Text(viewModel.challenge.pointsPerHour.description)
                             Text("points per hour")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
                     }
                 }
-            }
-            .onAppear(perform: loadInitialChallengeData)
-            .navigationTitle(challenge == nil ? "New Challenge" : "Edit Challenge")
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    leadingNavigationBarItem
+                
+                // Participants
+                Section(header: Text("Participants")) {
+                    List {
+                        ForEach(viewModel.challenge.participants, id: \.id) { participant in
+                            HStack {
+                                Text(participant.name)
+                                Spacer()
+                                Button(action: {
+                                    viewModel.challenge.participants.removeAll { $0.id == participant.id }
+                                }) {
+                                    Image(systemName: "trash")
+                                        .foregroundColor(.red)
+                                }
+                            }
+                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                Button(action: {
+                                    viewModel.challenge.participants.removeAll { $0.id == participant.id }
+                                }) {
+                                    Image(systemName: "trash")
+                                        .foregroundColor(.red)
+                                }
+                            }
+                        }
+                    }
                 }
-                ToolbarItem(placement: .topBarTrailing) {
-                    trailingNavigationBarItem
+                
+                // Find Users
+                FindUsersView { user in
+                    viewModel.challenge.participants.append(user)
+                }
+                
+            }
+            .navigationTitle(viewModel.isEditing ? "Edit Challenge" : "New Challenge")
+            .toolbar {
+                if viewModel.isEditing {
+                    ToolbarItem(placement: .destructiveAction) {
+                        Button("Delete", action: viewModel.deleteChallenge)
+                            .foregroundColor(.red)
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save", action: viewModel.saveChallenge)
                 }
             }
         }
     }
+}
+
+
+struct FindUsersView: View {
     
-    private func loadInitialChallengeData() {
-        guard let challenge = challenge else { return }
-        
-        title = challenge.title
-        notes = challenge.notes ?? ""
-        pointsPerKg = challenge.pointsPerKg
-        pointsPerRep = challenge.pointsPerRep
-        pointsPerHour = challenge.pointsPerHour
-        startAt = challenge.startAt
-        endAt = challenge.endAt
+    @State var users: [User] = []
+    @State var searchText: String = ""
+    let addParticipant: (User) -> Void
+    
+    var body: some View {
+        Section(header: Text("Find Users")) {
+            TextField("Search Users", text: $searchText)
+                .padding(.horizontal)
+                .onSubmit(fetchUsers)
+            List {
+                ForEach(users) { user in
+                    HStack {
+                        Text(user.username)
+                        Spacer()
+                        Button(action: { addParticipant(user) }) {
+                            Image(systemName: "plus")
+                        }
+                    }
+                }
+            }
+        }
+        .onAppear(perform: fetchUsers)
+    }
+    
+    private func fetchUsers() {
+        Task {
+            let results: HTTPResponse<[User]> = await sendRequest(
+                endpoint: "users",
+                queryItems: [
+                    URLQueryItem(name: "findMany", value: "true"),
+                    URLQueryItem(name: "username", value: searchText)
+                ],
+                method: .GET
+            )
+            
+            switch results {
+            case .success(let fetchedUsers):
+                DispatchQueue.main.async {
+                    users = fetchedUsers
+                }
+            case .failure(let error):
+                print(error)
+            }
+            
+            
+        }
     }
     
 }
 
 
 #Preview("New") {
-    ChallengeFormView() { challenge in
-        print("Challenge saved: \(challenge)")
-    }
+    ChallengeFormView(viewModel: ChallengeFormViewModel(
+        onSave: { challenge in
+            print("Challenge saved: \(challenge)")
+        }
+    ))
 }
 
 #Preview("Edit") {
-    ChallengeFormView(
+    ChallengeFormView(viewModel: ChallengeFormViewModel(
         challenge: _previewChallenge,
         onSave: { challenge in
             print("Challenge saved \(challenge)")
@@ -143,5 +171,5 @@ struct ChallengeFormView: View {
         onDelete: { challenge in
             print("Challenge deleted \(challenge)")
         }
-    )
+    ))
 }

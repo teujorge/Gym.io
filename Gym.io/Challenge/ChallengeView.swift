@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct ChallengeView: View {
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    
     @State var challenge: Challenge
     @State var isPresentingWorkoutForm = false
-    
-    // dictionary to store user points
     @State var userPoints: [String: Int] = [:]
     
     init(challenge: Challenge) {
@@ -47,8 +47,8 @@ struct ChallengeView: View {
                     }
                 }
                 
-                if let notes = challenge.notes {
-                    Text(notes)
+                if !challenge.notes.isEmpty {
+                    Text(challenge.notes)
                         .font(.body)
                 }
                 
@@ -57,7 +57,7 @@ struct ChallengeView: View {
             }
             .padding()
         }
-        .navigationTitle(challenge.title)
+        .navigationTitle(challenge.name)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button(action: { isPresentingWorkoutForm.toggle() }) {
@@ -71,67 +71,72 @@ struct ChallengeView: View {
             }
         }
         .sheet(isPresented: $isPresentingWorkoutForm) {
-            ChallengeFormView(
+            ChallengeFormView(viewModel: ChallengeFormViewModel(
                 challenge: challenge,
                 onSave: { newChallenge in
-                    challenge = newChallenge
-                    isPresentingWorkoutForm = false
+                    DispatchQueue.main.async {
+                        challenge = newChallenge
+                        isPresentingWorkoutForm = false
+                    }
                 },
                 onDelete: { challenge in
-                    isPresentingWorkoutForm = false
+                    DispatchQueue.main.async {
+                        self.isPresentingWorkoutForm = false
+                        presentationMode.wrappedValue.dismiss()
+                    }
                 }
-            )
+            ))
         }
     }
     
-        func calculatePoints(for user: User) -> Int {
-            print()
-            print("Calculating points for \(user.name)")
-    
-            let workoutsInRange = user.workouts.filter { workout in
-                guard let completedAt = workout.completedAt else {
-                    return false
-                }
-                return challenge.startAt...challenge.endAt ~= completedAt
+    func calculatePoints(for user: User) -> Int {
+        print()
+        print("Calculating points for \(user.name)")
+        
+        let workoutsInRange = user.workouts.filter { workout in
+            guard let completedAt = workout.completedAt else {
+                return false
             }
-    
-            let totalWeight = workoutsInRange.reduce(0) { total, completed in
-                total + completed.exercises.compactMap { exercise in
-                    exercise.sets.compactMap { set in
-                        set.weight
-                    }.reduce(0, +)
-                }.reduce(0, +)
-            }
-            let weightPoints = totalWeight / challenge.pointsPerKg
-            print("Weight points: \(weightPoints)")
-    
-            let totalReps = workoutsInRange.reduce(0) { total, completed in
-                total + completed.exercises.compactMap { exercise in
-                    exercise.sets.compactMap { set in
-                        set.reps
-                    }.reduce(0, +)
-                }.reduce(0, +)
-            }
-            let repsPoints = totalReps / challenge.pointsPerRep
-            print("Reps points: \(repsPoints)")
-    
-            let totalDuration = workoutsInRange.reduce(0) { total, completed in
-                total + completed.exercises.compactMap { exercise in
-                    exercise.sets.compactMap { set in
-                        set.duration
-                    }.reduce(0, +)
-                }.reduce(0, +)
-            }
-            let durationPoints = (totalDuration / (60 * 60)) / challenge.pointsPerHour
-            print("Duration points: \(durationPoints)")
-    
-            let totalPoints = Int(weightPoints + repsPoints + durationPoints)
-            print("Total points: \(totalPoints)")
-            print()
-            
-            userPoints[user.id] = totalPoints
-            return totalPoints
+            return challenge.startAt...challenge.endAt ~= completedAt
         }
+        
+        let totalWeight = workoutsInRange.reduce(0) { total, completed in
+            total + completed.exercises.compactMap { exercise in
+                exercise.sets.compactMap { set in
+                    set.weight
+                }.reduce(0, +)
+            }.reduce(0, +)
+        }
+        let weightPoints = totalWeight / challenge.pointsPerKg
+        print("Weight points: \(weightPoints)")
+        
+        let totalReps = workoutsInRange.reduce(0) { total, completed in
+            total + completed.exercises.compactMap { exercise in
+                exercise.sets.compactMap { set in
+                    set.reps
+                }.reduce(0, +)
+            }.reduce(0, +)
+        }
+        let repsPoints = totalReps / challenge.pointsPerRep
+        print("Reps points: \(repsPoints)")
+        
+        let totalDuration = workoutsInRange.reduce(0) { total, completed in
+            total + completed.exercises.compactMap { exercise in
+                exercise.sets.compactMap { set in
+                    set.duration
+                }.reduce(0, +)
+            }.reduce(0, +)
+        }
+        let durationPoints = (totalDuration / (60 * 60)) / challenge.pointsPerHour
+        print("Duration points: \(durationPoints)")
+        
+        let totalPoints = Int(weightPoints + repsPoints + durationPoints)
+        print("Total points: \(totalPoints)")
+        print()
+        
+        userPoints[user.id] = totalPoints
+        return totalPoints
+    }
 }
 
 struct ParticipantRankingsView: View {
@@ -179,7 +184,7 @@ struct ParticipantRankingsView: View {
                     HStack(spacing: 8) {
                         Text(user.username)
                             .font(.body)
-                        if user.id == challenge.owner.id {
+                        if user.id == challenge.ownerId {
                             Text("Owner")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
@@ -254,19 +259,19 @@ struct PointCard: View {
 }
 
 let _previewChallenge = Challenge(
+    ownerId: _previewParticipants[0].id,
     startAt: Date().addingTimeInterval(-60 * 60 * 24 * 10),
     endAt: Date().addingTimeInterval(60 * 60 * 24 * 30),
     pointsPerHour: 100,
     pointsPerRep: 5,
     pointsPerKg: 10,
-    title: "30-Day Fitness",
+    name: "30-Day Fitness",
     notes: "Join us in this 30-day fitness challenge!",
-    owner: _previewParticipants[0],
     participants: _previewParticipants
 )
 
 let _previewParticipants = [
-    User(username: "teujorge", name:"Matheus Jorge"),
+    User(id: currentUserId, username: "teujorge", name:"Matheus Jorge"),
     User(username: "alice", name: "Alice"),
     User(username: "bobby", name: "Bob"),
     User(username: "ccc", name: "Charlie")
