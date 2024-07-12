@@ -76,8 +76,8 @@ class AuthViewModel: ObservableObject {
                 //     self.signUpViewModel.newUsername = appleName?.nickname ?? ""
                 // }
                 
+                currentUserId = appleUserID
                 signUpViewModel.userId = appleUserID
-                UserDefaults.standard.set(appleUserID, forKey: .userId)
                 
                 Task {
                     let dbUser = await self.signUpViewModel.findUser(id: appleUserID)

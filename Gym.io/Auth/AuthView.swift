@@ -11,9 +11,11 @@ import AuthenticationServices
 struct AuthView: View {
     @StateObject var viewModel: AuthViewModel
     
+    #if DEBUG
     init(authState: AuthState) {
         _viewModel = StateObject(wrappedValue: AuthViewModel(authState: authState))
     }
+    #endif
     
     init(authModel: AuthViewModel) {
         _viewModel = StateObject(wrappedValue: authModel)

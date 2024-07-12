@@ -8,7 +8,7 @@
 import SwiftUI
 
 /// Hides the keyboard.
-func hideKeyboard() {
+func dismissKeyboard() {
     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
 }
 
@@ -22,5 +22,15 @@ func decodeDate<K: CodingKey>(from container: KeyedDecodingContainer<K>, forKey 
         return date
     } else {
         throw DecodingError.dataCorruptedError(forKey: key, in: container, debugDescription: "Date string does not match format expected by formatter.")
+    }
+}
+
+/// Gets and Set current user id from UserDefaults
+var currentUserId: String {
+    get {
+        UserDefaults.standard.string(forKey: .userId) ?? "000739.b5fe4b10f0654ffcb1b9c5109c11887c.1710"
+    }
+    set {
+        UserDefaults.standard.set(newValue, forKey: .userId)
     }
 }

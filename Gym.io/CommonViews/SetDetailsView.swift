@@ -18,7 +18,7 @@ struct SetDetailsView: View {
                     .transition(.move(edge: .bottom))
             }
             .toolbar { ToolbarItem(placement: .keyboard) {
-                Button("Done", action: hideKeyboard)
+                Button("Done", action: dismissKeyboard)
             }}
             
             HStack {
