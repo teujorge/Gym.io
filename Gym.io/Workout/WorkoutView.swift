@@ -39,7 +39,7 @@ struct WorkoutView: View {
                 // Exercise List
                 VStack(alignment: .leading, spacing: 15) {
                     Text("Exercises")
-                        .font(.headline)
+                        .font(.title2)
                     ForEach($workout.exercises) { $exercise in
                         VStack(alignment: .leading) {
                             NavigationLink(destination: ExerciseView(exercise: exercise)) {
@@ -48,7 +48,7 @@ struct WorkoutView: View {
                                     .fontWeight(.semibold)
                                     .foregroundColor(.blue)
                             }
-                                SetDetailsView(viewModel: SetDetailsViewModel(exercise: exercise))
+                            DetailsView(sets: exercise.sets, isRepBased: exercise.isRepBased)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding()
@@ -94,6 +94,82 @@ struct WorkoutView: View {
     }
 }
 
+private struct DetailsView: View {
+    var sets: [ExerciseSet]
+    var isRepBased:Bool
+    
+    
+    
+    var body: some View {
+        VStack(alignment: .center) {
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], alignment: .center) {
+                headerView
+                setsList
+                
+            }
+            
+        }
+        
+    }
+    
+    private var setsList: some View {
+        ForEach(sets) {exerciseSet in
+            GridRow(alignment: .center) {
+                Text("\(exerciseSet.index)")
+                if isRepBased {
+                    Text("\(exerciseSet.reps)")
+                    Text("\(exerciseSet.weight)")
+                } else {
+                    Text("\(exerciseSet.duration)")
+                    Text(exerciseSet.intensity.rawValue.lowercased())
+                    
+                    
+                    
+                    
+                }
+            }.font(.title3)
+        }
+    }
+    
+    private var headerView: some View {
+        GridRow(alignment: .center) {
+            VStack {
+                Image(systemName: "number")
+                    .fontWeight(.semibold)
+                Text("Set")
+                    .font(.headline)
+            }
+            if isRepBased {
+                VStack {
+                    Image(systemName: "arrow.up.arrow.down")
+                        .fontWeight(.semibold)
+                    Text("Reps")
+                        .font(.headline)
+                }
+                VStack {
+                    Image(systemName: "scalemass")
+                        .fontWeight(.semibold)
+                    Text("Kg")
+                        .font(.headline)
+                }
+            } else {
+                VStack {
+                    Image(systemName: "timer")
+                        .fontWeight(.semibold)
+                    Text("Sec")
+                        .font(.headline)
+                }
+                VStack {
+                    Image(systemName: "flame")
+                        .fontWeight(.semibold)
+                    Text("Intensity")
+                        .font(.headline)
+                }
+            }
+        }
+        .frame(minHeight: 40)
+    }
+}
 
 #Preview {
     NavigationView {

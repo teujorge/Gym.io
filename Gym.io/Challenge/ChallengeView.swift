@@ -14,13 +14,13 @@ struct ChallengeView: View {
     @State var isPresentingWorkoutForm = false
     @State var userPoints: [String: Int] = [:]
     
-    init(challenge: Challenge) {
+   // init(challenge: Challenge) {
         // sort all participants by points
-        self.challenge = challenge
-        self.challenge.participants.sort { user1, user2 in
-            calculatePoints(for: user1) > calculatePoints(for: user2)
-        }
-    }
+ //       self.challenge = challenge
+//        self.challenge.participants.sort { user1, user2 in
+//            calculatePoints(for: user1) > calculatePoints(for: user2)
+//        }
+ //   }
     
     var body: some View {
         ScrollView {
@@ -184,6 +184,7 @@ struct ParticipantRankingsView: View {
                     HStack(spacing: 8) {
                         Text(user.username)
                             .font(.body)
+                        
                         if user.id == challenge.ownerId {
                             Text("Owner")
                                 .font(.caption)

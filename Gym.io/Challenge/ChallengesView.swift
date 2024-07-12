@@ -122,7 +122,7 @@ struct ChallengeCardView: View {
     
     var body: some View {
         NavigationLink(destination: ChallengeView(challenge: challenge)) {
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 10) {
                 Text(challenge.name)
                     .font(.headline)
                 
@@ -133,18 +133,22 @@ struct ChallengeCardView: View {
                 }
                 
                 HStack {
-                    Text("Start: \(challenge.startAt.formatted(.dateTime))")
+                 
+                    ForEach(Array(challenge.participants.enumerated()), id: \.element.id) { index, user in
+                        if index < 4 {
+                            Image(systemName: "person.circle.fill")
+                        } else if index == 4 {
+                            Text("+\(challenge.participants.count - 4)")
+                                .foregroundColor(.gray)
+                        }
+                    }
+                        Spacer()
+                        
+                    Text("End: \(challenge.endAt.formatted(date: .abbreviated, time: .omitted))")
                         .font(.caption)
                         .foregroundColor(.secondary)
                     
-                    Spacer()
-                    
-                    Text("End: \(challenge.endAt.formatted(.dateTime))")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
                 }
-                .padding(.top, 2)
-                .padding(.horizontal)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }

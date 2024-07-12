@@ -12,6 +12,14 @@ struct WorkoutsView: View {
     @EnvironmentObject var currentUser: User
     @StateObject private var viewModel = WorkoutsViewModel()
     
+    var filteredWorkouts: [Workout] {
+        if viewModel.searchText.isEmpty {
+            return currentUser.workouts
+        } else {
+            return currentUser.workouts.filter { $0.title.localizedCaseInsensitiveContains(viewModel.searchText) }
+        }
+    }
+    
     var body: some View {
         NavigationView {
             ScrollView {
@@ -43,7 +51,7 @@ struct WorkoutsView: View {
                             .foregroundColor(.secondary)
                             .padding(.bottom)
                     } else {
-                        ForEach(currentUser.workouts.indices, id: \.self) { index in
+                        ForEach(filteredWorkouts.indices, id: \.self) { index in
                             NavigationLink(destination: WorkoutView(workout: $currentUser.workouts[index])) {
                                 VStack(alignment: .leading, spacing: 10) {
                                     Text(currentUser.workouts[index].title)
@@ -66,12 +74,14 @@ struct WorkoutsView: View {
                                             .lineLimit(2)
                                     }
                                     
+                                    NavigationLink(destination:WorkoutStartedView(workout:currentUser.workouts[index])) {
                                         Text("Start Workout")
-                                            .padding()
-                                            .frame(maxWidth: .infinity)
-                                            .background(Color.blue)
-                                            .foregroundColor(.white)
+                                                .padding()
+                                                .frame(maxWidth: .infinity)
+                                                .background(Color.blue)
+                                                .foregroundColor(.white)
                                             .cornerRadius(10)
+                                    }
                                         
                                   
                                 }

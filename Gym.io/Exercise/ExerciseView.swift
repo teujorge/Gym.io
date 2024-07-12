@@ -41,24 +41,8 @@ struct ExerciseView: View {
                 }
                 
                 // MARK: Details
-                VStack(alignment: .leading, spacing: 10) {
-                    Text("Details")
-                        .font(.headline)
-                    
-                    ForEach(exercise.sets) { set in
-                        Text("Sets: \(exercise.sets.count)")
-                        
-                        if exercise.isRepBased {
-                            Text("Reps: \(set.reps)")
-                            Text("Weight: \(set.weight) lbs")
-                        } else {
-                            Text("Duration: \(set.duration) seconds")
-                            Text("Intensity: \(set.intensity.rawValue)")
-                        }
-                        
-                    }
-                }
-                .padding()
+                SetDetailsView(viewModel: SetDetailsViewModel(exercise: exercise))
+                
                 
                 // MARK: Footer
                 Spacer()

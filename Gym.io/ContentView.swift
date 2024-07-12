@@ -12,12 +12,12 @@ struct ContentView: View {
     
     var body: some View {
         TabView {
-            HomeView()
-                .tabItem {
-                    Image(systemName: "house.fill")
-                    Text("Home")
-                }
-                .environmentObject(currentUser)
+//            HomeView()
+//                .tabItem {
+//                    Image(systemName: "house.fill")
+//                    Text("Home")
+//                }
+//                .environmentObject(currentUser)
             
             WorkoutsView()
                 .tabItem {
