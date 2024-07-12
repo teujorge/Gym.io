@@ -14,19 +14,36 @@ struct ChallengeView: View {
     @State var isPresentingWorkoutForm = false
     @State var userPoints: [String: Int] = [:]
     
-   // init(challenge: Challenge) {
-        // sort all participants by points
- //       self.challenge = challenge
+    var challengeProgress: Double {
+        // calculate progress based on start date current date and end date
+        // return a value between 0 and 1
+        // 0 = not started
+        // 1 = completed
+        let currentDate = Date()
+        if currentDate < challenge.startAt {
+            return 0
+        } else if currentDate > challenge.endAt {
+            return 1
+        }
+        let totalDuration = challenge.endAt.timeIntervalSince(challenge.startAt)
+        let currentDuration = currentDate.timeIntervalSince(challenge.startAt)
+        return currentDuration / totalDuration
+    }
+    
+//    init(challenge: Challenge) {
+//         sort all participants by points
+//        self.challenge = challenge
 //        self.challenge.participants.sort { user1, user2 in
 //            calculatePoints(for: user1) > calculatePoints(for: user2)
 //        }
- //   }
+//    }
     
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 25) {
                 // Progress Bar
-                ProgressView(value:0.1).progressViewStyle(.linear)
+                ProgressView(value: challengeProgress)
+                    .progressViewStyle(.linear)
                 
                 // Dates
                 HStack {
