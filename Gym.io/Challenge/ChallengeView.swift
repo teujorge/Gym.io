@@ -142,9 +142,10 @@ struct ParticipantRankingsView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Participants")
                 .font(.headline)
+                .padding(.bottom)
             
             ForEach(Array(challenge.participants.enumerated()), id: \.element.id) { index, user in
-                HStack(spacing: 20) {
+                HStack(spacing: 14) {
                     Text("\(index + 1)")
                         .font(.title)
                         .fontWeight(.bold)
@@ -152,7 +153,6 @@ struct ParticipantRankingsView: View {
                         Image(systemName: "person.circle.fill")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 50, height: 50)  // Set appropriate sizing
                         
                         if index == 0 {
                             ZStack(alignment: .bottomTrailing) {
@@ -174,12 +174,13 @@ struct ParticipantRankingsView: View {
                             .offset(x: 15, y: 15)
                         }
                     }
-                    .frame(width: 38, height: 38)
-                    HStack {
+                    .frame(width: 42, height: 42)
+                    
+                    HStack(spacing: 8) {
                         Text(user.username)
                             .font(.body)
                         if user.id == challenge.owner.id {
-                            Text("(Owner)")
+                            Text("Owner")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
@@ -204,14 +205,14 @@ struct ChallengePointsView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Point System:")
+            Text("Point System")
                 .font(.headline)
-                .padding(.bottom, 5)
+                .padding(.bottom)
             
             HStack(spacing: 20) {
-                PointCard(icon: "scalemass", title: "Per kg", points: challenge.pointsPerKg)
-                PointCard(icon: "arrow.up.and.down.circle", title: "Per rep", points: challenge.pointsPerRep)
-                PointCard(icon: "clock", title: "Per hour", points: challenge.pointsPerHour)
+                PointCard(icon: "scalemass", title: "per kg", points: challenge.pointsPerKg)
+                PointCard(icon: "arrow.up.and.down.circle", title: "per rep", points: challenge.pointsPerRep)
+                PointCard(icon: "clock", title: "per hr", points: challenge.pointsPerHour)
             }
         }
         .padding()
@@ -232,14 +233,12 @@ struct PointCard: View {
                 .font(.largeTitle)
                 .foregroundColor(.blue)
             Text(title)
-                .font(.headline)
                 .foregroundColor(.secondary)
             Text("\(points)")
                 .font(.title2)
                 .fontWeight(.bold)
                 .foregroundColor(.primary)
             Text("pts")
-                .font(.headline)
                 .foregroundColor(.secondary)
         }
         .padding()
