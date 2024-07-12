@@ -8,13 +8,26 @@
 import SwiftUI
 
 class SetDetailsViewModel: ObservableObject {
-    @Published var exercise: Exercise
     @Published var state: LoaderState = .idle
-    
+    @Published var exercise: Exercise {
+        didSet { onExerciseEdited() }
+    }
+
     private var updateTimer: Timer?
     
     init(exercise: Exercise) {
         self.exercise = exercise
+    }
+    
+    private func onExerciseEdited() {
+        print("Exercise edited")
+        print("-> all sets: \(exercise.sets.map { $0.reps })")
+        updateTimer?.invalidate()
+        updateTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { [weak self] _ in
+            for set in self?.exercise.sets ?? [] {
+                self?.saveUpdatedSet(set: set)
+            }
+        }
     }
     
     func addSet() {
@@ -29,15 +42,8 @@ class SetDetailsViewModel: ObservableObject {
         }
     }
     
-    func updateSet(at index: Int, with set: ExerciseSet) {
-        guard index < exercise.sets.count else { return }
-        exercise.sets[index] = set
-
-        // Debounce the update to prevent multiple rapid server requests
-        updateTimer?.invalidate()
-        updateTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { [weak self] _ in
-            self?.saveUpdatedSet(set: set)
-        }
+    func updateSet(for id: String, with set: ExerciseSet) {
+        exercise.sets = exercise.sets.map { $0.id == set.id ? set : $0 }
     }
     
     private func saveUpdatedSet(set: ExerciseSet) {
@@ -85,7 +91,7 @@ class SetDetailsViewModel: ObservableObject {
     private func requestUpdateSet(at index: Int, with set: ExerciseSet) async {
         let response: HTTPResponse<ExerciseSet> = await sendRequest(endpoint: "sets/\(set.id)", body: set, method: .PUT)
         handleResponse(response)
-
+        
         // Update the model with the backend response
         switch response {
         case .success(let backendSet):
@@ -100,7 +106,7 @@ class SetDetailsViewModel: ObservableObject {
         handleResponse(response)
         exercise.sets.remove(at: index)
     }
-
+    
     private func handleResponse<T>(_ response: HTTPResponse<T>) {
         DispatchQueue.main.async {
             switch response {
