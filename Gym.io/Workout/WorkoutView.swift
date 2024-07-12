@@ -24,6 +24,18 @@ struct WorkoutView: View {
                         .padding(.bottom)
                 }
                 
+                // Start Workout Button
+                NavigationLink(destination: WorkoutStartedView(workout: workout)) {
+                    Text("Start Workout")
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                    
+                }
+                .padding()
+                
                 // Exercise List
                 VStack(alignment: .leading, spacing: 15) {
                     Text("Exercises")
@@ -46,33 +58,6 @@ struct WorkoutView: View {
                 }
             }
             .padding()
-            
-            // Start Workout Button
-            NavigationLink(destination: WorkoutStartedView(workout: workout)) {
-                Text("Start Workout")
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-                
-            }
-            .padding()
-            
-            // Progress Tracker (Placeholder)
-            VStack {
-                Text("Progress")
-                    .font(.headline)
-                ProgressView(value: 0.5)
-                    .progressViewStyle(.linear)
-                    .padding()
-            }
-            .padding()
-            .background(Color(.systemGray6))
-            .cornerRadius(10)
-            .padding(.horizontal)
-            
-            Spacer()
         }
         .navigationTitle(workout.title)
         .toolbar {

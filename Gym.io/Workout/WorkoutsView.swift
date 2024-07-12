@@ -65,6 +65,15 @@ struct WorkoutsView: View {
                                             .foregroundColor(.secondary)
                                             .lineLimit(2)
                                     }
+                                    
+                                        Text("Start Workout")
+                                            .padding()
+                                            .frame(maxWidth: .infinity)
+                                            .background(Color.blue)
+                                            .foregroundColor(.white)
+                                            .cornerRadius(10)
+                                        
+                                  
                                 }
                                 .padding()
                                 .frame(maxWidth: .infinity, alignment: .leading)

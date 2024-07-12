@@ -41,12 +41,22 @@ struct WorkoutStartedView: View {
                     .cornerRadius(10)
                 }
                 
-                Button(action: stopTimer) {
-                    Text("Complete workout")
-                        .padding()
-                        .background(Color.green)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
+                HStack {
+                    Button(action: stopTimer) {
+                        Text("Complete workout")
+                            .padding()
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    }
+                    Button(action: stopTimer) {
+                        Text("discard workout")
+                            .padding()
+                            .background(Color.red)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    }
+                    
                 }
             }
             .padding()
