@@ -44,7 +44,12 @@ struct WorkoutsView: View {
                     
                     ForEach(filteredWorkouts.indices, id: \.self) { index in
                         WorkoutCardView(workout: currentUser.workouts[index])
-                            .transition(.slide)
+                            .transition(.asymmetric(
+                                insertion: .scale(scale: 0.85)
+                                    .combined(with: .opacity)
+                                    .combined(with: .move(edge: .bottom)),
+                                removal: .opacity
+                            ))
                     }
                     
                     if (viewModel.state != .idle) {
@@ -56,7 +61,6 @@ struct WorkoutsView: View {
                 .padding()
                 .animation(.easeInOut, value: viewModel.state)
             }
-            .animation(.easeInOut, value: viewModel.state)
             .background(Color(.systemBackground))
             .navigationTitle("Workouts")
             .sheet(isPresented: $viewModel.isPresentingWorkoutForm) {

@@ -17,9 +17,15 @@ struct ChallengesView: View {
             ScrollView {
                 
                 VStack {
-                    ForEach(currentUser.challenges, id: \.id) { challenge in
-                        ChallengeCardView(challenge: challenge)
-                            .transition(.slide)
+                    ForEach(currentUser.challenges.indices, id: \.self) { index in
+                        ChallengeCardView(challenge: currentUser.challenges[index])
+                            .transition(.asymmetric(
+                                insertion: .scale(scale: 0.85)
+                                    .combined(with: .opacity)
+                                    .combined(with: .move(edge: .bottom)),
+                                removal: .opacity
+                            ))
+//                            .animation(.easeInOut(duration: 0.5).delay(Double(index) * 0.1), value: currentUser.challenges[index].id)
                     }
                 }
                 .padding()
@@ -32,7 +38,6 @@ struct ChallengesView: View {
                 }
                 
             }
-            .animation(.easeInOut, value: viewModel.state)
             .navigationTitle("Challenges")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
