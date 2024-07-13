@@ -12,12 +12,12 @@ struct WorkoutFormView: View {
     @StateObject private var viewModel: WorkoutFormViewModel
     
     // Initializer with save functionality only
-    init(onSave: @escaping () -> Void) {
-        _viewModel = StateObject(wrappedValue: WorkoutFormViewModel(workout: nil, onSave: onSave, onDelete: {}))
+    init(onSave: @escaping (Workout) -> Void) {
+        _viewModel = StateObject(wrappedValue: WorkoutFormViewModel(workout: nil, onSave: onSave, onDelete: {workout in}))
     }
     
     // Initializer with workout and delete functionality
-    init(workout: Workout, onSave: @escaping () -> Void, onDelete: @escaping () -> Void) {
+    init(workout: Workout, onSave: @escaping (Workout) -> Void, onDelete: @escaping (Workout) -> Void) {
         _viewModel = StateObject(wrappedValue: WorkoutFormViewModel(workout: workout, onSave: onSave, onDelete: onDelete))
     }
     
@@ -93,22 +93,28 @@ struct WorkoutFormView: View {
             }
         }
     }
-
+    
 }
 
 
 #Preview("New") {
-    WorkoutFormView(onSave: { print("save form") })
+    WorkoutFormView(onSave: { workout in
+        print("save form")
+    })
 }
 
 #Preview("Edit") {
     WorkoutFormView(
         workout: _previewWorkouts[0],
-        onSave: { DispatchQueue.main.async {
-            print("save form")
-        }},
-        onDelete: { DispatchQueue.main.async {
-            print("del form")
-        }}
+        onSave: { workout in
+            DispatchQueue.main.async {
+                print("save form")
+            }
+        },
+        onDelete: { workout in
+            DispatchQueue.main.async {
+                print("del form")
+            }
+        }
     )
 }

@@ -9,6 +9,7 @@ import SwiftUI
 
 class ExerciseFormViewModel: ObservableObject {
     @Published var exercise: Exercise
+    @Published var state: LoaderState = .idle
     
     let onSave: (Exercise) -> Void
     let onDelete: ((Exercise) -> Void)?
@@ -33,11 +34,72 @@ class ExerciseFormViewModel: ObservableObject {
         exercise.sets.append(ExerciseSet(index: newIndex))
     }
     
-    func handleSaveExercise() {
-        onSave(exercise)
+    func handleSave() {
+        if isEditing {
+            Task {
+                if let newExercise = await self.requestSave(exercise.id) {
+                    self.onSave(newExercise)
+                }
+            }
+        } else {
+            self.onSave(exercise)
+        }
     }
     
-    func handleDeleteExercise() {
-        // TODO: delete
+    func handleDelete() {
+        Task {
+            if await self.requestDelete(exercise.id) {
+                self.onDelete?(exercise)
+            }
+        }
     }
+    
+    private func requestSave(_ id: String) async -> Exercise? {
+        guard isEditing else { return nil }
+        
+        DispatchQueue.main.async {
+            self.state = .loading
+        }
+        
+        let result: HTTPResponse<Exercise> = await sendRequest(endpoint: "exercises/\(id)", body: exercise, method: .PUT)
+        
+        switch result {
+        case .success(let exercise):
+            DispatchQueue.main.async {
+                self.state = .success
+            }
+            return exercise
+        case .failure(let error):
+            DispatchQueue.main.async {
+                self.state = .failure(error)
+            }
+            print(error)
+        }
+        
+        return nil
+    }
+    
+    private func requestDelete(_ id: String) async -> Bool {
+        DispatchQueue.main.async {
+            self.state = .loading
+        }
+        
+        let result: HTTPResponse<EmptyBody> = await sendRequest(endpoint: "exercises/\(id)", method: .DELETE)
+        
+        switch result {
+        case .success:
+            DispatchQueue.main.async {
+                self.state = .success
+            }
+            return true
+        case .failure(let error):
+            DispatchQueue.main.async {
+                self.state = .failure(error)
+            }
+            print(error)
+        }
+        
+        return false
+    }
+
 }

@@ -33,7 +33,7 @@ struct WorkoutStartedView: View {
                             .font(.title2)
                             .fontWeight(.semibold)
                             .foregroundColor(.blue)
-                        SetDetailsView(viewModel: SetDetailsViewModel(exercise: exercise))
+                        SetDetailsView(exercise: exercise)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()

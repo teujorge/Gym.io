@@ -10,15 +10,29 @@ import SwiftUI
 struct SetDetailsView: View {
     @ObservedObject var viewModel: SetDetailsViewModel
     
+    init(exercise: Exercise, autoSave: Bool = true) {
+        viewModel = SetDetailsViewModel(exercise: exercise, autoSave: autoSave)
+    }
+    
     var body: some View {
         VStack(alignment: .center) {
-            LazyVGrid(columns: [GridItem(.flexible(maximum: 30)), GridItem(.flexible(minimum: 80)), GridItem(.flexible(minimum: 80)), GridItem(.flexible(maximum: 30))], alignment: .center) {
+            LazyVGrid(
+                columns: [
+                    GridItem(.flexible()),
+                    GridItem(.flexible()),
+                    GridItem(.flexible()),
+                    GridItem(.flexible())],
+                alignment: .center
+            ) {
                 headerView
                 setsList
                     .transition(.move(edge: .bottom))
             }
             .toolbar { ToolbarItem(placement: .keyboard) {
-                Button("Done", action: dismissKeyboard)
+                HStack {
+                    Spacer()
+                    Button("Done", action: dismissKeyboard)
+                }
             }}
             
             HStack {
@@ -33,6 +47,7 @@ struct SetDetailsView: View {
                     .background(Color.blue.opacity(0.2))
                     .cornerRadius(20)
                 }
+                .buttonStyle(PlainButtonStyle())
                 LoaderView(size: 25, weight: .ultraLight, state: viewModel.state)
             }
             .padding(.horizontal)
@@ -63,13 +78,15 @@ struct SetDetailsView: View {
                     }
                     .pickerStyle(.segmented)
                 }
-                Button(role: .destructive, action: {
-                    if let index = viewModel.exercise.sets.firstIndex(where: { $0.id == $exerciseSet.id }) {
-                        viewModel.deleteSet(at: index)
+                HStack {
+                    Button(action: { viewModel.deleteSet(exerciseSet.id) }) {
+                        Image(systemName: "trash")
+                            .font(.caption)
+                            .foregroundColor(.red)
                     }
-                }) {
-                    Image(systemName: "trash")
-                        .font(.caption)
+                    .buttonStyle(PlainButtonStyle())
+                    Toggle("", isOn: .constant(false))
+                        .toggleStyle(.switch)
                 }
             }
         }
@@ -122,5 +139,5 @@ struct SetDetailsView: View {
 }
 
 #Preview {
-    SetDetailsView(viewModel: SetDetailsViewModel(exercise: _previewExercises[1]))
+    SetDetailsView(exercise: _previewExercises[1], autoSave: false)
 }

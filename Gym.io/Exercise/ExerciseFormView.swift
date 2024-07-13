@@ -33,7 +33,7 @@ struct ExerciseFormView: View {
                     }
                     .pickerStyle(.segmented)
                 }
-                SetDetailsView(viewModel: SetDetailsViewModel(exercise: viewModel.exercise))
+                SetDetailsView(exercise: viewModel.exercise, autoSave: false)
             }
             .navigationTitle(viewModel.isEditing ? "Edit Exercise" : "New Exercise")
             .toolbar {
@@ -47,14 +47,14 @@ struct ExerciseFormView: View {
     
     var leadingToolbarItem: ToolbarItem<(), some View> {
         ToolbarItem(placement: .navigationBarLeading) {
-            Button("Delete", action: viewModel.handleDeleteExercise)
+            Button("Delete", action: viewModel.handleDelete)
                 .foregroundColor(.red)
         }
     }
     
     var trailingToolbarItem: ToolbarItem<(), some View> {
         ToolbarItem(placement: .navigationBarTrailing) {
-            Button("Save", action: viewModel.handleSaveExercise)
+            Button("Save", action: viewModel.handleSave)
         }
     }
 }

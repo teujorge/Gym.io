@@ -41,7 +41,7 @@ struct ExerciseView: View {
                 }
                 
                 // MARK: Details
-                SetDetailsView(viewModel: SetDetailsViewModel(exercise: exercise))
+                SetDetailsView(exercise: exercise)
                 
                 
                 // MARK: Footer

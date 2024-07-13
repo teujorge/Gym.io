@@ -12,11 +12,13 @@ class SetDetailsViewModel: ObservableObject {
     @Published var exercise: Exercise {
         didSet { onExerciseEdited() }
     }
-
+    
+    private var autoSave: Bool
     private var updateTimer: Timer?
     
-    init(exercise: Exercise) {
+    init(exercise: Exercise, autoSave: Bool) {
         self.exercise = exercise
+        self.autoSave = autoSave
     }
     
     private func onExerciseEdited() {
@@ -34,43 +36,40 @@ class SetDetailsViewModel: ObservableObject {
         // Create a new set with a temporary id
         let tempSet = ExerciseSet(index: exercise.sets.count + 1)
         exercise.sets.append(tempSet)
-        state = .idle
         
         // Save the set to the backend
-        Task {
-            await saveSet(tempSet)
-        }
+        Task { await saveSet(tempSet) }
     }
     
     func updateSet(for id: String, with set: ExerciseSet) {
         exercise.sets = exercise.sets.map { $0.id == set.id ? set : $0 }
     }
     
+    func deleteSet(_ id: String) {
+        let index = exercise.sets.firstIndex(where: { $0.id == id })
+        guard let index = index else { return }
+        
+        print("Deleting set at index \(index)")
+        
+        exercise.sets.remove(at: index)
+        for i in 0..<exercise.sets.count {
+            exercise.sets[i].index = i + 1
+        }
+        
+        // Remove the set from the backend
+        Task { await requestDeleteSet(id) }
+    }
+    
     private func saveUpdatedSet(set: ExerciseSet) {
         guard let index = exercise.sets.firstIndex(where: { $0.id == set.id }) else { return }
         let updatedSet = exercise.sets[index]
+        
         // Now call your async function to update the set on the server
-        Task {
-            await requestUpdateSet(at: index, with: updatedSet)
-        }
-    }
-    
-    func deleteSet(at index: Int) {
-        guard index < exercise.sets.count else { return }
-        
-        print("""
-            Deleting set:
-            Index: \(index)
-            Set duration: \(exercise.sets[index].duration)
-            """)
-        
-        // Remove the set from the backend
-        Task {
-            await requestDeleteSet(at: index)
-        }
+        Task { await requestUpdateSet(at: index, with: updatedSet) }
     }
     
     private func saveSet(_ set: ExerciseSet) async {
+        guard autoSave else { return }
         var newSet = set
         newSet.exerciseId = exercise.id
         
@@ -89,6 +88,7 @@ class SetDetailsViewModel: ObservableObject {
     }
     
     private func requestUpdateSet(at index: Int, with set: ExerciseSet) async {
+        guard autoSave else { return }
         let response: HTTPResponse<ExerciseSet> = await sendRequest(endpoint: "sets/\(set.id)", body: set, method: .PUT)
         handleResponse(response)
         
@@ -101,10 +101,10 @@ class SetDetailsViewModel: ObservableObject {
         }
     }
     
-    private func requestDeleteSet(at index: Int) async {
-        let response: HTTPResponse<EmptyBody> = await sendRequest(endpoint: "sets/\(exercise.sets[index].id)", method: .DELETE)
+    private func requestDeleteSet(_ id: String) async {
+        guard autoSave else { return }
+        let response: HTTPResponse<EmptyBody> = await sendRequest(endpoint: "sets/\(id)", method: .DELETE)
         handleResponse(response)
-        exercise.sets.remove(at: index)
     }
     
     private func handleResponse<T>(_ response: HTTPResponse<T>) {

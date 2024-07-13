@@ -9,6 +9,7 @@ import SwiftUI
 
 struct WorkoutView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @EnvironmentObject var currentUser: User
     
     var workout: Workout
     @State var isPresentingWorkoutForm = false
@@ -81,13 +82,23 @@ struct WorkoutView: View {
         .sheet(isPresented: $isPresentingWorkoutForm) {
             WorkoutFormView(
                 workout: workout,
-                onSave: { DispatchQueue.main.async {
-                    isPresentingWorkoutForm = false
-                }},
-                onDelete: { DispatchQueue.main.async {
-                    isPresentingWorkoutForm = false
-                    presentationMode.wrappedValue.dismiss()
-                }}
+                onSave: { workout in
+                    DispatchQueue.main.async {
+                        if let workoutIndex = currentUser.workouts.firstIndex(where: { $0.id == workout.id }) {
+                            currentUser.workouts[workoutIndex] = workout
+                        }
+                        isPresentingWorkoutForm = false
+                    }
+                },
+                onDelete: { workout in
+                    DispatchQueue.main.async {
+                        if let workoutIndex = currentUser.workouts.firstIndex(where: { $0.id == workout.id }) {
+                            currentUser.workouts.remove(at: workoutIndex)
+                        }
+                        isPresentingWorkoutForm = false
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                }
             )
         }
     }

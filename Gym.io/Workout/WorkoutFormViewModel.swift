@@ -17,11 +17,10 @@ enum WorkoutFormViewState {
 class WorkoutFormViewModel: ObservableObject {
     
     let isEditing: Bool
-    var onSave: () -> Void
-    var onDelete: () -> Void
+    var onSave: (Workout) -> Void
+    var onDelete: (Workout) -> Void
     
     @Published var workout: Workout
-    
     @Published var isPresentingExerciseForm = false
     @Published var selectedExercise: Exercise?
     @Published var state: WorkoutFormViewState = .idle
@@ -37,7 +36,7 @@ class WorkoutFormViewModel: ObservableObject {
         }
     }
     
-    init(workout: Workout?, onSave: @escaping () -> Void, onDelete: @escaping () -> Void) {
+    init(workout: Workout?, onSave: @escaping (Workout) -> Void, onDelete: @escaping (Workout) -> Void) {
         if let workout = workout {
             self.isEditing = true
             self.workout = workout
@@ -52,7 +51,7 @@ class WorkoutFormViewModel: ObservableObject {
     }
     
     func addExercise() {
-        selectedExercise = Exercise(index: 1, name: "", sets: [], isRepBased: true)
+        selectedExercise = nil
         isPresentingExerciseForm = true
     }
     
@@ -92,14 +91,16 @@ class WorkoutFormViewModel: ObservableObject {
     func save() {
         Task {
             if isEditing {
-                print("TODO: PUT REQUEST")
-                onSave()
-            } else {
-                let newWorkout = await createWorkout()
-                if newWorkout == nil {
-                    print("Failed to create workout")
+                if let newWorkout = await updateWorkout() {
+                    onSave(newWorkout)
                 } else {
-                    onSave()
+                    print("Failed to update workout")
+                }
+            } else {
+                if let newWorkout = await createWorkout() {
+                    onSave(newWorkout)
+                } else {
+                    print("Failed to create workout")
                 }
             }
         }
@@ -146,11 +147,50 @@ class WorkoutFormViewModel: ObservableObject {
         }
     }
     
+    private func updateWorkout() async -> Workout? {
+        guard !workout.title.isEmpty else {
+            DispatchQueue.main.async {
+                print("Please provide a title for your workout")
+                self.state = .error("Please provide a title for your workout")
+            }
+            return nil
+        }
+        
+        guard !workout.ownerId.isEmpty else {
+            DispatchQueue.main.async {
+                print("Please provide an owner ID for your workout")
+                self.state = .error("Please provide an owner ID for your workout")
+            }
+            return nil
+        }
+        
+        DispatchQueue.main.async {
+            self.state = .operating
+        }
+        
+        let result: HTTPResponse<Workout> = await sendRequest(endpoint: "workouts/\(workout.id)", body: workout, method: .PUT)
+        
+        switch result {
+        case .success(let updatedWorkout):
+            DispatchQueue.main.async {
+                print("Workout updated: \(updatedWorkout)")
+                self.state = .finished
+            }
+            return updatedWorkout
+        case .failure(let error):
+            DispatchQueue.main.async {
+                print("Failed to update workout: \(error)")
+                self.state = .error(error)
+            }
+            return nil
+        }
+    }
+    
     func delete() {
         Task {
             let success = await handleDeleteWorkout()
             if success {
-                onDelete()
+                onDelete(workout)
             }
             else {
                 print("Failed to delete workout")

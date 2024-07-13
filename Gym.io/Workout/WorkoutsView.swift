@@ -60,9 +60,12 @@ struct WorkoutsView: View {
             .background(Color(.systemBackground))
             .navigationTitle("Workouts")
             .sheet(isPresented: $viewModel.isPresentingWorkoutForm) {
-                WorkoutFormView(onSave: { DispatchQueue.main.async {
-                    viewModel.isPresentingWorkoutForm = false
-                }})
+                WorkoutFormView(onSave: { workout in
+                    DispatchQueue.main.async {
+                        currentUser.workouts.append(workout)
+                        viewModel.isPresentingWorkoutForm = false
+                    }
+                })
             }
         }
         .onAppear { Task {
