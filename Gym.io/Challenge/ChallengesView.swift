@@ -10,33 +10,33 @@ import SwiftUI
 struct ChallengesView: View {
     
     @EnvironmentObject var currentUser: User
-    @State private var selectedChallenge: Challenge?
-    @State private var isPresentingChallengesForm = false
+    @StateObject private var viewModel = ChallengesViewModel()
     
     var body: some View {
         NavigationView {
             ScrollView {
+                
                 VStack {
                     ForEach(currentUser.challenges, id: \.id) { challenge in
-                        ChallengeCardView(
-                            challenge: challenge,
-                            onEdit: {
-                                selectedChallenge = challenge
-                                isPresentingChallengesForm = true
-                            },
-                            onDelete: {
-                                deleteChallenge(challenge)
-                            }
-                        )
+                        ChallengeCardView(challenge: challenge)
+                            .transition(.slide)
                     }
                 }
                 .padding()
                 .frame(maxWidth: .infinity)
+                .animation(.easeInOut, value: currentUser.challenges)
+                
+                if (viewModel.state != .idle) {
+                    LoaderView(state: viewModel.state, showErrorMessage: true)
+                        .padding()
+                }
+                
             }
+            .animation(.easeInOut, value: viewModel.state)
             .navigationTitle("Challenges")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: { isPresentingChallengesForm = true }) {
+                    Button(action: { viewModel.isPresentingChallengesForm = true }) {
                         HStack {
                             Text("New")
                                 .font(.caption)
@@ -55,70 +55,33 @@ struct ChallengesView: View {
                     }
                 }
             }
-            .sheet(isPresented: $isPresentingChallengesForm) {
+            .sheet(isPresented: $viewModel.isPresentingChallengesForm) {
                 ChallengeFormView(viewModel: ChallengeFormViewModel(
                     onSave: { challenge in
-                        if let selectedChallenge = selectedChallenge {
-                            // Update the existing challenge
-                            updateChallenge(oldChallenge: selectedChallenge, newChallenge: challenge)
-                        } else {
-                            // Create a new challenge
-                            createNewChallenge(newChallenge: challenge)
-                        }
-                        isPresentingChallengesForm = false
+                        currentUser.challenges.append(challenge)
+                        viewModel.isPresentingChallengesForm = false
                     }
                 ))
             }
-            .onAppear {
-                Task {
-                    // Load challenges from API
-                    let result: HTTPResponse<[Challenge]> = await sendRequest(
-                        endpoint: "challenges",
-                        queryItems: [
-                            URLQueryItem(name: "includeAll", value: "true"),
-                            URLQueryItem(name: "findMany", value: "true"),
-                            URLQueryItem(name: "ownerId", value: currentUser.id)
-                        ],
-                        method: .GET
-                    )
-                    
-                    // Set challenges to currentUser.challenges
-                    switch result {
-                    case .success(let challenges):
-                        DispatchQueue.main.async {
-                            self.currentUser.challenges = challenges
-                        }
-                    case .failure(let error):
-                        print("Failed to load challenges: \(error)")
-                    }
+            .onAppear(perform: loadChallenges)
+        }
+    }
+    
+    private func loadChallenges() {
+        Task {
+            let result = await viewModel.fetchChallenges(currentUser.id)
+            if let fetchedChallenges = result {
+                DispatchQueue.main.async {
+                    self.currentUser.challenges = fetchedChallenges
                 }
             }
         }
     }
-    
-//    private func loadInitialChallenges() {
-//        challenges = _previewChallenges
-//    }
-    
-    private func createNewChallenge(newChallenge: Challenge) {
-        currentUser.challenges.append(newChallenge)
-    }
-    
-    private func updateChallenge(oldChallenge: Challenge, newChallenge: Challenge) {
-        if let index = currentUser.challenges.firstIndex(where: { $0.id == oldChallenge.id }) {
-            currentUser.challenges[index] = newChallenge
-        }
-    }
-    
-    private func deleteChallenge(_ challenge: Challenge) {
-        currentUser.challenges.removeAll { $0.id == challenge.id }
-    }
+
 }
 
 struct ChallengeCardView: View {
     let challenge: Challenge
-    let onEdit: () -> Void
-    let onDelete: () -> Void
     
     var body: some View {
         NavigationLink(destination: ChallengeView(challenge: challenge)) {
@@ -133,7 +96,7 @@ struct ChallengeCardView: View {
                 }
                 
                 HStack {
-                 
+                    
                     ForEach(Array(challenge.participants.enumerated()), id: \.element.id) { index, user in
                         if index < 4 {
                             Image(systemName: "person.circle.fill")
@@ -142,8 +105,8 @@ struct ChallengeCardView: View {
                                 .foregroundColor(.gray)
                         }
                     }
-                        Spacer()
-                        
+                    Spacer()
+                    
                     Text("End: \(challenge.endAt.formatted(date: .abbreviated, time: .omitted))")
                         .font(.caption)
                         .foregroundColor(.secondary)

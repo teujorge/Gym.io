@@ -8,7 +8,11 @@
 import Foundation
 import Combine
 
-class User: Codable, Identifiable, ObservableObject {
+class User: Codable, Equatable, Identifiable, ObservableObject {
+    static func == (lhs: User, rhs: User) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
     @Published var createdAt: Date
     @Published var updatedAt: Date
     @Published var id: String

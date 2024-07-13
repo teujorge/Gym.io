@@ -8,7 +8,11 @@
 import Foundation
 import Combine
 
-class Challenge: Codable, Identifiable, ObservableObject {
+class Challenge: Codable, Equatable, Identifiable, ObservableObject {
+    static func == (lhs: Challenge, rhs: Challenge) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
     @Published var id: String
     @Published var ownerId: String
     @Published var startAt: Date

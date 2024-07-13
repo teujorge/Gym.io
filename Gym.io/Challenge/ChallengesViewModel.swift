@@ -1,21 +1,21 @@
 //
-//  WorkoutsViewModel.swift
+//  ChallengesViewModel.swift
 //  Gym.io
 //
-//  Created by Matheus Jorge on 7/10/24.
+//  Created by Matheus Jorge on 7/13/24.
 //
 
 import Foundation
 import Combine
 
-class WorkoutsViewModel: ObservableObject {
-    @Published var searchText = ""
+class ChallengesViewModel: ObservableObject {
+    
     @Published var state: LoaderState = .idle {
         didSet {
             debounceStateChange()
         }
     }
-    @Published var isPresentingWorkoutForm = false
+    @Published var isPresentingChallengesForm = false
     
     private var debounceTimer: AnyCancellable?
     
@@ -33,27 +33,35 @@ class WorkoutsViewModel: ObservableObject {
             }
     }
     
-    func fetchWorkouts(for userId: String) async -> [Workout]? {
+    func fetchChallenges(_ userId: String) async -> [Challenge]? {
         DispatchQueue.main.async {
             self.state = .loading
         }
         
-        let result: HTTPResponse<[Workout]> = await sendRequest(endpoint: "workouts?findMany=true&includeAll=true&ownerId=\(userId)", body: nil, method: .GET)
-                
+        let result: HTTPResponse<[Challenge]> = await sendRequest(
+            endpoint: "challenges",
+            queryItems: [
+                URLQueryItem(name: "includeAll", value: "true"),
+                URLQueryItem(name: "findMany", value: "true"),
+                URLQueryItem(name: "ownerId", value: userId)
+            ],
+            method: .GET
+        )
+        
         switch result {
-        case .success(let workouts):
-            print("Workouts fetched: \(workouts)")
+        case .success(let challenges):
             DispatchQueue.main.async {
                 self.state = .success
             }
-            return workouts
+            return challenges
         case .failure(let error):
-            print("Failed to fetch workouts: \(error)")
+            print("Failed to load challenges: \(error)")
             DispatchQueue.main.async {
                 self.state = .failure(error)
             }
-            return nil
         }
+        
+        return nil
     }
     
 }

@@ -10,8 +10,7 @@ import SwiftUI
 struct WorkoutView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
-    @Binding var workout: Workout
-    
+    var workout: Workout
     @State var isPresentingWorkoutForm = false
     
     var body: some View {
@@ -40,7 +39,7 @@ struct WorkoutView: View {
                 VStack(alignment: .leading, spacing: 15) {
                     Text("Exercises")
                         .font(.title2)
-                    ForEach($workout.exercises) { $exercise in
+                    ForEach(workout.exercises) { exercise in
                         VStack(alignment: .leading) {
                             NavigationLink(destination: ExerciseView(exercise: exercise)) {
                                 Text(exercise.name)
@@ -173,12 +172,12 @@ private struct DetailsView: View {
 
 #Preview {
     NavigationView {
-        WorkoutView(workout: .constant(Workout(
+        WorkoutView(workout: Workout(
             ownerId: "1",
             title: "Full Body Workout",
             notes: "A complete workout targeting all major muscle groups.",
             exercises: _previewExercises
-        )))
+        ))
     }
 }
 

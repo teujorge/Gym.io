@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ChallengeView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @EnvironmentObject var currentUser: User
     
     @State var challenge: Challenge
     @State var isPresentingWorkoutForm = false
@@ -106,7 +107,17 @@ struct ChallengeView: View {
         }
     }
     
-    func calculatePoints(for user: User) -> Int {
+    private func updateChallenge(oldChallenge: Challenge, newChallenge: Challenge) {
+        if let index = currentUser.challenges.firstIndex(where: { $0.id == oldChallenge.id }) {
+            currentUser.challenges[index] = newChallenge
+        }
+    }
+    
+    private func deleteChallenge(_ challenge: Challenge) {
+        currentUser.challenges.removeAll { $0.id == challenge.id }
+    }
+    
+    private func calculatePoints(for user: User) -> Int {
         print()
         print("Calculating points for \(user.name)")
         

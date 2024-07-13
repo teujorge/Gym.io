@@ -19,18 +19,19 @@ struct LoaderView: View {
     let size: Double
     let weight: Font.Weight
     let state: LoaderState
+    let showErrorMessage: Bool
     
     @State private var isAnimating = false
     
-    init(size: Double = 50, weight: Font.Weight = .regular, state: LoaderState = .loading) {
+    init(size: Double = 50, weight: Font.Weight = .regular, state: LoaderState = .loading, showErrorMessage: Bool = false) {
         self.size = size
         self.weight = weight
         self.state = state
+        self.showErrorMessage = showErrorMessage
     }
     
     var body: some View {
-        ZStack {
-            
+        VStack {
             switch state {
             case .idle:
                 Image(systemName: "circle")
@@ -62,13 +63,20 @@ struct LoaderView: View {
                     .foregroundColor(.green)
                     .fontWeight(weight)
                     .transition(.opacity)
-            case .failure:
+            case .failure(let error):
                 Image(systemName: "xmark.circle")
                     .resizable()
                     .frame(width: size, height: size)
                     .foregroundColor(.red)
                     .fontWeight(weight)
                     .transition(.opacity)
+                if (showErrorMessage) {
+                    Text(error)
+                        .foregroundColor(.red)
+                        .padding(.bottom)
+                        .padding(.horizontal)
+                        .multilineTextAlignment(.center)
+                }
             }
         }
         .animation(.easeInOut, value: state)
@@ -85,7 +93,7 @@ private struct LoaderPreview: View {
     var body: some View {
         VStack {
             
-            LoaderView(state: loaderState)
+            LoaderView(state: loaderState, showErrorMessage: true)
                 .padding()
             LoaderView(size: 100, weight: .thin, state: loaderState)
                 .padding()
@@ -101,7 +109,7 @@ private struct LoaderPreview: View {
                     loaderState = .success
                 }
                 Button("Failure") {
-                    loaderState = .failure("error message")
+                    loaderState = .failure("The data couldn’t be read because it isn’t in the correct format")
                 }
             }
             .padding()

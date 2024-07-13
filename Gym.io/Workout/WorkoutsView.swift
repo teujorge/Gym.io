@@ -24,6 +24,7 @@ struct WorkoutsView: View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 20) {
+                    
                     HStack {
                         TextField("Search", text: $viewModel.searchText)
                             .padding()
@@ -40,61 +41,22 @@ struct WorkoutsView: View {
                         .cornerRadius(20)
                     }
                     
-                    if currentUser.workouts.isEmpty {
-                        Image(systemName: "exclamationmark.triangle")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 100, height: 100)
-                            .foregroundColor(.secondary)
-                            .padding(.top, 32)
-                        Text("No workouts found")
-                            .foregroundColor(.secondary)
-                            .padding(.bottom)
-                    } else {
-                        ForEach(filteredWorkouts.indices, id: \.self) { index in
-                            NavigationLink(destination: WorkoutView(workout: $currentUser.workouts[index])) {
-                                VStack(alignment: .leading, spacing: 10) {
-                                    Text(currentUser.workouts[index].title)
-                                        .fontWeight(.bold)
-                                        .font(.title2)
-                                        .foregroundColor(.primary)
-                                    
-                                    HStack {
-                                        Image(systemName: "dumbbell.fill")
-                                            .foregroundColor(.blue)
-                                        
-                                        Text("Exercises: \(currentUser.workouts[index].exercises.count)")
-                                            .foregroundColor(.secondary)
-                                    }
-                                    
-                                    if let description = currentUser.workouts[index].notes {
-                                        Text(description)
-                                            .font(.body)
-                                            .foregroundColor(.secondary)
-                                            .lineLimit(2)
-                                    }
-                                    
-                                    NavigationLink(destination:WorkoutStartedView(workout:currentUser.workouts[index])) {
-                                        Text("Start Workout")
-                                                .padding()
-                                                .frame(maxWidth: .infinity)
-                                                .background(Color.blue)
-                                                .foregroundColor(.white)
-                                            .cornerRadius(10)
-                                    }
-                                        
-                                  
-                                }
-                                .padding()
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(Color(.systemGray6))
-                                .cornerRadius(10)
-                            }
-                        }
+                    
+                    ForEach(filteredWorkouts.indices, id: \.self) { index in
+                        WorkoutCardView(workout: currentUser.workouts[index])
+                            .transition(.slide)
                     }
+                    
+                    if (viewModel.state != .idle) {
+                        LoaderView(state: viewModel.state, showErrorMessage: true)
+                            .padding()
+                    }
+                    
                 }
                 .padding()
+                .animation(.easeInOut, value: viewModel.state)
             }
+            .animation(.easeInOut, value: viewModel.state)
             .background(Color(.systemBackground))
             .navigationTitle("Workouts")
             .sheet(isPresented: $viewModel.isPresentingWorkoutForm) {
@@ -109,6 +71,51 @@ struct WorkoutsView: View {
                 currentUser.workouts = workouts
             }
         }}
+    }
+    
+}
+
+struct WorkoutCardView: View {
+    
+    var workout: Workout
+    
+    var body: some View {
+        NavigationLink(destination: WorkoutView(workout: workout)) {
+            VStack(alignment: .leading, spacing: 10) {
+                Text(workout.title)
+                    .fontWeight(.bold)
+                    .font(.title2)
+                    .foregroundColor(.primary)
+                
+                HStack {
+                    Image(systemName: "dumbbell.fill")
+                        .foregroundColor(.blue)
+                    
+                    Text("Exercises: \(workout.exercises.count)")
+                        .foregroundColor(.secondary)
+                }
+                
+                if let description = workout.notes {
+                    Text(description)
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                        .lineLimit(2)
+                }
+                
+                NavigationLink(destination:WorkoutStartedView(workout: workout)) {
+                    Text("Start Workout")
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+            }
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color(.systemGray6))
+            .cornerRadius(10)
+        }
     }
     
 }
