@@ -41,23 +41,6 @@ struct WorkoutStartedView: View {
                     .cornerRadius(10)
                 }
                 
-                HStack {
-                    Button(action: stopTimer) {
-                        Text("Complete workout")
-                            .padding()
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
-                    }
-                    Button(action: stopTimer) {
-                        Text("discard workout")
-                            .padding()
-                            .background(Color.red)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
-                    }
-                    
-                }
             }
             .padding()
             
@@ -66,9 +49,19 @@ struct WorkoutStartedView: View {
         .onDisappear(perform: stopTimer)
         .navigationTitle(workout.title)
         .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .topBarLeading) {
                 Text(formattedTime)
                     .foregroundColor(.blue)
+            }
+            
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(action: stopTimer) {
+                    Text("Complete")
+                        .padding(10)
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
             }
         }
     }
