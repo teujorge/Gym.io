@@ -16,13 +16,13 @@ class WorkoutStartedViewModel:ObservableObject{
     var workoutTimerCancellable: AnyCancellable? = nil
     var restTimerCancellable: AnyCancellable? = nil
     @Published var isResting = false
-    @Published var currentExerciseId: String?
+    @Published var currentExercise: Exercise
+    @Published var isPresentingSetCompletedAlert = false
     
-    init(workout: Workout)
-    {
+    init(workout: Workout) {
         self.workout = workout
+        self.currentExercise = workout.exercises[0]
     }
-    
     
     func formattedTime(_ time:Int) -> String {
         let minutes = time / 60
@@ -49,12 +49,18 @@ class WorkoutStartedViewModel:ObservableObject{
     
     func startRestTimer() {
         restTimerCancellable?.cancel()  // Cancel any existing rest timer
-        restCounter = 0  // Reset the rest counter
+        restCounter = currentExercise.restDuration // Reset the rest counter
         
         restTimerCancellable = Timer.publish(every: 1.0, on: .main, in: .common)
             .autoconnect()
             .sink { _ in
-                self.restCounter += 1
+                self.restCounter -= 1
+                if self.restCounter <= 0 {
+                    self.stopRestTimer()
+                    self.isResting = false
+                    self.isPresentingSetCompletedAlert = true
+                    return
+                }
             }
     }
     
@@ -63,10 +69,15 @@ class WorkoutStartedViewModel:ObservableObject{
         restTimerCancellable = nil  // Set the cancellable to nil
     }
     
-    func completeSet(for exerciseId: String) {
-        stopRestTimer()
-        currentExerciseId = exerciseId
-        startRestTimer()
+    func completeSet(exerciseSet: ExerciseSet) {
+        print("Completing set for exercise with id: \(exerciseSet.id)")
+        
+        if let _currentExercise = workout.exercises.first(where: { $0.id == exerciseSet.exerciseId }) {
+            currentExercise = _currentExercise
+            startRestTimer()
+        } else {
+            print("Could not find exercise with id: \(exerciseSet.exerciseId)")
+        }
     }
     
 }

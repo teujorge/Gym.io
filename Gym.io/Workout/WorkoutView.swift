@@ -209,7 +209,7 @@ var _previewExercises: [Exercise] = [
         index: 3,
         name: "Plank",
         sets: [
-            ExerciseSet(index: 1, duration: 45, intensity: .low),
+            ExerciseSet(index: 1, duration: 45, intensity: .low, completedAt: Date()),
             ExerciseSet(index: 2, duration: 35, intensity: .low),
         ],
         isRepBased: false

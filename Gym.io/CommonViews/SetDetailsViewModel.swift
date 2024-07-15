@@ -15,10 +15,12 @@ class SetDetailsViewModel: ObservableObject {
     
     private var autoSave: Bool
     private var updateTimer: Timer?
+    private var onSetComplete: ((ExerciseSet) -> Void)?
     
-    init(exercise: Exercise, autoSave: Bool) {
+    init(exercise: Exercise, autoSave: Bool, onSetComplete: ((ExerciseSet) -> Void)?) {
         self.exercise = exercise
         self.autoSave = autoSave
+        self.onSetComplete = onSetComplete
     }
     
     private func onExerciseEdited() {
@@ -30,6 +32,12 @@ class SetDetailsViewModel: ObservableObject {
                 self?.saveUpdatedSet(set: set)
             }
         }
+    }
+    
+    func markSetAsCompleted(_ id: String) {
+        guard let index = exercise.sets.firstIndex(where: { $0.id == id }) else { return }
+        exercise.sets[index].completedAt = Date()
+        onSetComplete?(exercise.sets[index])
     }
     
     func addSet() {

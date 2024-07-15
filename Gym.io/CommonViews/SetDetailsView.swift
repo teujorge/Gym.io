@@ -20,15 +20,13 @@ struct SetDetailsView: View {
         ]
     }
     
-    init(exercise: Exercise, autoSave: Bool = true) {
-        viewModel = SetDetailsViewModel(exercise: exercise, autoSave: autoSave)
+    init(exercise: Exercise, autoSave: Bool = true, onSetComplete: ((ExerciseSet) -> Void)? = nil) {
+        viewModel = SetDetailsViewModel(exercise: exercise, autoSave: autoSave, onSetComplete: onSetComplete)
     }
     
     var body: some View {
         VStack(alignment: .center) {
-            LazyVGrid(columns: gridItems, alignment: .leading) {
-                headerView
-            }
+            headerView
             setsList
                 .transition(.move(edge: .bottom))
             
@@ -60,18 +58,18 @@ struct SetDetailsView: View {
     
     private var setsList: some View {
         List($viewModel.exercise.sets) { $exerciseSet in
-            LazyVGrid(columns: gridItems, alignment: .leading) {
+            LazyVGrid(columns: gridItems, alignment: .center) {
                 Text("\(exerciseSet.index)")
                 if viewModel.exercise.isRepBased {
                     TextField("Reps", value: $exerciseSet.reps, formatter: NumberFormatter())
-//                        .multilineTextAlignment(.center)
+                        .multilineTextAlignment(.center)
                         .keyboardType(.decimalPad)
                     TextField("Weight", value: $exerciseSet.weight, formatter: NumberFormatter())
-//                        .multilineTextAlignment(.center)
+                        .multilineTextAlignment(.center)
                         .keyboardType(.decimalPad)
                 } else {
                     TextField("Duration", value: $exerciseSet.duration, formatter: NumberFormatter())
-//                        .multilineTextAlignment(.center)
+                        .multilineTextAlignment(.center)
                         .keyboardType(.decimalPad)
                     Picker("", selection: $exerciseSet.intensity) {
                         ForEach(Intensity.allCases, id: \.self) { intensity in
@@ -82,11 +80,11 @@ struct SetDetailsView: View {
                     .pickerStyle(.segmented)
                 }
             }
+            .listRowBackground(exerciseSet.completedAt == nil ? nil : Color.green.opacity(0.7))
             .frame(minHeight: rowHeight)
-            .background(exerciseSet.completedAt == nil? .clear : .green)
             .swipeActions {
                 Button(action: {
-                    exerciseSet.completedAt = Date()
+                    viewModel.markSetAsCompleted(exerciseSet.id)
                 }) {
                     Label("Complete", systemImage: "checkmark")
                         .tint(.green)
@@ -106,7 +104,7 @@ struct SetDetailsView: View {
     }
     
     private var headerView: some View {
-        Group {
+        LazyVGrid(columns: gridItems, alignment: .center) {
             Text("Set")
             if viewModel.exercise.isRepBased {
                 Text("Reps")

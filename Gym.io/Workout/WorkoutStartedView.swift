@@ -19,7 +19,6 @@ struct WorkoutStartedView: View {
         ScrollView {
             VStack(alignment: .center) {
                 ForEach($viewModel.workout.exercises, id: \.id) { $exercise in
-                    
                     ExerciseCardView(exercise: $exercise, viewModel: viewModel)
                 }
             }
@@ -38,7 +37,7 @@ struct WorkoutStartedView: View {
                 Button(action: viewModel.stopWorkoutTimer) {
                     Text("Complete")
                         .padding(10)
-                        .background(Color.blue)
+                        .background(.blue)
                         .foregroundColor(.white)
                         .cornerRadius(10)
                 }
@@ -60,10 +59,14 @@ private struct ExerciseCardView: View {
             Text("Rest timer: \(viewModel.formattedTime(viewModel.restCounter))")
                 .font(.caption)
                 .foregroundColor(.blue)
-                .opacity(viewModel.currentExerciseId == exercise.id ? 1 : 0)
             
-            SetDetailsView(exercise: exercise)
-            
+            SetDetailsView(
+                exercise: exercise,
+                onSetComplete: { exerciseSet in
+                    viewModel.completeSet(exerciseSet: exerciseSet)
+                }
+            )
+
 //            Button(action: {
 //                viewModel.completeSet(for: exercise.id)
 //            }) {
@@ -74,11 +77,29 @@ private struct ExerciseCardView: View {
 //                    .cornerRadius(10)
 //            }
 //            .padding(.top)
+            
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
         .background(Color(.systemGray6))
         .cornerRadius(10)
+        .alert(isPresented: $viewModel.isPresentingSetCompletedAlert) {
+            Alert(
+                title: Text("Set completed"),
+                message: Text("Do you want to go to the next set?"),
+                primaryButton: .default(Text("Yes")) {
+                    // get current exercise index in list
+                    guard let index = viewModel.workout.exercises.firstIndex(where: { $0.id == exercise.id }) else { return }
+                    // get next exercise index
+                    let nextIndex = index + 1
+                    // check if next exercise is available
+                    guard nextIndex < viewModel.workout.exercises.count else { return }
+                    // set next exercise as current
+                    viewModel.currentExercise = viewModel.workout.exercises[nextIndex]
+                },
+                secondaryButton: .cancel()
+            )
+        }
     }
 }
 
