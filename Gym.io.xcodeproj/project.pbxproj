@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5320AA432C4594E20047A40F /* WorkoutStartedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5320AA422C4594E20047A40F /* WorkoutStartedViewModel.swift */; };
 		53A28C952C38500A00530B5F /* WorkoutsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53A28C942C38500A00530B5F /* WorkoutsView.swift */; };
 		53EB001A2C3C6859001E7C15 /* WorkoutStartedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53EB00192C3C6859001E7C15 /* WorkoutStartedView.swift */; };
 		F50097742C3D56C600D799C4 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50097732C3D56C600D799C4 /* AuthViewModel.swift */; };
@@ -51,6 +52,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5320AA422C4594E20047A40F /* WorkoutStartedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutStartedViewModel.swift; sourceTree = "<group>"; };
 		53A28C942C38500A00530B5F /* WorkoutsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutsView.swift; sourceTree = "<group>"; };
 		53EB00192C3C6859001E7C15 /* WorkoutStartedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutStartedView.swift; sourceTree = "<group>"; };
 		F50097732C3D56C600D799C4 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
@@ -184,6 +186,7 @@
 				F54B3C542C386A9D00171A6F /* WorkoutFormView.swift */,
 				F587500F2C3EF3A6005A54C5 /* WorkoutFormViewModel.swift */,
 				53EB00192C3C6859001E7C15 /* WorkoutStartedView.swift */,
+				5320AA422C4594E20047A40F /* WorkoutStartedViewModel.swift */,
 				F5D4A40A2C398C0F00E880A7 /* WorkoutModel.swift */,
 			);
 			path = Workout;
@@ -332,6 +335,7 @@
 				F5D4A4082C396CCC00E880A7 /* ChallengeFormView.swift in Sources */,
 				F50097792C3D701D00D799C4 /* Debounce.swift in Sources */,
 				F53B94E62C3E152800C79FAB /* ProfileViewModel.swift in Sources */,
+				5320AA432C4594E20047A40F /* WorkoutStartedViewModel.swift in Sources */,
 				F54B3C5A2C386C3300171A6F /* ExerciseFormView.swift in Sources */,
 				F54D32FD2C40348A00B1A6B3 /* HTTPClient.swift in Sources */,
 				F5D91C1D2C3CF144004356BC /* SignUpView.swift in Sources */,

@@ -83,9 +83,10 @@ struct SetDetailsView: View {
                 }
             }
             .frame(minHeight: rowHeight)
+            .background(exerciseSet.completedAt == nil? .clear : .green)
             .swipeActions {
                 Button(action: {
-                    viewModel.deleteSet(exerciseSet.id)
+                    exerciseSet.completedAt = Date()
                 }) {
                     Label("Complete", systemImage: "checkmark")
                         .tint(.green)
