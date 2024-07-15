@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SetDetailsView: View {
-    @ObservedObject var viewModel: SetDetailsViewModel
+    @StateObject var viewModel: SetDetailsViewModel
     
     let rowHeight = 40.0
     
@@ -21,7 +21,7 @@ struct SetDetailsView: View {
     }
     
     init(exercise: Exercise, autoSave: Bool = true, onSetComplete: ((ExerciseSet) -> Void)? = nil) {
-        viewModel = SetDetailsViewModel(exercise: exercise, autoSave: autoSave, onSetComplete: onSetComplete)
+        _viewModel = StateObject(wrappedValue: SetDetailsViewModel(exercise: exercise, autoSave: autoSave, onSetComplete: onSetComplete))
     }
     
     var body: some View {

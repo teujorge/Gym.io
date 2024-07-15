@@ -13,11 +13,13 @@ class WorkoutStartedViewModel:ObservableObject{
     @Published var workout: Workout
     @Published var workoutCounter = 0
     @Published var restCounter = 0
-    var workoutTimerCancellable: AnyCancellable? = nil
-    var restTimerCancellable: AnyCancellable? = nil
     @Published var isResting = false
     @Published var currentExercise: Exercise
     @Published var isPresentingSetCompletedAlert = false
+    @Published var initState: LoaderState = .idle
+    
+    var workoutTimerCancellable: AnyCancellable? = nil
+    var restTimerCancellable: AnyCancellable? = nil
     
     init(workout: Workout) {
         self.workout = workout
@@ -78,6 +80,34 @@ class WorkoutStartedViewModel:ObservableObject{
         } else {
             print("Could not find exercise with id: \(exerciseSet.exerciseId)")
         }
+    }
+    
+    func initiateWorkout() {
+        startWorkoutTimer()
+        Task { await createNewWorkout() }
+    }
+    
+    private func createNewWorkout() async -> Workout? {
+        initState = .loading
+        workout.title = "COPY!!!" // TODO: remove this line
+        let result: HTTPResponse<Workout> = await sendRequest(endpoint: "workouts", body: workout, method: .POST)
+        
+        switch result {
+        case .success(let newWorkout):
+            print("Workout created: \(newWorkout)")
+            DispatchQueue.main.async {
+                self.workout = newWorkout
+                self.initState = .success
+            }
+            return newWorkout
+        case .failure(let error):
+            print("Failed to create workout: \(error)")
+            DispatchQueue.main.async {
+                self.initState = .failure(error)
+            }
+        }
+        
+        return nil
     }
     
 }

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 class SetDetailsViewModel: ObservableObject {
     @Published var state: LoaderState = .idle
@@ -26,17 +27,29 @@ class SetDetailsViewModel: ObservableObject {
     private func onExerciseEdited() {
         print("Exercise edited")
         print("-> all sets: \(exercise.sets.map { $0.reps })")
-        updateTimer?.invalidate()
+        
+        updateTimer?.invalidate() // Invalidate any existing timer
         updateTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { [weak self] _ in
-            for set in self?.exercise.sets ?? [] {
-                self?.saveUpdatedSet(set: set)
-            }
+            self?.saveUpdatedExercise()
+        }
+    }
+
+    private func saveUpdatedExercise() {
+        print("Saving updated exercise!!!!! :)")
+        guard autoSave else { return }
+        print("auto save is on")
+        Task {
+            let response: HTTPResponse<Exercise> = await sendRequest(endpoint: "exercises/\(exercise.id)", body: exercise, method: .PUT)
+            handleResponse(response)
         }
     }
     
     func markSetAsCompleted(_ id: String) {
+        print("Marking set as completed - 1")
         guard let index = exercise.sets.firstIndex(where: { $0.id == id }) else { return }
+        print("Marking set as completed - 2")
         exercise.sets[index].completedAt = Date()
+        onExerciseEdited()
         onSetComplete?(exercise.sets[index])
     }
     
