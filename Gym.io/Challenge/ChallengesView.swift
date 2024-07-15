@@ -19,13 +19,12 @@ struct ChallengesView: View {
                 VStack {
                     ForEach(currentUser.challenges.indices, id: \.self) { index in
                         ChallengeCardView(challenge: currentUser.challenges[index])
-                            .transition(.asymmetric(
-                                insertion: .scale(scale: 0.85)
-                                    .combined(with: .opacity)
-                                    .combined(with: .move(edge: .bottom)),
-                                removal: .opacity
-                            ))
-//                            .animation(.easeInOut(duration: 0.5).delay(Double(index) * 0.1), value: currentUser.challenges[index].id)
+                            .transition(
+                                .scale(scale: 0.85)
+                                .combined(with: .opacity)
+                                .combined(with: .move(edge: .bottom))
+                            )
+                        //                            .animation(.easeInOut(duration: 0.5).delay(Double(index) * 0.1), value: currentUser.challenges[index].id)
                     }
                 }
                 .padding()
@@ -82,7 +81,7 @@ struct ChallengesView: View {
             }
         }
     }
-
+    
 }
 
 struct ChallengeCardView: View {

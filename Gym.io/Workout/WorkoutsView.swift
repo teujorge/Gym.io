@@ -44,12 +44,11 @@ struct WorkoutsView: View {
                     
                     ForEach(filteredWorkouts.indices, id: \.self) { index in
                         WorkoutCardView(workout: currentUser.workouts[index])
-                            .transition(.asymmetric(
-                                insertion: .scale(scale: 0.85)
-                                    .combined(with: .opacity)
-                                    .combined(with: .move(edge: .bottom)),
-                                removal: .opacity
-                            ))
+                            .transition(
+                                .scale(scale: 0.85)
+                                .combined(with: .opacity)
+                                .combined(with: .move(edge: .bottom))
+                            )
                     }
                     
                     if (viewModel.state != .idle) {
