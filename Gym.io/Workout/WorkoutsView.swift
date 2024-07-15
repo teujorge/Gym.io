@@ -23,8 +23,7 @@ struct WorkoutsView: View {
     var body: some View {
         NavigationView {
             ScrollView {
-                VStack(spacing: 20) {
-                    
+                VStack {
                     HStack {
                         TextField("Search", text: $viewModel.searchText)
                             .padding()
@@ -40,7 +39,6 @@ struct WorkoutsView: View {
                         .background(Color.blue.opacity(0.2))
                         .cornerRadius(20)
                     }
-                    
                     
                     ForEach(filteredWorkouts.indices, id: \.self) { index in
                         WorkoutCardView(workout: currentUser.workouts[index])

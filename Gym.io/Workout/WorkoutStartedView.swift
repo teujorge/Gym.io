@@ -25,8 +25,7 @@ struct WorkoutStartedView: View {
     
     var body: some View {
         ScrollView {
-            VStack(alignment: .center, spacing: 20) {
-                
+            VStack(alignment: .center) {
                 ForEach($workout.exercises, id: \.id) { $exercise in
                     VStack(alignment: .leading) {
                         Text(exercise.name)
@@ -40,10 +39,8 @@ struct WorkoutStartedView: View {
                     .background(Color(.systemGray6))
                     .cornerRadius(10)
                 }
-                
             }
             .padding()
-            
         }
         .onAppear(perform: startTimer)
         .onDisappear(perform: stopTimer)
