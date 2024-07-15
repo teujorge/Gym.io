@@ -19,6 +19,7 @@ class Exercise: Codable, Identifiable, ObservableObject {
     @Published var completedAt: Date?
     @Published var sets: [ExerciseSet]
     @Published var isRepBased: Bool
+    @Published var restDuration: Int
     
     init(
         createdAt: Date = Date(),
@@ -30,7 +31,8 @@ class Exercise: Codable, Identifiable, ObservableObject {
         notes: String? = nil,
         completedAt: Date? = nil,
         sets: [ExerciseSet] = [],
-        isRepBased: Bool
+        isRepBased: Bool,
+        restDuration: Int = 90
     ) {
         self.createdAt = createdAt
         self.updatedAt = updatedAt
@@ -42,6 +44,7 @@ class Exercise: Codable, Identifiable, ObservableObject {
         self.completedAt = completedAt
         self.sets = sets
         self.isRepBased = isRepBased
+        self.restDuration = restDuration
     }
     
     enum CodingKeys: String, CodingKey {
@@ -55,6 +58,7 @@ class Exercise: Codable, Identifiable, ObservableObject {
         case completedAt
         case sets
         case isRepBased
+        case restDuration
     }
     
     required init(from decoder: Decoder) throws {
@@ -69,6 +73,7 @@ class Exercise: Codable, Identifiable, ObservableObject {
         completedAt = try container.decodeIfPresent(Date.self, forKey: .completedAt)
         sets = try container.decodeIfPresent([ExerciseSet].self, forKey: .sets) ?? []
         isRepBased = try container.decode(Bool.self, forKey: .isRepBased)
+        restDuration = try container.decode(Int.self, forKey: .restDuration)
     }
     
     func encode(to encoder: Encoder) throws {
@@ -83,6 +88,7 @@ class Exercise: Codable, Identifiable, ObservableObject {
         try container.encode(completedAt, forKey: .completedAt)
         try container.encode(sets, forKey: .sets)
         try container.encode(isRepBased, forKey: .isRepBased)
+        try container.encode(restDuration, forKey: .restDuration)
     }
 }
 
