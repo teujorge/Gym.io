@@ -10,30 +10,27 @@ import SwiftUI
 struct SetDetailsView: View {
     @ObservedObject var viewModel: SetDetailsViewModel
     
+    let rowHeight = 40.0
+    
+    private var gridItems: [GridItem] {
+        [
+            GridItem(.flexible()),
+            GridItem(.flexible()),
+            GridItem(.flexible())
+        ]
+    }
+    
     init(exercise: Exercise, autoSave: Bool = true) {
         viewModel = SetDetailsViewModel(exercise: exercise, autoSave: autoSave)
     }
     
     var body: some View {
         VStack(alignment: .center) {
-            LazyVGrid(
-                columns: [
-                    GridItem(.flexible()),
-                    GridItem(.flexible()),
-                    GridItem(.flexible()),
-                    GridItem(.flexible())],
-                alignment: .center
-            ) {
+            LazyVGrid(columns: gridItems, alignment: .leading) {
                 headerView
-                setsList
-                    .transition(.move(edge: .bottom))
             }
-            .toolbar { ToolbarItem(placement: .keyboard) {
-                HStack {
-                    Spacer()
-                    Button("Done", action: dismissKeyboard)
-                }
-            }}
+            setsList
+                .transition(.move(edge: .bottom))
             
             HStack {
                 Button(action: viewModel.addSet) {
@@ -47,28 +44,34 @@ struct SetDetailsView: View {
                     .background(Color.blue.opacity(0.2))
                     .cornerRadius(20)
                 }
-                .buttonStyle(PlainButtonStyle())
+                .buttonStyle(.plain)
                 LoaderView(size: 25, weight: .ultraLight, state: viewModel.state)
             }
             .padding(.horizontal)
         }
         .animation(.easeInOut, value: viewModel.exercise.sets.count)
+        .toolbar { ToolbarItem(placement: .keyboard) {
+            HStack {
+                Spacer()
+                Button("Done", action: dismissKeyboard)
+            }
+        }}
     }
     
     private var setsList: some View {
-        ForEach($viewModel.exercise.sets) { $exerciseSet in
-            GridRow(alignment: .center) {
+        List($viewModel.exercise.sets) { $exerciseSet in
+            LazyVGrid(columns: gridItems, alignment: .leading) {
                 Text("\(exerciseSet.index)")
                 if viewModel.exercise.isRepBased {
                     TextField("Reps", value: $exerciseSet.reps, formatter: NumberFormatter())
-                        .multilineTextAlignment(.center)
+//                        .multilineTextAlignment(.center)
                         .keyboardType(.decimalPad)
                     TextField("Weight", value: $exerciseSet.weight, formatter: NumberFormatter())
-                        .multilineTextAlignment(.center)
+//                        .multilineTextAlignment(.center)
                         .keyboardType(.decimalPad)
                 } else {
                     TextField("Duration", value: $exerciseSet.duration, formatter: NumberFormatter())
-                        .multilineTextAlignment(.center)
+//                        .multilineTextAlignment(.center)
                         .keyboardType(.decimalPad)
                     Picker("", selection: $exerciseSet.intensity) {
                         ForEach(Intensity.allCases, id: \.self) { intensity in
@@ -78,66 +81,44 @@ struct SetDetailsView: View {
                     }
                     .pickerStyle(.segmented)
                 }
-                HStack {
-                    Button(action: { viewModel.deleteSet(exerciseSet.id) }) {
-                        Image(systemName: "trash")
-                            .font(.caption)
-                            .foregroundColor(.red)
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    Toggle("", isOn: .constant(false))
-                        .toggleStyle(.switch)
+            }
+            .frame(minHeight: rowHeight)
+            .swipeActions {
+                Button(action: {
+                    viewModel.deleteSet(exerciseSet.id)
+                }) {
+                    Label("Complete", systemImage: "checkmark")
+                        .tint(.green)
+                }
+                Button(role: .destructive, action: {
+                    viewModel.deleteSet(exerciseSet.id)
+                }) {
+                    Label("Delete", systemImage: "trash")
                 }
             }
         }
+        .listStyle(.plain)
+        .frame(minHeight: (rowHeight + 22) * Double(viewModel.exercise.sets.count))
+        .cornerRadius(10)
+        .padding(0)
+        .background(.clear)
     }
     
     private var headerView: some View {
-        GridRow(alignment: .center) {
-            VStack {
-                Image(systemName: "number")
-                    .fontWeight(.semibold)
-                Text("Set")
-                    .font(.caption2)
-            }
+        Group {
+            Text("Set")
             if viewModel.exercise.isRepBased {
-                VStack {
-                    Image(systemName: "arrow.up.arrow.down")
-                        .fontWeight(.semibold)
-                    Text("Reps")
-                        .font(.caption2)
-                }
-                VStack {
-                    Image(systemName: "scalemass")
-                        .fontWeight(.semibold)
-                    Text("Kg")
-                        .font(.caption2)
-                }
+                Text("Reps")
+                Text("Kg")
             } else {
-                VStack {
-                    Image(systemName: "timer")
-                        .fontWeight(.semibold)
-                    Text("Sec")
-                        .font(.caption2)
-                }
-                VStack {
-                    Image(systemName: "flame")
-                        .fontWeight(.semibold)
-                    Text("Intensity")
-                        .font(.caption2)
-                }
-            }
-            VStack {
-                Image(systemName: "wand.and.rays")
-                    .fontWeight(.semibold)
-                Text("Act")
-                    .font(.caption2)
+                Text("Sec")
+                Text("Intensity")
             }
         }
-        .frame(minHeight: 40)
     }
 }
 
 #Preview {
     SetDetailsView(exercise: _previewExercises[1], autoSave: false)
 }
+
