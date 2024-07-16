@@ -8,15 +8,16 @@
 import SwiftUI
 
 struct WorkoutsView: View {
-    
     @EnvironmentObject var currentUser: User
     @StateObject private var viewModel = WorkoutsViewModel()
     
     var filteredWorkouts: [Workout] {
+        let incompleteWorkouts = currentUser.workouts.filter { $0.completedAt == nil }
+        
         if viewModel.searchText.isEmpty {
-            return currentUser.workouts
+            return incompleteWorkouts
         } else {
-            return currentUser.workouts.filter { $0.title.localizedCaseInsensitiveContains(viewModel.searchText) }
+            return incompleteWorkouts.filter { $0.title.localizedCaseInsensitiveContains(viewModel.searchText) }
         }
     }
     
@@ -72,7 +73,13 @@ struct WorkoutsView: View {
         .onAppear { Task {
             let workouts = await viewModel.fetchWorkouts(for: currentUser.id)
             if let workouts = workouts {
-                currentUser.workouts = workouts
+                for workout in workouts {
+                    if let index = currentUser.workouts.firstIndex(where: { $0.id == workout.id }) {
+                        currentUser.workouts[index] = workout
+                    } else {
+                        currentUser.workouts.append(workout)
+                    }
+                }
             }
         }}
     }

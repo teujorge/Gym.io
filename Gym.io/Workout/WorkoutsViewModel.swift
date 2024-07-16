@@ -38,7 +38,7 @@ class WorkoutsViewModel: ObservableObject {
             self.state = .loading
         }
         
-        let result: HTTPResponse<[Workout]> = await sendRequest(endpoint: "workouts?findMany=true&includeAll=true&ownerId=\(userId)", body: nil, method: .GET)
+        let result: HTTPResponse<[Workout]> = await sendRequest(endpoint: "workouts?findMany=true&includeAll=true&isTemplate=true&ownerId=\(userId)", body: nil, method: .GET)
                 
         switch result {
         case .success(let workouts):

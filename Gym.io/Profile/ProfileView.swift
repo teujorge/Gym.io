@@ -12,6 +12,10 @@ struct ProfileView: View {
     @EnvironmentObject var currentUser: User
     @StateObject var viewModel = ProfileViewModel()
     
+    var filteredWorkouts: [Workout] {
+        return currentUser.workouts.filter { $0.completedAt != nil }
+    }
+    
     var body: some View {
         NavigationView {
             ScrollView {
@@ -147,7 +151,25 @@ struct ProfileView: View {
                     }
                     .padding(.horizontal)
                     
-                    Spacer()
+                    VStack {
+                        ForEach(filteredWorkouts) { workout in
+                            WorkoutCardView(workout: workout)
+                        }
+                    }
+                    .onAppear {
+                        Task {
+                            if let completedWorkouts = await viewModel.fetchWorkouts(for: currentUserId) {
+                                // match by id and replace the workout, otherwise append
+                                for workout in completedWorkouts {
+                                    if let index = currentUser.workouts.firstIndex(where: { $0.id == workout.id }) {
+                                        currentUser.workouts[index] = workout
+                                    } else {
+                                        currentUser.workouts.append(workout)
+                                    }
+                                }
+                            }
+                        }
+                    }
                     
                     HStack {
                         Button(action: {

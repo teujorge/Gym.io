@@ -9,7 +9,7 @@ import Foundation
 
 class ProfileViewModel: ObservableObject {
     
-    func editUser(name: String, username: String) async -> User? {        
+    func editUser(name: String, username: String) async -> User? {
         guard !(name.isEmpty && username.isEmpty) else {
             print("Please provide name or username to update")
             return nil
@@ -39,6 +39,29 @@ class ProfileViewModel: ObservableObject {
         case .failure(let error):
             print("Failed to delete user: \(error)")
             return false
+        }
+    }
+    
+    func fetchWorkouts(for userId: String) async -> [Workout]? {
+//        DispatchQueue.main.async {
+//            self.state = .loading
+//        }
+        
+        let result: HTTPResponse<[Workout]> = await sendRequest(endpoint: "workouts?findMany=true&includeAll=true&isTemplate=false&ownerId=\(userId)", body: nil, method: .GET)
+                
+        switch result {
+        case .success(let workouts):
+            print("Workouts fetched: \(workouts)")
+//            DispatchQueue.main.async {
+//                self.state = .success
+//            }
+            return workouts
+        case .failure(let error):
+            print("Failed to fetch workouts: \(error)")
+//            DispatchQueue.main.async {
+//                self.state = .failure(error)
+//            }
+            return nil
         }
     }
     

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct WorkoutStartedView: View {
+    @Environment (\.presentationMode) var presentationMode
     @StateObject var viewModel: WorkoutStartedViewModel
     
     init(workout:Workout){
@@ -31,9 +32,11 @@ struct WorkoutStartedView: View {
                 Text(viewModel.formattedTime(viewModel.workoutCounter))
                     .foregroundColor(.blue)
             }
-            
             ToolbarItem(placement: .topBarTrailing) {
-                Button(action: viewModel.stopWorkoutTimer) {
+                Button(action: {
+                    viewModel.stopWorkoutTimer()
+                    presentationMode.wrappedValue.dismiss()
+                }) {
                     Text("Complete")
                         .padding(10)
                         .background(.blue)

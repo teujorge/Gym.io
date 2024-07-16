@@ -8,7 +8,7 @@
 import SwiftUI
 import Combine
 
-class WorkoutStartedViewModel:ObservableObject{
+class WorkoutStartedViewModel: ObservableObject{
     
     @Published var workout: Workout
     @Published var workoutCounter = 0
@@ -89,7 +89,8 @@ class WorkoutStartedViewModel:ObservableObject{
     
     private func createNewWorkout() async -> Workout? {
         initState = .loading
-        workout.title = "COPY!!!" // TODO: remove this line
+        workout.title = "TEST:\(workout.title)"
+        workout.completedAt = Date()
         let result: HTTPResponse<Workout> = await sendRequest(endpoint: "workouts", body: workout, method: .POST)
         
         switch result {
