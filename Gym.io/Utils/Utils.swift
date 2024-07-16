@@ -25,6 +25,22 @@ func decodeDate<K: CodingKey>(from container: KeyedDecodingContainer<K>, forKey 
     }
 }
 
+/// Decodes a nullable date from a string using the ISO8601DateFormatter.
+func decodeNullableDate<K: CodingKey>(from container: KeyedDecodingContainer<K>, forKey key: K) throws -> Date? {
+    guard let dateString = try container.decodeIfPresent(String.self, forKey: key) else {
+        return nil
+    }
+    
+    let dateFormatter = ISO8601DateFormatter()
+    dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+
+    if let date = dateFormatter.date(from: dateString) {
+        return date
+    } else {
+        throw DecodingError.dataCorruptedError(forKey: key, in: container, debugDescription: "Date string does not match format expected by formatter.")
+    }
+}
+
 /// Gets and Set current user id from UserDefaults
 var currentUserId: String {
     get {
