@@ -33,7 +33,7 @@ class SetDetailsViewModel: ObservableObject {
             self?.saveUpdatedExercise()
         }
     }
-
+    
     private func saveUpdatedExercise() {
         print("Saving updated exercise!!!!! :)")
         guard autoSave else { return }
@@ -43,15 +43,19 @@ class SetDetailsViewModel: ObservableObject {
             handleResponse(response)
         }
     }
-    
-    func markSetAsCompleted(_ id: String) {
-        print("Marking set as completed - 1")
+    func toggleSetCompletion(_ id: String) {
         guard let index = exercise.sets.firstIndex(where: { $0.id == id }) else { return }
-        print("Marking set as completed - 2")
-        exercise.sets[index].completedAt = Date()
+        
+        if exercise.sets[index].completedAt == nil {
+            exercise.sets[index].completedAt = Date()
+            
+        }else{
+            exercise.sets[index].completedAt = nil
+        }
         onExerciseEdited()
         onSetComplete?(exercise.sets[index])
     }
+    
     
     func addSet() {
         // Create a new set with a temporary id

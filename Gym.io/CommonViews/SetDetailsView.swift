@@ -9,11 +9,11 @@ import SwiftUI
 
 struct SetDetailsView: View {
     @StateObject var viewModel: SetDetailsViewModel
-    
     let rowHeight = 40.0
     
     private var gridItems: [GridItem] {
         [
+            GridItem(.flexible()),
             GridItem(.flexible()),
             GridItem(.flexible()),
             GridItem(.flexible())
@@ -67,6 +67,8 @@ struct SetDetailsView: View {
                     TextField("Weight", value: $exerciseSet.weight, formatter: NumberFormatter())
                         .multilineTextAlignment(.center)
                         .keyboardType(.decimalPad)
+                    
+                                        
                 } else {
                     TextField("Duration", value: $exerciseSet.duration, formatter: NumberFormatter())
                         .multilineTextAlignment(.center)
@@ -78,23 +80,28 @@ struct SetDetailsView: View {
                         }
                     }
                     .pickerStyle(.segmented)
+                    
                 }
+                
+                Button(action: {
+                    viewModel.toggleSetCompletion(exerciseSet.id)
+                }) {
+                    Image(systemName: exerciseSet.completedAt == nil ? "square" : "checkmark.square")
+                        .foregroundColor(exerciseSet.completedAt == nil ? .primary : .green)
+                }
+                .transition(.opacity)
+
             }
             .listRowBackground(exerciseSet.completedAt == nil ? nil : Color.green.opacity(0.7))
             .frame(minHeight: rowHeight)
             .swipeActions {
-                Button(action: {
-                    viewModel.markSetAsCompleted(exerciseSet.id)
-                }) {
-                    Label("Complete", systemImage: "checkmark")
-                        .tint(.green)
-                }
                 Button(role: .destructive, action: {
                     viewModel.deleteSet(exerciseSet.id)
                 }) {
                     Label("Delete", systemImage: "trash")
                 }
             }
+            .animation(.easeInOut, value: exerciseSet.completedAt)
         }
         .listStyle(.plain)
         .frame(minHeight: (rowHeight + 22) * Double(viewModel.exercise.sets.count))
@@ -109,15 +116,17 @@ struct SetDetailsView: View {
             if viewModel.exercise.isRepBased {
                 Text("Reps")
                 Text("Kg")
+                
             } else {
                 Text("Sec")
                 Text("Intensity")
             }
+            Image(systemName: "checkmark")
         }
     }
 }
 
 #Preview {
-    SetDetailsView(exercise: _previewExercises[1], autoSave: false)
+    SetDetailsView(exercise: _previewExercises[0], autoSave: false)
 }
 
