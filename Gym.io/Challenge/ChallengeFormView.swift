@@ -8,87 +8,29 @@
 import SwiftUI
 
 struct ChallengeFormView: View {
-    
     @EnvironmentObject var currentUser: User
     @StateObject var viewModel: ChallengeFormViewModel
     
     var body: some View {
         NavigationView {
             Form {
-                
-                // Details
                 Section(header: Text("Challenge Details")) {
                     TextField("Name", text: $viewModel.challenge.name)
                     TextField("Description", text: $viewModel.challenge.notes)
                     DatePicker("Start Date", selection: $viewModel.challenge.startAt, displayedComponents: .date)
                     DatePicker("End Date", selection: $viewModel.challenge.endAt, displayedComponents: .date)
                 }
-                
-                // Rules
-                Section(header: Text("Rules")) {
-                    Stepper(value: $viewModel.challenge.pointsPerKg, in: 0...100) {
-                        HStack {
-                            Text(viewModel.challenge.pointsPerKg.description)
-                            Text("points per kgs")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
-                    }
-                    Stepper(value: $viewModel.challenge.pointsPerRep, in: 0...100) {
-                        HStack {
-                            Text(viewModel.challenge.pointsPerRep.description)
-                            Text("points per reps")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
-                    }
-                    Stepper(value: $viewModel.challenge.pointsPerHour, in: 0...100) {
-                        HStack {
-                            Text(viewModel.challenge.pointsPerHour.description)
-                            Text("points per hour")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
-                    }
-                }
-                
-                // Participants
-                Section(header: Text("Participants")) {
-                    List {
-                        ForEach(viewModel.challenge.participants, id: \.id) { participant in
-                            HStack {
-                                Text(participant.name)
-                                Spacer()
-                                Button(action: {
-                                    viewModel.challenge.participants.removeAll { $0.id == participant.id }
-                                }) {
-                                    Image(systemName: "trash")
-                                        .foregroundColor(.red)
-                                }
-                            }
-                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                                Button(action: {
-                                    viewModel.challenge.participants.removeAll { $0.id == participant.id }
-                                }) {
-                                    Image(systemName: "trash")
-                                        .foregroundColor(.red)
-                                }
-                            }
-                        }
-                    }
-                }
-                
-                // Find Users
+                RulesSectionView(challenge: $viewModel.challenge)
+                ParticipantsSectionView(participants: $viewModel.challenge.participants)
                 FindUsersView { user in
                     viewModel.challenge.participants.append(user)
                 }
-                
             }
             .navigationTitle(viewModel.isEditing ? "Edit Challenge" : "New Challenge")
             .toolbar {
                 if viewModel.isEditing {
                     ToolbarItem(placement: .destructiveAction) {
-                        Button("Delete", action: viewModel.deleteChallenge)
+                        Button("Delete", action: { viewModel.isShowingActionSheet = true })
                             .foregroundColor(.red)
                     }
                 }
@@ -96,12 +38,103 @@ struct ChallengeFormView: View {
                     Button("Save", action: viewModel.saveChallenge)
                 }
             }
+            .sheet(isPresented: $viewModel.isShowingActionSheet) {
+                VStack {
+                    if viewModel.state == .loading {
+                        LoaderView()
+                    } else {
+                        Text("Are you sure?")
+                            .font(.headline)
+                            .padding()
+                        
+                        HStack {
+                            Button("Cancel") {
+                                viewModel.isShowingActionSheet = false
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .foregroundColor(.white)
+                            .background(.blue)
+                            .cornerRadius(10)
+                            
+                            Button("Delete") {
+                                viewModel.deleteChallenge()
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .foregroundColor(.white)
+                            .background(.red)
+                            .cornerRadius(10)
+                        }
+                        .frame(maxHeight: 50)
+                    }
+                }
+                .padding()
+                .presentationDetents([.height(150)])
+            }
         }
     }
 }
 
 
-struct FindUsersView: View {
+private struct ParticipantsSectionView: View {
+    @Binding var participants: [User]
+    
+    var body: some View {
+        Section(header: Text("Participants")) {
+            List {
+                ForEach(participants, id: \.id) { participant in
+                    ParticipantRow(participant: participant, participants: $participants)
+                }
+            }
+        }
+    }
+}
+
+private struct ParticipantRow: View {
+    var participant: User
+    @Binding var participants: [User]
+    
+    var body: some View {
+        HStack {
+            Text(participant.name)
+            Spacer()
+            Button(action: {
+                participants.removeAll { $0.id == participant.id }
+            }) {
+                Image(systemName: "trash").foregroundColor(.red)
+            }
+        }
+        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+            Button(action: {
+                participants.removeAll { $0.id == participant.id }
+            }) {
+                Image(systemName: "trash").foregroundColor(.red)
+            }
+        }
+    }
+}
+
+private struct RulesSectionView: View {
+    @Binding var challenge: Challenge
+    
+    var body: some View {
+        Section(header: Text("Rules")) {
+            Stepper(value: $challenge.pointsPerKg, in: 0...100) {
+                Text("\(challenge.pointsPerKg) points per kgs")
+            }
+            Stepper(value: $challenge.pointsPerRep, in: 0...100) {
+                Text("\(challenge.pointsPerRep) points per reps")
+            }
+            Stepper(value: $challenge.pointsPerHour, in: 0...100) {
+                Text("\(challenge.pointsPerHour) points per hour")
+            }
+        }
+    }
+}
+
+
+private struct FindUsersView: View {
     
     @State var users: [User] = []
     @State var searchText: String = ""

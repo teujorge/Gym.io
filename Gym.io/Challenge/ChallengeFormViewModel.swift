@@ -13,6 +13,7 @@ class ChallengeFormViewModel: ObservableObject {
     
     @Published var challenge: Challenge
     @Published var state: LoaderState = .idle
+    @Published var isShowingActionSheet = false
     
     private var onSave: (Challenge) -> Void
     private var onDelete: ((Challenge) -> Void)?
@@ -68,14 +69,17 @@ class ChallengeFormViewModel: ObservableObject {
     }
     
     private func saveRequest() async -> Challenge? {
+        state = .loading
+        isShowingActionSheet = true
         
         var result: HTTPResponse<Challenge>
-        
         if isEditing {
             result = await sendRequest(endpoint: "challenges/\(challenge.id)", body: challenge, method: .PUT)
         } else {
             result = await sendRequest(endpoint: "challenges", body: challenge, method: .POST)
         }
+        
+        isShowingActionSheet = false
         
         switch result {
         case .success(let challenge):
@@ -99,14 +103,15 @@ class ChallengeFormViewModel: ObservableObject {
     }
     
     private func deleteRequest() async -> Bool {
-        
+        state = .loading
+        isShowingActionSheet = true
         let result: HTTPResponse<EmptyBody> = await sendRequest(endpoint: "challenges/\(challenge.id)", method: .DELETE)
+        isShowingActionSheet = false
         
         switch result {
         case .success:
             print("Challenge deleted")
             DispatchQueue.main.async {
-                // TODO: self.currentUser.challenges = self.currentUser.challenges.filter { $0.id != self.challenge.id }
                 self.state = .success
             }
             return true

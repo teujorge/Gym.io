@@ -59,7 +59,6 @@ class Challenge: Codable, Equatable, Identifiable, ObservableObject {
         case name
         case notes
         case participants
-        case participantIds
     }
     
     required init(from decoder: Decoder) throws {
@@ -73,7 +72,7 @@ class Challenge: Codable, Equatable, Identifiable, ObservableObject {
         pointsPerKg = try container.decode(Int.self, forKey: .pointsPerKg)
         name = try container.decode(String.self, forKey: .name)
         notes = try container.decodeIfPresent(String.self, forKey: .notes) ?? ""
-        participants = try container.decodeIfPresent([User].self, forKey: .participants) ?? []
+        participants = (try? container.decodeIfPresent([User].self, forKey: .participants)) ?? []
     }
     
     func encode(to encoder: Encoder) throws {
@@ -88,7 +87,6 @@ class Challenge: Codable, Equatable, Identifiable, ObservableObject {
         try container.encode(name, forKey: .name)
         try container.encode(notes, forKey: .notes)
         try container.encode(participants, forKey: .participants)
-        try container.encode(participants.map(\.id), forKey: .participantIds)
     }
 }
 
