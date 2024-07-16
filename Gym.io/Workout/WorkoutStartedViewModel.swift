@@ -89,7 +89,7 @@ class WorkoutStartedViewModel: ObservableObject{
     
     private func createNewWorkout() async -> Workout? {
         initState = .loading
-        workout.title = "TEST:\(workout.title)"
+        workout.title = "\(workout.title) | (completed)"
         workout.completedAt = Date()
         let result: HTTPResponse<Workout> = await sendRequest(endpoint: "workouts", body: workout, method: .POST)
         
