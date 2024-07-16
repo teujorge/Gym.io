@@ -70,7 +70,7 @@ class Exercise: Codable, Identifiable, ObservableObject {
         name = try container.decode(String.self, forKey: .name)
         imageName = try container.decodeIfPresent(String.self, forKey: .imageName)
         notes = try container.decodeIfPresent(String.self, forKey: .notes)
-        completedAt = try container.decodeIfPresent(Date.self, forKey: .completedAt)
+        completedAt = try decodeNullableDate(from: container, forKey: .completedAt)
         sets = try container.decodeIfPresent([ExerciseSet].self, forKey: .sets) ?? []
         isRepBased = try container.decode(Bool.self, forKey: .isRepBased)
         restDuration = try container.decode(Int.self, forKey: .restDuration)
@@ -152,7 +152,7 @@ class ExerciseSet: Codable, Identifiable, ObservableObject {
         weight = try container.decode(Int.self, forKey: .weight)
         duration = try container.decode(Int.self, forKey: .duration)
         intensity = try container.decode(Intensity.self, forKey: .intensity)
-        completedAt = try container.decodeIfPresent(Date.self, forKey: .completedAt)
+        completedAt = try decodeNullableDate(from: container, forKey: .completedAt)
     }
     
     func encode(to encoder: Encoder) throws {

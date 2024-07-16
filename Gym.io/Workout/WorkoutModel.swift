@@ -61,7 +61,7 @@ class Workout: Codable, Identifiable, ObservableObject {
         ownerId = try container.decode(String.self, forKey: .ownerId)
         title = try container.decode(String.self, forKey: .title)
         notes = try container.decodeIfPresent(String.self, forKey: .notes)
-        completedAt = try container.decodeIfPresent(Date.self, forKey: .completedAt)
+        completedAt = try decodeNullableDate(from: container, forKey: .completedAt)
         owner = try container.decodeIfPresent(User.self, forKey: .owner)
         exercises = try container.decodeIfPresent([Exercise].self, forKey: .exercises) ?? []
     }
