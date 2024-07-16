@@ -87,12 +87,12 @@ struct SetDetailsView: View {
                     viewModel.toggleSetCompletion(exerciseSet.id)
                 }) {
                     Image(systemName: exerciseSet.completedAt == nil ? "square" : "checkmark.square")
-                        .foregroundColor(exerciseSet.completedAt == nil ? .primary : .green)
                 }
                 .transition(.opacity)
 
             }
             .listRowBackground(exerciseSet.completedAt == nil ? nil : Color.green.opacity(0.7))
+            .animation(.easeInOut, value: exerciseSet.completedAt)
             .frame(minHeight: rowHeight)
             .swipeActions {
                 Button(role: .destructive, action: {
@@ -101,7 +101,6 @@ struct SetDetailsView: View {
                     Label("Delete", systemImage: "trash")
                 }
             }
-            .animation(.easeInOut, value: exerciseSet.completedAt)
         }
         .listStyle(.plain)
         .frame(minHeight: (rowHeight + 22) * Double(viewModel.exercise.sets.count))
