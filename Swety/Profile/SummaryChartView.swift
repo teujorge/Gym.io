@@ -5,10 +5,10 @@
 //  Created by Matheus Jorge on 7/5/24.
 //
 
-// import Charts
 import SwiftUI
-import Foundation
-
+#if canImport(Charts)
+import Charts
+#endif
 
 enum SummaryRange: String, CaseIterable, Identifiable {
     case past6Months = "6 Months"
@@ -35,7 +35,7 @@ struct DataPoint: Identifiable {
 }
 
 struct SummaryChartView: View {
-
+    
     @EnvironmentObject var currentUser: User
     @State private var range: SummaryRange = .pastMonth
     @State private var type: SummaryType = .duration
@@ -112,42 +112,44 @@ struct SummaryChartView: View {
                 Spacer()
             }
             
-//            Chart {
-//                ForEach(filteredData, id: \.date) { item in
-//                    BarMark(
-//                        x: .value("Date", item.date),
-//                        y: .value(type.rawValue, {
-//                            switch type {
-//                            case .duration:
-//                                return Double(item.duration) / 3600 // Convert seconds to hours directly here
-//                            case .weight:
-//                                return Double(item.volume) // Directly use the volume
-//                            case .reps:
-//                                return Double(item.reps) // Directly use the reps
-//                            }
-//                        }())
-//                    )
-//                    .foregroundStyle(Color.accent)
-//                }
-//            }
-//            
-//            .chartYAxis {
-//                AxisMarks(position: .leading) {
-//                    AxisGridLine()
-//                    AxisTick()
-//                    AxisValueLabel()
-//                }
-//            }
-//            .chartXAxis {
-//                let totalDays = daysBetweenDates()
-//                let tickInterval = max(1, totalDays / 3)
-//                AxisMarks(values: .stride(by: .day, count: tickInterval)) {
-//                    AxisGridLine()
-//                    AxisTick()
-//                    AxisValueLabel(format: .dateTime.day().month())
-//                }
-//            }
-
+#if canImport(Charts)
+            Chart {
+                ForEach(filteredData, id: \.date) { item in
+                    BarMark(
+                        x: .value("Date", item.date),
+                        y: .value(type.rawValue, {
+                            switch type {
+                            case .duration:
+                                return Double(item.duration) / 3600 // Convert seconds to hours directly here
+                            case .weight:
+                                return Double(item.volume) // Directly use the volume
+                            case .reps:
+                                return Double(item.reps) // Directly use the reps
+                            }
+                        }())
+                    )
+                    .foregroundStyle(Color.accent)
+                }
+            }
+            
+            .chartYAxis {
+                AxisMarks(position: .leading) {
+                    AxisGridLine()
+                    AxisTick()
+                    AxisValueLabel()
+                }
+            }
+            .chartXAxis {
+                let totalDays = daysBetweenDates()
+                let tickInterval = max(1, totalDays / 3)
+                AxisMarks(values: .stride(by: .day, count: tickInterval)) {
+                    AxisGridLine()
+                    AxisTick()
+                    AxisValueLabel(format: .dateTime.day().month())
+                }
+            }
+#endif
+            
             Picker("Select Summary Range", selection: $range.animation()) {
                 ForEach(SummaryRange.allCases) { range in
                     Text(range.rawValue).tag(range)
