@@ -33,7 +33,10 @@ struct ExerciseFormView: View {
                     }
                     .pickerStyle(.segmented)
                 }
-                SetDetailsView(exercise: viewModel.exercise, autoSave: false)
+                Section {
+                    SetDetailsView(exercise: viewModel.exercise, autoSave: false)
+                }
+                .padding()
             }
             .navigationTitle(viewModel.isEditing ? "Edit Exercise" : "New Exercise")
             .toolbar {
@@ -41,6 +44,10 @@ struct ExerciseFormView: View {
                     leadingToolbarItem
                 }
                 trailingToolbarItem
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done", action: dismissKeyboard)
+                }
             }
         }
     }

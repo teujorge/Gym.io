@@ -14,7 +14,6 @@ struct ExerciseView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                // MARK: Header
                 VStack(alignment: .trailing) {
                     if let imageName = exercise.imageName {
                         Image(systemName: imageName)
@@ -29,7 +28,6 @@ struct ExerciseView: View {
                 }
                 .padding()
                 
-                // MARK: Instructions
                 if let instructions = exercise.notes {
                     VStack(alignment: .leading, spacing: 10) {
                         Text("Instructions")
@@ -40,11 +38,8 @@ struct ExerciseView: View {
                     .padding()
                 }
                 
-                // MARK: Details
                 SetDetailsView(exercise: exercise)
                 
-                
-                // MARK: Footer
                 Spacer()
                 Button(action: {
                     // Start exercise action
@@ -88,6 +83,10 @@ struct ExerciseView: View {
                 .padding(.horizontal, 8)
                 .background(Color.blue.opacity(0.2))
                 .cornerRadius(20)
+            }
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button("Done", action: dismissKeyboard)
             }
         }
     }

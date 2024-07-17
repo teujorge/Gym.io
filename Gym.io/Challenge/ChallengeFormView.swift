@@ -37,6 +37,10 @@ struct ChallengeFormView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save", action: viewModel.saveChallenge)
                 }
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done", action: dismissKeyboard)
+                }
             }
             .sheet(isPresented: $viewModel.isShowingActionSheet) {
                 VStack {

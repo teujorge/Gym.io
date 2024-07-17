@@ -77,6 +77,10 @@ struct WorkoutFormView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") { viewModel.save() }
                 }
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done", action: dismissKeyboard)
+                }
             }
             .sheet(isPresented: $viewModel.isPresentingExerciseForm) {
                 if let selectedExercise = viewModel.selectedExercise {

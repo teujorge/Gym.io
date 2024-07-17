@@ -69,19 +69,27 @@ struct WorkoutsView: View {
                     }
                 })
             }
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done", action: dismissKeyboard)
+                }
+            }
         }
-        .onAppear { Task {
-            let workouts = await viewModel.fetchWorkouts(for: currentUser.id)
-            if let workouts = workouts {
-                for workout in workouts {
-                    if let index = currentUser.workouts.firstIndex(where: { $0.id == workout.id }) {
-                        currentUser.workouts[index] = workout
-                    } else {
-                        currentUser.workouts.append(workout)
+        .onAppear {
+            Task {
+                let workouts = await viewModel.fetchWorkouts(for: currentUser.id)
+                if let workouts = workouts {
+                    for workout in workouts {
+                        if let index = currentUser.workouts.firstIndex(where: { $0.id == workout.id }) {
+                            currentUser.workouts[index] = workout
+                        } else {
+                            currentUser.workouts.append(workout)
+                        }
                     }
                 }
             }
-        }}
+        }
     }
     
 }

@@ -249,6 +249,10 @@ struct ProfileView: View {
                             .padding(.horizontal, 4)
                     }
                 }
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done", action: dismissKeyboard)
+                }
             }
         }
     }

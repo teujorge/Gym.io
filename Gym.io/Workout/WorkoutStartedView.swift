@@ -44,6 +44,10 @@ struct WorkoutStartedView: View {
                         .cornerRadius(10)
                 }
             }
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button("Done", action: dismissKeyboard)
+            }
         }
     }
 }

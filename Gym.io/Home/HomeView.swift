@@ -43,15 +43,15 @@ struct HomeView: View {
                                     .foregroundColor(.secondary)
                             }
                             Spacer()
-//                            NavigationLink(destination: {
-//                                WorkoutView(workout: _previewWorkouts[0])
-//                            }) {
-//                                Text("Start")
-//                                    .padding()
-//                                    .background(Color.blue)
-//                                    .foregroundColor(.white)
-//                                    .cornerRadius(8)
-//                            }
+                            //                            NavigationLink(destination: {
+                            //                                WorkoutView(workout: _previewWorkouts[0])
+                            //                            }) {
+                            //                                Text("Start")
+                            //                                    .padding()
+                            //                                    .background(Color.blue)
+                            //                                    .foregroundColor(.white)
+                            //                                    .cornerRadius(8)
+                            //                            }
                         }
                     }
                     .padding()
@@ -112,6 +112,12 @@ struct HomeView: View {
             }
             .navigationTitle("Home")
             .navigationBarHidden(true)
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done", action: dismissKeyboard)
+                }
+            }
         }
     }
 }

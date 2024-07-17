@@ -50,7 +50,15 @@ struct SignUpView: View {
         .cornerRadius(15)
         .shadow(radius: 10)
         .padding()
-        .animation(.easeInOut, value: viewModel.state) // Animates state changes
+        .animation(.easeInOut, value: viewModel.state)
+        .toolbar {
+            ToolbarItem(placement: .keyboard) {
+                HStack {
+                    Spacer()
+                    Button("Done", action: dismissKeyboard)
+                }
+            }
+        }
     }
 }
 
