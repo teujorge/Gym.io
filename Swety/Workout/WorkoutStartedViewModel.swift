@@ -26,13 +26,6 @@ class WorkoutStartedViewModel: ObservableObject{
         self.currentExercise = workout.exercises[0]
     }
     
-    func formattedTime(_ time:Int) -> String {
-        let minutes = time / 60
-        let seconds = time % 60
-        return String(format: "%02d:%02d", minutes, seconds)
-    }
-    
-    
     func startWorkoutTimer() {
         workoutTimerCancellable?.cancel()  // Cancel any existing timer
         workoutCounter = 0  // Reset the counter

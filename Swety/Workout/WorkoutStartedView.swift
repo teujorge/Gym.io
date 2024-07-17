@@ -29,7 +29,7 @@ struct WorkoutStartedView: View {
         .navigationTitle(viewModel.workout.title)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                Text(viewModel.formattedTime(viewModel.workoutCounter))
+                Text(formatTime(viewModel.workoutCounter))
                     .foregroundColor(.accent)
             }
             ToolbarItem(placement: .topBarTrailing) {
@@ -62,7 +62,7 @@ private struct ExerciseCardView: View {
                 .fontWeight(.semibold)
                 .foregroundColor(.accent)
             
-            Text("Rest timer: \(viewModel.formattedTime(viewModel.restCounter))")
+            Text("Rest timer: \(formatTime(viewModel.restCounter))")
                 .font(.caption)
                 .foregroundColor(.accent)
             
