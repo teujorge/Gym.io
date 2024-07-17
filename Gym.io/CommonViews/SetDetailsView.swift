@@ -127,7 +127,7 @@ struct SetDetailsView: View {
                 Image(systemName: "checkmark")
             }
         }
-        .fontWeight(.bold)
+        .fontWeight(.medium)
     }
 }
 
