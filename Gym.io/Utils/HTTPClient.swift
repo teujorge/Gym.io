@@ -22,7 +22,7 @@ enum HTTPMethod: String {
 struct EmptyBody: Codable {}
 
 func sendRequest<T: Codable>(endpoint: String, queryItems: [URLQueryItem]? = nil, body: Encodable? = nil, method: HTTPMethod) async -> HTTPResponse<T> {
-    let baseURL = "https://gym-io-api.vercel.app/"
+    let baseURL = "https://swety.fit/"
     var components = URLComponents(string: "\(baseURL)api/\(endpoint)")!
     if let queryItems = queryItems {
         components.queryItems = queryItems
