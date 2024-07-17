@@ -238,7 +238,7 @@ struct ProfileView: View {
                             .frame(width: 12, height: 12)
                             .foregroundColor(.accent)
                     }
-                    .padding(.verxtical, 4)
+                    .padding(.vertical, 4)
                     .padding(.horizontal, 8)
                     .background(Color.accent.opacity(0.2))
                     .cornerRadius(20)
