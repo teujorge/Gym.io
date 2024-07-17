@@ -125,51 +125,62 @@ struct ProfileView: View {
                     VStack(alignment: .leading, spacing: 10) {
                         Text("Workouts")
                             .font(.headline)
-                        ForEach(0..<3) { _ in
+                        ForEach(filteredWorkouts) { workout in
                             VStack(alignment: .leading) {
                                 HStack {
-                                    Text("guimell")
                                     Spacer()
-                                    Text("Thursday, Jun 20, 2024")
+                                    Text(workout.completedAt!, style: .date)
                                         .foregroundColor(.secondary)
                                 }
                                 .font(.subheadline)
-                                Text("1. Chest Shoulders and Triceps")
+                                Text(workout.title)
                                     .font(.headline)
-                                Text("Treino rápido")
-                                    .foregroundColor(.secondary)
+                                if let notes = workout.notes {
+                                    Text(notes)
+                                        .foregroundColor(.secondary)
+                                }
                                 HStack {
-                                    Text("Time")
-                                    Spacer()
-                                    Text("Volume")
+                                    Text("Time: \(viewModel.formatTime(workout.updatedAt.timeIntervalSince(workout.createdAt)))")
+                                    Text("Volume: \(viewModel.calculateVolume(for: workout))")
                                 }
                                 .foregroundColor(.secondary)
                                 Divider()
                             }
                             .padding()
                         }
+                        
+                        if viewModel.workoutsCursor != nil {
+                            HStack(alignment: .center) {
+                                Spacer()
+                                if viewModel.state == .loading {
+                                    LoaderView(size: 50)
+                                } else {
+                                    Button(action: updateUserWorkoutHistory) {
+                                        if case let .failure(error) = viewModel.state {
+                                            Text(error)
+                                        } else {
+                                            Text("Load More")
+                                        }
+                                    }
+                                    .padding()
+                                    .background(Color.blue)
+                                    .foregroundColor(Color.white)
+                                    .frame(height: 50)
+                                    .cornerRadius(10)
+                                }
+                                Spacer()
+                            }
+                            .transition(.opacity)
+                        }
                     }
                     .padding(.horizontal)
-                    
-                    VStack {
-                        ForEach(filteredWorkouts) { workout in
-                            WorkoutCardView(workout: workout)
-                        }
-                    }
-                    .onAppear {
-                        Task {
-                            if let completedWorkouts = await viewModel.fetchWorkouts(for: currentUserId) {
-                                // match by id and replace the workout, otherwise append
-                                for workout in completedWorkouts {
-                                    if let index = currentUser.workouts.firstIndex(where: { $0.id == workout.id }) {
-                                        currentUser.workouts[index] = workout
-                                    } else {
-                                        currentUser.workouts.append(workout)
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    .animation(.easeInOut, value: viewModel.state)
+                    .transition(
+                        .scale(scale: 0.85)
+                        .combined(with: .opacity)
+                        .combined(with: .move(edge: .bottom))
+                    )
+                    .onAppear(perform: updateUserWorkoutHistory)
                     
                     HStack {
                         Button(action: {
@@ -210,6 +221,7 @@ struct ProfileView: View {
                     }
                 }
                 .padding()
+                .animation(.easeInOut, value: currentUser.workouts.count)
             }
             .navigationTitle(currentUser.username)
             .navigationBarTitleDisplayMode(.inline)
@@ -256,6 +268,22 @@ struct ProfileView: View {
             }
         }
     }
+    
+    private func updateUserWorkoutHistory() {
+        Task {
+            if let completedWorkouts = await viewModel.fetchWorkouts(for: currentUserId) {
+                // match by id and replace the workout, otherwise append
+                for workout in completedWorkouts {
+                    if let index = currentUser.workouts.firstIndex(where: { $0.id == workout.id }) {
+                        currentUser.workouts[index] = workout
+                    } else {
+                        currentUser.workouts.append(workout)
+                    }
+                }
+            }
+        }
+    }
+    
 }
 
 
