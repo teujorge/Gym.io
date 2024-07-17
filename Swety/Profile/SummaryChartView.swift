@@ -26,23 +26,40 @@ enum SummaryType: String, CaseIterable, Identifiable {
     var id: String { self.rawValue }
 }
 
+struct DataPoint: Identifiable {
+    let id = UUID()
+    var date: Date
+    var duration: Int // Seconds
+    var volume: Int // Kg
+    var reps: Int
+}
+
 struct SummaryChartView: View {
-    
-    struct DataPoint: Identifiable {
-        let id = UUID()
-        var date: Date
-        var duration: Int // Seconds
-        var volume: Int // Kg
-        var reps: Int
-    }
-    
+
+    @EnvironmentObject var currentUser: User
     @State private var range: SummaryRange = .pastMonth
     @State private var type: SummaryType = .duration
-    @State private var allData = [DataPoint]()
     
     var filteredData: [DataPoint] {
+        var allData: [DataPoint] = []
+        currentUser.workouts.forEach { workout in
+            guard let completedAt = workout.completedAt else { return }
+            let dataPoint = DataPoint(
+                date: completedAt,
+                duration: Int(workout.updatedAt.timeIntervalSince(workout.createdAt).magnitude),
+                volume: calculateVolume(for: workout),
+                reps: workout.exercises.reduce(0) { total, exercise in
+                    total + exercise.sets.reduce(0) { setTotal, set in
+                        setTotal + set.reps
+                    }
+                }
+            )
+            allData.append(dataPoint)
+        }
+        
         let endDate = Date()
         let startDate: Date
+        
         switch range {
         case .pastMonth:
             startDate = Calendar.current.date(byAdding: .month, value: -1, to: endDate)!
@@ -51,6 +68,7 @@ struct SummaryChartView: View {
         case .past6Months:
             startDate = Calendar.current.date(byAdding: .month, value: -6, to: endDate)!
         }
+        
         return allData.filter { $0.date >= startDate && $0.date <= endDate }
     }
     
@@ -63,24 +81,6 @@ struct SummaryChartView: View {
         case .reps:
             return "\(filteredData.reduce(0) { $0 + $1.reps }) Reps"
         }
-    }
-    
-    private func loadData() {
-        let endDate = Date(timeIntervalSince1970: 1720195200) // July 5, 2024
-        let calendar = Calendar.current
-        
-        // Generate data for past 6 months
-        for i in 0..<20 {
-            if let date = calendar.date(byAdding: .day, value: -9 * i, to: endDate) {
-                let randDuration = Int.random(in: 3600...10800)
-                let randVolume = Int.random(in: 1...100)
-                let randReps = Int.random(in: 1...10)
-                allData.append(DataPoint(date: date, duration: randDuration, volume: randVolume, reps: randReps))
-            }
-        }
-        
-        // Sort the data by date because we added them in reverse order
-        allData = allData.sorted(by: { $0.date < $1.date })
     }
     
     private func daysBetweenDates() -> Int {
@@ -130,7 +130,7 @@ struct SummaryChartView: View {
 //                    .foregroundStyle(Color.accent)
 //                }
 //            }
-            
+//            
 //            .chartYAxis {
 //                AxisMarks(position: .leading) {
 //                    AxisGridLine()
@@ -157,7 +157,6 @@ struct SummaryChartView: View {
             .padding()
             
         }
-        .onAppear { loadData() }
     }
 }
 

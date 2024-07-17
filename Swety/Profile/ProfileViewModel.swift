@@ -12,20 +12,6 @@ class ProfileViewModel: ObservableObject {
     @Published var state: LoaderState = .idle
     var workoutsCursor: String? = nil
     
-    func formatTime(_ time: TimeInterval) -> String {
-        let hours = Int(time) / 3600
-        let minutes = (Int(time) % 3600) / 60
-        return String(format: "%02d:%02d", hours, minutes)
-    }
-    
-    func calculateVolume(for workout: Workout) -> Int {
-        return workout.exercises.reduce(0) { total, exercise in
-            total + exercise.sets.reduce(0) { setTotal, set in
-                setTotal + (set.reps ?? 0) * (set.weight ?? 0)
-            }
-        }
-    }
-    
     func editUser(name: String, username: String) async -> User? {
         guard !(name.isEmpty && username.isEmpty) else {
             print("Please provide name or username to update")
