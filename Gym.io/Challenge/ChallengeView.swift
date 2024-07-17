@@ -84,7 +84,7 @@ struct ChallengeView: View {
                 }
                 .padding(.vertical, 4)
                 .padding(.horizontal, 8)
-                .background(Color.blue.opacity(0.2))
+                .background(Color.accent.opacity(0.2))
                 .cornerRadius(20)
             }
         }
@@ -197,11 +197,11 @@ struct ParticipantRankingsView: View {
                                             .resizable()
                                             .scaledToFit()
                                             .frame(width: 12, height: 12)
-                                            .foregroundColor(.blue),
+                                            .foregroundColor(.accent),
                                         alignment: .center
                                     )
                                     .overlay(
-                                        Circle().stroke(.blue, lineWidth: 1)
+                                        Circle().stroke(.accent, lineWidth: 1)
                                     )
                             }
                             .offset(x: 15, y: 15)
@@ -265,7 +265,7 @@ struct PointCard: View {
         VStack {
             Image(systemName: icon)
                 .font(.largeTitle)
-                .foregroundColor(.blue)
+                .foregroundColor(.accent)
             Text(title)
                 .foregroundColor(.secondary)
             Text("\(points)")

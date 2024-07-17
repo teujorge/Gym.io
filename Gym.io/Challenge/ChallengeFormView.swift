@@ -58,7 +58,7 @@ struct ChallengeFormView: View {
                             .frame(maxWidth: .infinity)
                             .padding()
                             .foregroundColor(.white)
-                            .background(.blue)
+                            .background(.accent)
                             .cornerRadius(10)
                             
                             Button("Delete") {

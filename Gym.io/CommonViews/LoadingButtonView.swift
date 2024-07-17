@@ -23,7 +23,7 @@ struct LoadingButtonView: View {
                     .foregroundColor(disabled ? .gray : .white)
                     .padding()
                     .frame(maxWidth: .infinity)
-                    .background(disabled ? Color.blue.opacity(0.25) : Color.blue)
+                    .background(disabled ? Color.accent.opacity(0.25) : Color.accent)
                     .cornerRadius(10)
                     .shadow(radius: 5)
             default:

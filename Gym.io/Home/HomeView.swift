@@ -48,7 +48,7 @@ struct HomeView: View {
                             //                            }) {
                             //                                Text("Start")
                             //                                    .padding()
-                            //                                    .background(Color.blue)
+                            //                                    .background(Color.accent)
                             //                                    .foregroundColor(.white)
                             //                                    .cornerRadius(8)
                             //                            }

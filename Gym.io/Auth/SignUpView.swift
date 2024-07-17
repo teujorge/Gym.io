@@ -19,7 +19,7 @@ struct SignUpView: View {
             Text("Welcome!")
                 .font(.largeTitle)
                 .fontWeight(.bold)
-                .foregroundColor(.blue)
+                .foregroundColor(.accent)
                 .padding(.top)
             
             LabeledTextFieldView(

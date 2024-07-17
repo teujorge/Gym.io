@@ -29,7 +29,7 @@ struct WorkoutView: View {
                     Text("Start Workout")
                         .padding()
                         .frame(maxWidth: .infinity)
-                        .background(Color.blue)
+                        .background(Color.accent)
                         .foregroundColor(.white)
                         .cornerRadius(10)
                     
@@ -46,7 +46,7 @@ struct WorkoutView: View {
                                 Text(exercise.name)
                                     .font(.title2)
                                     .fontWeight(.semibold)
-                                    .foregroundColor(.blue)
+                                    .foregroundColor(.accent)
                             }
                             DetailsView(sets: exercise.sets, isRepBased: exercise.isRepBased)
                         }
@@ -66,16 +66,16 @@ struct WorkoutView: View {
                     Text("Edit")
                         .font(.caption)
                         .fontWeight(.bold)
-                        .foregroundColor(.blue)
+                        .foregroundColor(.accent)
                     Image(systemName: "gear")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 12, height: 12)
-                        .foregroundColor(.blue)
+                        .foregroundColor(.accent)
                 }
                 .padding(.vertical, 4)
                 .padding(.horizontal, 8)
-                .background(Color.blue.opacity(0.2))
+                .background(Color.accent.opacity(0.2))
                 .cornerRadius(20)
             }
         }

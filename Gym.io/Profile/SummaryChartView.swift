@@ -127,7 +127,7 @@ struct SummaryChartView: View {
 //                            }
 //                        }())
 //                    )
-//                    .foregroundStyle(Color.blue)
+//                    .foregroundStyle(Color.accent)
 //                }
 //            }
             
@@ -166,7 +166,7 @@ extension Button {
         self
             .padding(.vertical, 12)
             .padding(.horizontal, 16)
-            .background(inactive ? Color.gray.opacity(0.2) : Color.blue)
+            .background(inactive ? Color.gray.opacity(0.2) : Color.accent)
             .foregroundColor(inactive ? .primary : .white)
             .cornerRadius(10)
     }

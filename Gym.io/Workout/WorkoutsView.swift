@@ -28,16 +28,16 @@ struct WorkoutsView: View {
                     HStack {
                         TextField("Search", text: $viewModel.searchText)
                             .padding()
-                            .background(Color.blue.opacity(0.2))
+                            .background(Color.accent.opacity(0.2))
                             .cornerRadius(20)
                         
                         Button(action: { viewModel.isPresentingWorkoutForm.toggle() }) {
                             Text("New Workout")
                             Image(systemName: "plus.circle")
-                                .foregroundColor(.blue)
+                                .foregroundColor(.accent)
                         }
                         .padding()
-                        .background(Color.blue.opacity(0.2))
+                        .background(Color.accent.opacity(0.2))
                         .cornerRadius(20)
                     }
                     
@@ -108,7 +108,7 @@ struct WorkoutCardView: View {
                 
                 HStack {
                     Image(systemName: "dumbbell.fill")
-                        .foregroundColor(.blue)
+                        .foregroundColor(.accent)
                     
                     Text("Exercises: \(workout.exercises.count)")
                         .foregroundColor(.secondary)
@@ -125,7 +125,7 @@ struct WorkoutCardView: View {
                     Text("Start Workout")
                         .padding()
                         .frame(maxWidth: .infinity)
-                        .background(Color.blue)
+                        .background(Color.accent)
                         .foregroundColor(.white)
                         .cornerRadius(10)
                 }

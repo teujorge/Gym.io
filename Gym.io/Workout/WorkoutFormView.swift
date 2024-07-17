@@ -38,7 +38,7 @@ struct WorkoutFormView: View {
                                 Text(exercise.name)
                                 Spacer()
                                 Image(systemName: "line.horizontal.3")
-                                    .foregroundColor(.blue)
+                                    .foregroundColor(.accent)
                             }
                             
                             

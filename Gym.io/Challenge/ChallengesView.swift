@@ -45,16 +45,16 @@ struct ChallengesView: View {
                             Text("New")
                                 .font(.caption)
                                 .fontWeight(.bold)
-                                .foregroundColor(.blue)
+                                .foregroundColor(.accent)
                             Image(systemName: "star")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 12, height: 12)
-                                .foregroundColor(.blue)
+                                .foregroundColor(.accent)
                         }
                         .padding(.vertical, 4)
                         .padding(.horizontal, 8)
-                        .background(Color.blue.opacity(0.2))
+                        .background(Color.accent.opacity(0.2))
                         .cornerRadius(20)
                     }
                 }

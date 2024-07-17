@@ -30,7 +30,7 @@ struct WorkoutStartedView: View {
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Text(viewModel.formattedTime(viewModel.workoutCounter))
-                    .foregroundColor(.blue)
+                    .foregroundColor(.accent)
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Button(action: {
@@ -39,7 +39,7 @@ struct WorkoutStartedView: View {
                 }) {
                     Text("Complete")
                         .padding(10)
-                        .background(.blue)
+                        .background(Color.accent)
                         .foregroundColor(.white)
                         .cornerRadius(10)
                 }
@@ -60,11 +60,11 @@ private struct ExerciseCardView: View {
             Text(exercise.name)
                 .font(.title2)
                 .fontWeight(.semibold)
-                .foregroundColor(.blue)
+                .foregroundColor(.accent)
             
             Text("Rest timer: \(viewModel.formattedTime(viewModel.restCounter))")
                 .font(.caption)
-                .foregroundColor(.blue)
+                .foregroundColor(.accent)
             
             SetDetailsView(
                 exercise: exercise,

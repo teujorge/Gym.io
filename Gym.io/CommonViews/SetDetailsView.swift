@@ -38,11 +38,11 @@ struct SetDetailsView: View {
                 HStack {
                     Text("Add set")
                     Image(systemName: "plus.circle")
-                        .foregroundColor(.blue)
+                        .foregroundColor(.accent)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(6)
-                .background(Color.blue.opacity(0.2))
+                .background(Color.accent.opacity(0.2))
                 .cornerRadius(20)
             }
             .buttonStyle(.plain)
