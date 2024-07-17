@@ -14,14 +14,19 @@ class SetDetailsViewModel: ObservableObject {
         didSet { onExerciseEdited() }
     }
     
+    @Published var listHeight = 0.0
+    let rowHeight = 40.0
+    let rowInsets = 20.0
+    
     private var autoSave: Bool
     private var updateTimer: Timer?
-    private var onSetComplete: ((ExerciseSet) -> Void)?
+    var onSetComplete: ((ExerciseSet) -> Void)?
     
     init(exercise: Exercise, autoSave: Bool, onSetComplete: ((ExerciseSet) -> Void)?) {
         self.exercise = exercise
         self.autoSave = autoSave
         self.onSetComplete = onSetComplete
+        self.listHeight = Double(exercise.sets.count) * (rowHeight + rowInsets)
     }
     
     private func onExerciseEdited() {

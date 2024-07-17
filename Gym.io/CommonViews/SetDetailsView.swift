@@ -9,10 +9,15 @@ import SwiftUI
 
 struct SetDetailsView: View {
     @StateObject var viewModel: SetDetailsViewModel
-    let rowHeight = 40.0
     
     private var gridItems: [GridItem] {
-        [
+        viewModel.onSetComplete == nil
+        ? [
+            GridItem(.flexible()),
+            GridItem(.flexible()),
+            GridItem(.flexible())
+        ]
+        : [
             GridItem(.flexible()),
             GridItem(.flexible()),
             GridItem(.flexible()),
@@ -27,33 +32,24 @@ struct SetDetailsView: View {
     var body: some View {
         VStack(alignment: .center) {
             headerView
+            Divider()
             setsList
-                .transition(.move(edge: .bottom))
-            
-            HStack {
-                Button(action: viewModel.addSet) {
-                    HStack {
-                        Text("Add set")
-                        Image(systemName: "plus.circle")
-                            .foregroundColor(.blue)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(6)
-                    .background(Color.blue.opacity(0.2))
-                    .cornerRadius(20)
+            Button(action: viewModel.addSet) {
+                HStack {
+                    Text("Add set")
+                    Image(systemName: "plus.circle")
+                        .foregroundColor(.blue)
                 }
-                .buttonStyle(.plain)
-                LoaderView(size: 25, weight: .ultraLight, state: viewModel.state)
+                .frame(maxWidth: .infinity)
+                .padding(6)
+                .background(Color.blue.opacity(0.2))
+                .cornerRadius(20)
             }
+            .buttonStyle(.plain)
             .padding(.horizontal)
+            .transition(.move(edge: .bottom))
         }
         .animation(.easeInOut, value: viewModel.exercise.sets.count)
-        .toolbar { ToolbarItem(placement: .keyboard) {
-            HStack {
-                Spacer()
-                Button("Done", action: dismissKeyboard)
-            }
-        }}
     }
     
     private var setsList: some View {
@@ -67,8 +63,6 @@ struct SetDetailsView: View {
                     TextField("Weight", value: $exerciseSet.weight, formatter: NumberFormatter())
                         .multilineTextAlignment(.center)
                         .keyboardType(.decimalPad)
-                    
-                                        
                 } else {
                     TextField("Duration", value: $exerciseSet.duration, formatter: NumberFormatter())
                         .multilineTextAlignment(.center)
@@ -80,20 +74,23 @@ struct SetDetailsView: View {
                         }
                     }
                     .pickerStyle(.segmented)
-                    
                 }
-                
-                Button(action: {
-                    viewModel.toggleSetCompletion(exerciseSet.id)
-                }) {
-                    Image(systemName: exerciseSet.completedAt == nil ? "square" : "checkmark.square")
+                if viewModel.onSetComplete != nil {
+                    Button(action: { viewModel.toggleSetCompletion(exerciseSet.id) }) {
+                        Image(systemName: exerciseSet.completedAt == nil ? "square" : "checkmark.square")
+                    }
+                    .transition(.opacity)
                 }
-                .transition(.opacity)
-
             }
+            .listRowInsets(EdgeInsets(
+                top: viewModel.rowInsets / 2,
+                leading: 0,
+                bottom: viewModel.rowInsets / 2,
+                trailing: 0
+            ))
             .listRowBackground(exerciseSet.completedAt == nil ? nil : Color.green.opacity(0.7))
             .animation(.easeInOut, value: exerciseSet.completedAt)
-            .frame(minHeight: rowHeight)
+            .frame(minHeight: viewModel.rowHeight)
             .swipeActions {
                 Button(role: .destructive, action: {
                     viewModel.deleteSet(exerciseSet.id)
@@ -103,10 +100,16 @@ struct SetDetailsView: View {
             }
         }
         .listStyle(.plain)
-        .frame(minHeight: (rowHeight + 22) * Double(viewModel.exercise.sets.count))
+        .frame(minHeight: viewModel.listHeight)
         .cornerRadius(10)
         .padding(0)
         .background(.clear)
+        .transition(.move(edge: .bottom))
+        .onChange(of: viewModel.exercise.sets.count) { oldCount, newCount in
+            withAnimation {
+                viewModel.listHeight = CGFloat(newCount) * (viewModel.rowHeight + viewModel.rowInsets)
+            }
+        }
     }
     
     private var headerView: some View {
@@ -120,12 +123,22 @@ struct SetDetailsView: View {
                 Text("Sec")
                 Text("Intensity")
             }
-            Image(systemName: "checkmark")
+            if viewModel.onSetComplete != nil {
+                Image(systemName: "checkmark")
+            }
         }
+        .fontWeight(.bold)
     }
 }
 
 #Preview {
-    SetDetailsView(exercise: _previewExercises[0], autoSave: false)
+    NavigationView {
+        ScrollView {
+            Section {
+                SetDetailsView(exercise: _previewExercises[0], autoSave: false, onSetComplete: { exerciseSet in })
+            }
+        }
+    }
+    .navigationTitle("SetDetailsPreview")
 }
 
