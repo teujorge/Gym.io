@@ -22,7 +22,7 @@ struct ExerciseView: View {
                             .frame(maxWidth: .infinity)
                             .padding(.all, 24)
                             .background(Color.gray.opacity(0.2))
-                            .cornerRadius(10)
+                            .cornerRadius(.medium)
                             .padding()
                     }
                 }
@@ -49,7 +49,7 @@ struct ExerciseView: View {
                         .frame(maxWidth: .infinity)
                         .background(Color.accent)
                         .foregroundColor(.white)
-                        .cornerRadius(10)
+                        .cornerRadius(.medium)
                 }
                 .padding()
             }
@@ -82,7 +82,7 @@ struct ExerciseView: View {
                 .padding(.vertical, 4)
                 .padding(.horizontal, 8)
                 .background(Color.accent.opacity(0.2))
-                .cornerRadius(20)
+                .cornerRadius(.large)
             }
             ToolbarItemGroup(placement: .keyboard) {
                 Spacer()

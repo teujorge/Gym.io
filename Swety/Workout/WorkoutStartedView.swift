@@ -41,7 +41,7 @@ struct WorkoutStartedView: View {
                         .padding(10)
                         .background(Color.accent)
                         .foregroundColor(.white)
-                        .cornerRadius(10)
+                        .cornerRadius(.medium)
                 }
             }
             ToolbarItemGroup(placement: .keyboard) {
@@ -76,7 +76,7 @@ private struct ExerciseCardView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
         .background(Color(.systemGray6))
-        .cornerRadius(10)
+        .cornerRadius(.medium)
         .alert(isPresented: $viewModel.isPresentingSetCompletedAlert) {
             Alert(
                 title: Text("Set completed"),

@@ -79,7 +79,7 @@ struct AuthView: View {
                     }
                 )
                 .signInWithAppleButtonStyle(colorScheme == .dark ? .whiteOutline : .black)
-                .cornerRadius(10)
+                .cornerRadius(.medium)
                 .frame(height: 50)
             }
             .padding()

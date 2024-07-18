@@ -56,7 +56,7 @@ struct HomeView: View {
                     }
                     .padding()
                     .background(Color(.systemGray6))
-                    .cornerRadius(10)
+                    .cornerRadius(.medium)
                     .padding(.horizontal)
                     
                     // MARK: Quick Actions
@@ -92,7 +92,7 @@ struct HomeView: View {
                     .padding()
                     .frame(maxWidth: .infinity)
                     .background(Color(.systemGray6))
-                    .cornerRadius(10)
+                    .cornerRadius(.medium)
                     .padding(.horizontal)
                     
                     Spacer()
@@ -106,7 +106,7 @@ struct HomeView: View {
                     }
                     .padding()
                     .background(Color(.systemGray6))
-                    .cornerRadius(10)
+                    .cornerRadius(.medium)
                     .padding(.horizontal)
                 }
             }

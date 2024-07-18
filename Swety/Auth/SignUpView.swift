@@ -47,8 +47,8 @@ struct SignUpView: View {
             )
         }
         .background(Color(.systemGroupedBackground))
-        .cornerRadius(15)
-        .shadow(radius: 10)
+        .cornerRadius(.large)
+        .shadow(radius: .medium)
         .padding()
         .animation(.easeInOut, value: viewModel.state)
         .toolbar {

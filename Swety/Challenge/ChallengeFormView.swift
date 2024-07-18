@@ -59,7 +59,7 @@ struct ChallengeFormView: View {
                             .padding()
                             .foregroundColor(.white)
                             .background(.accent)
-                            .cornerRadius(10)
+                            .cornerRadius(.medium)
                             
                             Button("Delete") {
                                 viewModel.deleteChallenge()
@@ -68,7 +68,7 @@ struct ChallengeFormView: View {
                             .padding()
                             .foregroundColor(.white)
                             .background(.red)
-                            .cornerRadius(10)
+                            .cornerRadius(.medium)
                         }
                         .frame(maxHeight: 50)
                     }

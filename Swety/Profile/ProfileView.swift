@@ -22,12 +22,10 @@ struct ProfileView: View {
         NavigationView {
             ScrollView {
                 profileInfo
-                SummaryChartView()
                 dashboard
                 workoutHistory
                 userButtons
             }
-            .padding()
             .animation(.easeInOut, value: currentUser.workouts.count)
             .navigationTitle(currentUser.username)
             .navigationBarTitleDisplayMode(.inline)
@@ -47,7 +45,7 @@ struct ProfileView: View {
                     .padding(.vertical, 4)
                     .padding(.horizontal, 8)
                     .background(Color.accent.opacity(0.2))
-                    .cornerRadius(20)
+                    .cornerRadius(.large)
                 }
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     Button(action: { }) {
@@ -109,8 +107,14 @@ struct ProfileView: View {
                 }
             }
             .padding(.top)
+            .padding(.horizontal)
         }
         .padding()
+    }
+    
+    private var summary: some View {
+        SummaryChartView()
+            .padding()
     }
     
     private var dashboard: some View {
@@ -128,7 +132,7 @@ struct ProfileView: View {
                     }
                     .padding()
                     .background(Color.gray.opacity(0.2))
-                    .cornerRadius(10)
+                    .cornerRadius(.medium)
                 }
                 Button(action: {
                     // Exercises action
@@ -140,7 +144,7 @@ struct ProfileView: View {
                     }
                     .padding()
                     .background(Color.gray.opacity(0.2))
-                    .cornerRadius(10)
+                    .cornerRadius(.medium)
                 }
             }
             HStack {
@@ -154,7 +158,7 @@ struct ProfileView: View {
                     }
                     .padding()
                     .background(Color.gray.opacity(0.2))
-                    .cornerRadius(10)
+                    .cornerRadius(.medium)
                 }
                 Button(action: {
                     // Calendar action
@@ -166,7 +170,7 @@ struct ProfileView: View {
                     }
                     .padding()
                     .background(Color.gray.opacity(0.2))
-                    .cornerRadius(10)
+                    .cornerRadius(.medium)
                 }
             }
         }
@@ -218,7 +222,7 @@ struct ProfileView: View {
                         .background(Color.accent)
                         .foregroundColor(Color.white)
                         .frame(height: 50)
-                        .cornerRadius(10)
+                        .cornerRadius(.medium)
                     }
                     Spacer()
                 }
@@ -250,7 +254,7 @@ struct ProfileView: View {
                     .padding()
                     .frame(maxWidth: .infinity)
                     .background(Color.red.opacity(0.2))
-                    .cornerRadius(10)
+                    .cornerRadius(.medium)
             }
             Button(action: {
                 Task {
@@ -270,9 +274,10 @@ struct ProfileView: View {
                     .padding()
                     .frame(maxWidth: .infinity)
                     .background(Color.red.opacity(0.2))
-                    .cornerRadius(10)
+                    .cornerRadius(.medium)
             }
         }
+        .padding()
     }
     
     private func updateUserWorkoutHistory() {

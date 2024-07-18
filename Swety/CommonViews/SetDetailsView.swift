@@ -41,9 +41,9 @@ struct SetDetailsView: View {
                         .foregroundColor(.accent)
                 }
                 .frame(maxWidth: .infinity)
-                .padding(6)
+                .padding(10)
                 .background(Color.accent.opacity(0.2))
-                .cornerRadius(20)
+                .cornerRadius(.medium)
             }
             .buttonStyle(.plain)
             .padding(.horizontal)
@@ -101,7 +101,7 @@ struct SetDetailsView: View {
         }
         .listStyle(.plain)
         .frame(minHeight: viewModel.listHeight)
-        .cornerRadius(10)
+        .cornerRadius(.medium)
         .padding(0)
         .background(.clear)
         .transition(.move(edge: .bottom))

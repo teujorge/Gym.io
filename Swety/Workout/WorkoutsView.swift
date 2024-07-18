@@ -28,8 +28,9 @@ struct WorkoutsView: View {
                     HStack {
                         TextField("Search", text: $viewModel.searchText)
                             .padding()
+                            .frame(height: 50)
                             .background(Color.accent.opacity(0.2))
-                            .cornerRadius(20)
+                            .cornerRadius(.medium)
                         
                         Button(action: { viewModel.isPresentingWorkoutForm.toggle() }) {
                             Text("New Workout")
@@ -37,8 +38,9 @@ struct WorkoutsView: View {
                                 .foregroundColor(.accent)
                         }
                         .padding()
+                        .frame(height: 50)
                         .background(Color.accent.opacity(0.2))
-                        .cornerRadius(20)
+                        .cornerRadius(.medium)
                     }
                     
                     ForEach(filteredWorkouts.indices, id: \.self) { index in
@@ -127,13 +129,13 @@ struct WorkoutCardView: View {
                         .frame(maxWidth: .infinity)
                         .background(Color.accent)
                         .foregroundColor(.white)
-                        .cornerRadius(10)
+                        .cornerRadius(.medium)
                 }
             }
             .padding()
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(Color(.systemGray6))
-            .cornerRadius(10)
+            .cornerRadius(.medium)
         }
     }
     

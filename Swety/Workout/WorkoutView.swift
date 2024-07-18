@@ -31,7 +31,7 @@ struct WorkoutView: View {
                         .frame(maxWidth: .infinity)
                         .background(Color.accent)
                         .foregroundColor(.white)
-                        .cornerRadius(10)
+                        .cornerRadius(.medium)
                     
                 }
                 .padding()
@@ -53,7 +53,7 @@ struct WorkoutView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding()
                         .background(Color(.systemGray6))
-                        .cornerRadius(10)
+                        .cornerRadius(.medium)
                     }
                 }
             }
@@ -76,7 +76,7 @@ struct WorkoutView: View {
                 .padding(.vertical, 4)
                 .padding(.horizontal, 8)
                 .background(Color.accent.opacity(0.2))
-                .cornerRadius(20)
+                .cornerRadius(.large)
             }
         }
         .sheet(isPresented: $isPresentingWorkoutForm) {

@@ -24,8 +24,8 @@ struct LoadingButtonView: View {
                     .padding()
                     .frame(maxWidth: .infinity)
                     .background(disabled ? Color.accent.opacity(0.25) : Color.accent)
-                    .cornerRadius(10)
-                    .shadow(radius: 5)
+                    .cornerRadius(.medium)
+                    .shadow(radius: .small)
             default:
                 LoaderView(size: 40, weight: .light, state: state)
             }

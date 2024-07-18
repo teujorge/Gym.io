@@ -162,17 +162,6 @@ struct SummaryChartView: View {
     }
 }
 
-extension Button {
-    func buttonStyle(inactive: Bool = false) -> some View {
-        self
-            .padding(.vertical, 12)
-            .padding(.horizontal, 16)
-            .background(inactive ? Color.gray.opacity(0.2) : Color.accent)
-            .foregroundColor(inactive ? .primary : .white)
-            .cornerRadius(10)
-    }
-}
-
 
 #Preview {
     SummaryChartView()
