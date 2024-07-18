@@ -64,9 +64,10 @@ struct AuthView: View {
         var body: some View {
             VStack {
                 Spacer()
-                Image(systemName: "dumbbell.fill")
+                Image("SwetyIcon")
                     .resizable()
                     .scaledToFit()
+                    .cornerRadius(.large)
                     .padding()
                 Spacer()
                 SignInWithAppleButton(
