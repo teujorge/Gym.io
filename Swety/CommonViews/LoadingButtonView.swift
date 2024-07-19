@@ -12,6 +12,7 @@ struct LoadingButtonView: View {
     let title: String
     let state: LoaderState
     let disabled: Bool
+    let showErrorMessage: Bool
     let action: () -> Void
     
     var body: some View {
@@ -27,7 +28,7 @@ struct LoadingButtonView: View {
                     .cornerRadius(.medium)
                     .shadow(radius: .small)
             default:
-                LoaderView(size: 40, weight: .light, state: state)
+                LoaderView(size: 40, weight: .light, state: state, showErrorMessage: showErrorMessage)
             }
         }
         .frame(height: 50)
@@ -48,7 +49,7 @@ private struct LoaderButtonPreview: View {
     
     var body: some View {
         VStack {
-                LoadingButtonView(title:"hello there", state: loaderState, disabled: disabled) {}
+            LoadingButtonView(title:"hello there", state: loaderState, disabled: disabled, showErrorMessage: true) {}
                     .padding()
             
             HStack {

@@ -44,7 +44,7 @@ class WorkoutFormViewModel: ObservableObject {
             self.notesText = workout.notes ?? ""
         } else {
             self.isEditing = false
-            self.workout = Workout(ownerId: currentUserId ,title: "", notes: "", exercises: [])
+            self.workout = Workout(ownerId: currentUserId, title: "", notes: "", exercises: [])
         }
         self.onSave = onSave
         self.onDelete = onDelete

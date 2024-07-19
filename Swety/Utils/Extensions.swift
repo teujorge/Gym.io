@@ -35,6 +35,8 @@ extension View {
 
 enum UserDefaultsKeys: String {
     case userId
+    case userAccessToken
+    case userRefreshToken
 }
 
 extension UserDefaults {

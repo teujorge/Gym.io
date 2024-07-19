@@ -51,6 +51,26 @@ var currentUserId: String {
     }
 }
 
+/// Gets and Set current user access token from UserDefaults
+var currentUserAccessToken: String? {
+    get {
+        UserDefaults.standard.string(forKey: .userAccessToken)
+    }
+    set {
+        UserDefaults.standard.set(newValue, forKey: .userAccessToken)
+    }
+}
+
+/// Gets and Set current user refresh token from UserDefaults
+var currentUserRefreshToken: String? {
+    get {
+        UserDefaults.standard.string(forKey: .userRefreshToken)
+    }
+    set {
+        UserDefaults.standard.set(newValue, forKey: .userRefreshToken)
+    }
+}
+
 /// Calculates the total volume of a workout.
 func calculateVolume(for workout: Workout) -> Int {
     return workout.exercises.reduce(0) { total, exercise in

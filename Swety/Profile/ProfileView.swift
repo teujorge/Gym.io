@@ -245,6 +245,8 @@ struct ProfileView: View {
                 UserDefaults.standard.removeObject(forKey: .userId)
                 DispatchQueue.main.async {
                     authState.currentUser = nil
+                    currentUserAccessToken = nil
+                    currentUserRefreshToken = nil
                 }
             }) {
                 Text("Sign Out")

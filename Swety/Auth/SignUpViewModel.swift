@@ -16,10 +16,28 @@ enum SignUpState: Equatable {
     case error(String)
 }
 
-class SignUpViewModel: ObservableObject {
-    var userId = ""
-    @Published var newName = ""
+class SignUpViewModel: ObservableObject {    
+//    var userId = ""
+    var identityToken = ""
+//    var authorizationCode = ""
+    
+    @Published var newName = "" {
+        didSet {
+            if errorMessage?.lowercased().contains(" name") ?? false {
+                state = .idle
+            }
+        }
+    }
     @Published var newUsername = ""
+    @Published var birthday = Date() {
+        didSet {
+            if errorMessage?.lowercased().contains("birthday") ?? false {
+                state = .idle
+            }
+        }
+    }
+    @Published var isPresentingBirthdayPicker = false
+    @Published var selectedUnit: Units = .metric
     @Published var state: SignUpState = .idle
     
     @Published var authState: AuthState
@@ -66,7 +84,7 @@ class SignUpViewModel: ObservableObject {
             }
             
             Task {
-                let user = await self.findUser(username: self.newUsername)
+                let user = await self.findUsername(username: self.newUsername)
                 
                 DispatchQueue.main.async {
                     self.state = user == nil ? .usernameAvailable : .error("Username already taken")
@@ -77,19 +95,20 @@ class SignUpViewModel: ObservableObject {
         }
     }
     
-    func findUser(id: String? = nil, name: String? = nil, username: String? = nil) async -> User? {
+    private func findUsername(username: String) async -> User? {
+        print()
+        print("findUsername")
+        print()
+        
         DispatchQueue.main.async {
             self.state = .queringUsers
         }
         
         let result: HTTPResponse<User> = await sendRequest(
-            endpoint: "users",
+            endpoint: "auth/signup/validate-username",
             queryItems: [
-            URLQueryItem(name: "id", value: id),
-            URLQueryItem(name: "name", value: name),
-            URLQueryItem(name: "username", value: username),
-            URLQueryItem(name: "matchMode", value: "exact")
-        ], 
+                URLQueryItem(name: "username", value: username),
+            ],
             method: .GET
         )
         
@@ -108,11 +127,41 @@ class SignUpViewModel: ObservableObject {
         }
     }
     
-    func createUser() async -> User? {
-        guard !userId.isEmpty && !newName.isEmpty && !newUsername.isEmpty else {
-            print("Please provide all required information")
+    func signUp() async -> User? {
+        print()
+        print("signUp")
+        print()
+        
+#if !DEBUG
+        guard !userId.isEmpty else {
+            print("We were unable to create your account")
             DispatchQueue.main.async {
-                self.state = .error("Please provide all required information")
+                self.state = .error("We were unable to create your account")
+            }
+            return nil
+        }
+#endif
+        
+        guard !newName.isEmpty else {
+            print("Please provide your name")
+            DispatchQueue.main.async {
+                self.state = .error("Please provide your name")
+            }
+            return nil
+        }
+        
+        guard !newUsername.isEmpty else {
+            print("Please provide a username")
+            DispatchQueue.main.async {
+                self.state = .error("Please provide a username")
+            }
+            return nil
+        }
+        
+        guard birthday.timeIntervalSinceNow < -60 * 60 * 24 * 365 * 13 else {
+            print("Please provide a valid birthday")
+            DispatchQueue.main.async {
+                self.state = .error("Please provide a valid birthday")
             }
             return nil
         }
@@ -120,20 +169,33 @@ class SignUpViewModel: ObservableObject {
         DispatchQueue.main.async {
             self.state = .creatingAccount
         }
-    
-        let body = [
-            "id": userId,
-            "name": newName,
-            "username": newUsername
-        ]
         
-        let result: HTTPResponse<User> = await sendRequest(endpoint: "users", body: body, method: .POST)
+        let result: HTTPResponse<User> = await sendRequest(
+            endpoint: "auth/signup",
+            queryItems: [
+                URLQueryItem(name: "identityToken", value: identityToken),
+//                URLQueryItem(name: "authorizationCode", value: authorizationCode)
+            ],
+            body: User(
+                id: "",
+                username: newUsername,
+                name: newName,
+                birthday: birthday,
+                units: selectedUnit
+            ),
+            method: .POST
+        )
         
         switch result {
         case .success(let user):
             print("User created: \(user)")
             DispatchQueue.main.async {
-                self.authState.currentUser = user
+                currentUserAccessToken = user.auth?.accessToken ?? nil
+                currentUserRefreshToken = user.auth?.refreshToken ?? nil
+                if let auth = user.auth {
+//                    self.auth = auth
+                }
+//                self.auth.user = user
                 self.state = .accountCreated
             }
             return user

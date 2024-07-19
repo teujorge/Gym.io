@@ -24,7 +24,7 @@ struct AuthView: View {
     var body: some View {
         NavigationView {
             VStack(alignment: .center) {
-                switch viewModel.state {                    
+                switch viewModel.state {
                 case .authenticating, .authenticated:
                     LoaderView(size: 100, weight: .thin, state: viewModel.state == .authenticating ? .loading : .success)
                         .transition(.opacity)
@@ -53,8 +53,7 @@ struct AuthView: View {
                 }
             }
         }
-        .environmentObject(viewModel.authState)
-        .onAppear(perform: viewModel.autoSignIn)
+        .onAppear(perform: viewModel.handleAlreadySignedIn)
     }
     
     struct SignInView: View {
@@ -96,7 +95,7 @@ struct AuthView: View {
 #Preview("register") {
     let viewModel = AuthViewModel(authState: _previewAuthCreateAccountState)
     viewModel.state = .signUp
-    viewModel.signUpViewModel.userId = UUID().uuidString
+//    viewModel.signUpViewModel.userId = UUID().uuidString
     viewModel.signUpViewModel.newName = "Matheus Jorge"
     return AuthView(authModel: viewModel)
         .environmentObject(_previewAuthCreateAccountState)

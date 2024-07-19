@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct SignUpView: View {
+    @EnvironmentObject var authState: AuthState
     @ObservedObject var viewModel: SignUpViewModel
     
     var isDisabled: Bool {
@@ -15,7 +16,7 @@ struct SignUpView: View {
     }
     
     var body: some View {
-        VStack(spacing: 16) {
+        ScrollView {
             Text("Welcome!")
                 .font(.largeTitle)
                 .fontWeight(.bold)
@@ -23,7 +24,7 @@ struct SignUpView: View {
                 .padding(.top)
             
             LabeledTextFieldView(
-                label: "Full name (optional):",
+                label: "Full name:",
                 placeholder: "Enter your full Name",
                 text: $viewModel.newName,
                 isDisabled: isDisabled
@@ -33,24 +34,72 @@ struct SignUpView: View {
                 label: "Username:",
                 placeholder: "Enter a username",
                 text: $viewModel.newUsername,
-                error: viewModel.errorMessage,
                 onChange: { _ in viewModel.checkUsernameAvailability() },
                 isDisabled: isDisabled,
                 keyboardType: .namePhonePad
             )
             
+            HStack {
+                Text("Units:")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                Spacer()
+                Picker("Units", selection: $viewModel.selectedUnit) {
+                    ForEach(Units.allCases, id: \.self) { unit in
+                        Text(unit.rawValue.capitalized)
+                    }
+                }
+                .pickerStyle(.segmented)
+            }
+            .padding(.horizontal)
+            
+            HStack {
+                Text("Birthday:")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                Spacer()
+                Button {
+                    viewModel.isPresentingBirthdayPicker.toggle()
+                } label: {
+                    Text(viewModel.birthday.formatted(.dateTime.year().month().day()))
+                        .foregroundColor(.accent)
+                }
+            }
+            .padding(.horizontal)
+            
             LoadingButtonView(
                 title: "Sign Up",
                 state: viewModel.loaderState,
                 disabled: isDisabled,
-                action: { Task { await viewModel.createUser() } }
+                showErrorMessage: true,
+                action: {
+                    Task {
+                        if let newUser = await viewModel.signUp()  {
+                            authState.currentUser = newUser
+                        }
+                    }
+                }
             )
         }
+        .padding()
         .background(Color(.systemGroupedBackground))
         .cornerRadius(.large)
         .shadow(radius: .medium)
         .padding()
+        .frame(maxWidth: .infinity)
         .animation(.easeInOut, value: viewModel.state)
+        .sheet(isPresented: $viewModel.isPresentingBirthdayPicker) {
+            VStack {
+                Text("Select your birthday")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .padding()
+                DatePicker("Birthday", selection: $viewModel.birthday, displayedComponents: .date)
+                    .datePickerStyle(.wheel)
+                    .labelsHidden()
+            }
+            .presentationDetents([.height(275)])
+        }
         .toolbar {
             ToolbarItem(placement: .keyboard) {
                 HStack {
