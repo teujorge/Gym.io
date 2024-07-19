@@ -19,7 +19,7 @@ class ProfileViewModel: ObservableObject {
         }
         
         let body = ["name": name, "username": username]
-        let result: HTTPResponse<User> = await sendRequest(endpoint: "users/\(currentUserId)", body: body, method: .PUT)
+        let result: HTTPResponse<User> = await sendRequest(endpoint: "/users/\(currentUserId)", body: body, method: .PUT)
         
         switch result {
         case .success(let user):
@@ -32,7 +32,7 @@ class ProfileViewModel: ObservableObject {
     }
     
     func deleteUser() async -> Bool {
-        let result: HTTPResponse<EmptyBody> = await sendRequest(endpoint: "users/\(currentUserId)", body: nil, method: .DELETE)
+        let result: HTTPResponse<EmptyBody> = await sendRequest(endpoint: "/users/\(currentUserId)", body: nil, method: .DELETE)
         
         switch result {
         case .success:
@@ -48,7 +48,7 @@ class ProfileViewModel: ObservableObject {
         self.state = .loading
         
         let result: HTTPResponse<WorkoutsWithCursor> = await sendRequest(
-            endpoint: "users/\(userId)/workouts",
+            endpoint: "/users/\(userId)/workouts",
             queryItems: [
                 URLQueryItem(name: "cursor", value: workoutsCursor)
             ],

@@ -44,7 +44,7 @@ class SetDetailsViewModel: ObservableObject {
         guard autoSave else { return }
         print("auto save is on")
         Task {
-            let response: HTTPResponse<Exercise> = await sendRequest(endpoint: "exercises/\(exercise.id)", body: exercise, method: .PUT)
+            let response: HTTPResponse<Exercise> = await sendRequest(endpoint: "/exercises/\(exercise.id)", body: exercise, method: .PUT)
             handleResponse(response)
         }
     }
@@ -103,7 +103,7 @@ class SetDetailsViewModel: ObservableObject {
         var newSet = set
         newSet.exerciseId = exercise.id
         
-        let response: HTTPResponse<ExerciseSet> = await sendRequest(endpoint: "sets", body: newSet, method: .POST)
+        let response: HTTPResponse<ExerciseSet> = await sendRequest(endpoint: "/sets", body: newSet, method: .POST)
         handleResponse(response)
         
         // Update the model with the backend response
@@ -119,7 +119,7 @@ class SetDetailsViewModel: ObservableObject {
     
     private func requestUpdateSet(at index: Int, with set: ExerciseSet) async {
         guard autoSave else { return }
-        let response: HTTPResponse<ExerciseSet> = await sendRequest(endpoint: "sets/\(set.id)", body: set, method: .PUT)
+        let response: HTTPResponse<ExerciseSet> = await sendRequest(endpoint: "/sets/\(set.id)", body: set, method: .PUT)
         handleResponse(response)
         
         // Update the model with the backend response
@@ -133,7 +133,7 @@ class SetDetailsViewModel: ObservableObject {
     
     private func requestDeleteSet(_ id: String) async {
         guard autoSave else { return }
-        let response: HTTPResponse<EmptyBody> = await sendRequest(endpoint: "sets/\(id)", method: .DELETE)
+        let response: HTTPResponse<EmptyBody> = await sendRequest(endpoint: "/sets/\(id)", method: .DELETE)
         handleResponse(response)
     }
     

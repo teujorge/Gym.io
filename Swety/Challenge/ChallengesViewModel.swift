@@ -39,7 +39,7 @@ class ChallengesViewModel: ObservableObject {
         }
         
         let result: HTTPResponse<[Challenge]> = await sendRequest(
-            endpoint: "challenges",
+            endpoint: "/challenges",
             queryItems: [
                 URLQueryItem(name: "includeAll", value: "true"),
                 URLQueryItem(name: "findMany", value: "true"),

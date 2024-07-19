@@ -167,7 +167,7 @@ private struct FindUsersView: View {
     private func fetchUsers() {
         Task {
             let results: HTTPResponse<[User]> = await sendRequest(
-                endpoint: "users",
+                endpoint: "/users",
                 queryItems: [
                     URLQueryItem(name: "findMany", value: "true"),
                     URLQueryItem(name: "username", value: searchText)

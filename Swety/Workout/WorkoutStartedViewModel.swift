@@ -84,7 +84,7 @@ class WorkoutStartedViewModel: ObservableObject{
         initState = .loading
         workout.title = "\(workout.title) | (completed)"
         workout.completedAt = Date()
-        let result: HTTPResponse<Workout> = await sendRequest(endpoint: "workouts", body: workout, method: .POST)
+        let result: HTTPResponse<Workout> = await sendRequest(endpoint: "/workouts", body: workout, method: .POST)
         
         switch result {
         case .success(let newWorkout):

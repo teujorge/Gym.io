@@ -61,7 +61,7 @@ class ExerciseFormViewModel: ObservableObject {
             self.state = .loading
         }
         
-        let result: HTTPResponse<Exercise> = await sendRequest(endpoint: "exercises/\(id)", body: exercise, method: .PUT)
+        let result: HTTPResponse<Exercise> = await sendRequest(endpoint: "/exercises/\(id)", body: exercise, method: .PUT)
         
         switch result {
         case .success(let exercise):
@@ -84,7 +84,7 @@ class ExerciseFormViewModel: ObservableObject {
             self.state = .loading
         }
         
-        let result: HTTPResponse<EmptyBody> = await sendRequest(endpoint: "exercises/\(id)", method: .DELETE)
+        let result: HTTPResponse<EmptyBody> = await sendRequest(endpoint: "/exercises/\(id)", method: .DELETE)
         
         switch result {
         case .success:

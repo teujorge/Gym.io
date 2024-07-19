@@ -127,7 +127,7 @@ class WorkoutFormViewModel: ObservableObject {
             self.state = .operating
         }
         
-        let result: HTTPResponse<Workout> = await sendRequest(endpoint: "workouts", body: workout, method: .POST)
+        let result: HTTPResponse<Workout> = await sendRequest(endpoint: "/workouts", body: workout, method: .POST)
         
         
         switch result {
@@ -168,7 +168,7 @@ class WorkoutFormViewModel: ObservableObject {
             self.state = .operating
         }
         
-        let result: HTTPResponse<Workout> = await sendRequest(endpoint: "workouts/\(workout.id)", body: workout, method: .PUT)
+        let result: HTTPResponse<Workout> = await sendRequest(endpoint: "/workouts/\(workout.id)", body: workout, method: .PUT)
         
         switch result {
         case .success(let updatedWorkout):
@@ -203,7 +203,7 @@ class WorkoutFormViewModel: ObservableObject {
             self.state = .operating
         }
         
-        let result: HTTPResponse<EmptyBody> = await sendRequest(endpoint: "workouts/\(workout.id)", body: nil, method: .DELETE)
+        let result: HTTPResponse<EmptyBody> = await sendRequest(endpoint: "/workouts/\(workout.id)", body: nil, method: .DELETE)
         
         switch result {
         case .success:

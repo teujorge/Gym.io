@@ -74,9 +74,9 @@ class ChallengeFormViewModel: ObservableObject {
         
         var result: HTTPResponse<Challenge>
         if isEditing {
-            result = await sendRequest(endpoint: "challenges/\(challenge.id)", body: challenge, method: .PUT)
+            result = await sendRequest(endpoint: "/challenges/\(challenge.id)", body: challenge, method: .PUT)
         } else {
-            result = await sendRequest(endpoint: "challenges", body: challenge, method: .POST)
+            result = await sendRequest(endpoint: "/challenges", body: challenge, method: .POST)
         }
         
         isShowingActionSheet = false
@@ -105,7 +105,7 @@ class ChallengeFormViewModel: ObservableObject {
     private func deleteRequest() async -> Bool {
         state = .loading
         isShowingActionSheet = true
-        let result: HTTPResponse<EmptyBody> = await sendRequest(endpoint: "challenges/\(challenge.id)", method: .DELETE)
+        let result: HTTPResponse<EmptyBody> = await sendRequest(endpoint: "/challenges/\(challenge.id)", method: .DELETE)
         isShowingActionSheet = false
         
         switch result {

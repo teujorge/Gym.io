@@ -65,7 +65,7 @@ class AuthViewModel: ObservableObject {
         print()
         
         let result: HTTPResponse<User> = await sendRequest(
-            endpoint: "users",
+            endpoint: "/users",
             queryItems: [
                 URLQueryItem(name: "id", value: currentUserId),
             ],
@@ -125,7 +125,7 @@ class AuthViewModel: ObservableObject {
 //        let authorizationCodeString: String = authorizationCode.flatMap { String(data: $0, encoding: .utf8) } ?? ""
         
         let authResponse: HTTPResponse<Auth?> = await sendRequest(
-            endpoint: "auth/signin",
+            endpoint: "/auth/signin",
             body: [
                 "userId": userIdentifier,
                 "identityToken": identityTokenString,

@@ -105,7 +105,7 @@ class SignUpViewModel: ObservableObject {
         }
         
         let result: HTTPResponse<User> = await sendRequest(
-            endpoint: "auth/signup/validate-username",
+            endpoint: "/auth/signup/validate-username",
             queryItems: [
                 URLQueryItem(name: "username", value: username),
             ],
@@ -171,7 +171,7 @@ class SignUpViewModel: ObservableObject {
         }
         
         let result: HTTPResponse<User> = await sendRequest(
-            endpoint: "auth/signup",
+            endpoint: "/auth/signup",
             queryItems: [
                 URLQueryItem(name: "identityToken", value: identityToken),
 //                URLQueryItem(name: "authorizationCode", value: authorizationCode)
