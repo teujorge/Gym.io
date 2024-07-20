@@ -7,16 +7,16 @@
 
 import SwiftUI
 
-struct ExerciseView: View {
-    @StateObject var exercise: Exercise
+struct ExercisePlanView: View {
+    @StateObject var exercisePlan: ExercisePlan
     @State private var isPresentingExerciseForm = false
     
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 VStack(alignment: .trailing) {
-                    if let imageName = exercise.imageName {
-                        Image(systemName: imageName)
+                    if let image = exercisePlan.image {
+                        Image(systemName: image)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(maxWidth: .infinity)
@@ -28,7 +28,7 @@ struct ExerciseView: View {
                 }
                 .padding()
                 
-                if let instructions = exercise.notes {
+                if let instructions = exercisePlan.notes {
                     VStack(alignment: .leading, spacing: 10) {
                         Text("Instructions")
                             .font(.headline)
@@ -38,7 +38,14 @@ struct ExerciseView: View {
                     .padding()
                 }
                 
-                SetDetailsView(exercise: exercise)
+                SetDetailsView(
+                    sets: exercisePlan.setPlans.map { plan in
+                        SetDetails(exerciseSetPlan: plan)
+                    },
+                    isPlan: true,
+                    isRepBased: exercisePlan.isRepBased,
+                    autoSave: false
+                )
                 
                 Spacer()
                 Button(action: {
@@ -54,8 +61,8 @@ struct ExerciseView: View {
                 .padding()
             }
             .sheet(isPresented: $isPresentingExerciseForm) {
-                ExerciseFormView(
-                    exercise: exercise,
+                ExercisePlanFormView(
+                    exercisePlan: exercisePlan,
                     onSave: { exercise in
                         isPresentingExerciseForm = false
                     },
@@ -65,7 +72,7 @@ struct ExerciseView: View {
                 )
             }
         }
-        .navigationTitle(exercise.name)
+        .navigationTitle(exercisePlan.name)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button(action: { isPresentingExerciseForm.toggle() }) {
@@ -96,8 +103,8 @@ struct ExerciseView: View {
 
 #Preview {
     NavigationView {
-        ExerciseView(
-            exercise: _previewExercises[1]
+        ExercisePlanView(
+            exercisePlan: _previewExercisePlans[1]
         )
     }
 }

@@ -81,11 +81,9 @@ struct SignUpView: View {
                 }
             )
         }
-        .padding()
         .background(Color(.systemGroupedBackground))
         .cornerRadius(.large)
         .shadow(radius: .medium)
-        .padding()
         .frame(maxWidth: .infinity)
         .animation(.easeInOut, value: viewModel.state)
         .sheet(isPresented: $viewModel.isPresentingBirthdayPicker) {

@@ -11,8 +11,8 @@ struct WorkoutStartedView: View {
     @Environment (\.presentationMode) var presentationMode
     @StateObject var viewModel: WorkoutStartedViewModel
     
-    init(workout:Workout){
-        _viewModel = StateObject(wrappedValue: WorkoutStartedViewModel(workout: workout))
+    init(workoutPlan: WorkoutPlan){
+        _viewModel = StateObject(wrappedValue: WorkoutStartedViewModel(workoutPlan: workoutPlan))
     }
     
     var body: some View {
@@ -26,7 +26,7 @@ struct WorkoutStartedView: View {
         }
         .onAppear(perform: viewModel.initiateWorkout)
         .onDisappear(perform: viewModel.stopWorkoutTimer)
-        .navigationTitle(viewModel.workout.title)
+        .navigationTitle(viewModel.workout.name)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Text(formatTime(viewModel.workoutCounter))
@@ -66,34 +66,27 @@ private struct ExerciseCardView: View {
                 .font(.caption)
                 .foregroundColor(.accent)
             
-            SetDetailsView(
-                exercise: exercise,
-                onSetComplete: { exerciseSet in
-                    viewModel.completeSet(exerciseSet: exerciseSet)
-                }
-            )
+            // TODO: fix
+//            SetDetailsView(
+//                sets: exercise.sets.map { SetDetails(exerciseSet: $0) },
+//                isPlan: false,
+//                isRepBased: exercise.isRepBased,
+//                autoSave: true,
+//                onSetsChanged: { setDetails in
+//                    exercise.sets = setDetails.enumerated().map { (index, setDetail) in
+//                        setDetail.toSet(index: index)
+//                    }
+//                }
+//                onDebounceTriggered: {
+//                    print("onDebounceTriggered")
+//                }
+//            )
+            
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
         .background(Color(.systemGray6))
         .cornerRadius(.medium)
-        .alert(isPresented: $viewModel.isPresentingSetCompletedAlert) {
-            Alert(
-                title: Text("Set completed"),
-                message: Text("Do you want to go to the next set?"),
-                primaryButton: .default(Text("Yes")) {
-                    // get current exercise index in list
-                    guard let index = viewModel.workout.exercises.firstIndex(where: { $0.id == exercise.id }) else { return }
-                    // get next exercise index
-                    let nextIndex = index + 1
-                    // check if next exercise is available
-                    guard nextIndex < viewModel.workout.exercises.count else { return }
-                    // set next exercise as current
-                    viewModel.currentExercise = viewModel.workout.exercises[nextIndex]
-                },
-                secondaryButton: .cancel()
-            )
-        }
     }
 }
 
@@ -102,17 +95,17 @@ private struct ExerciseCardView: View {
 }
 
 private struct _previewStartedWorkoutView: View {
-    @State private var workout: Workout
+    @State private var workoutPlan: WorkoutPlan
     
     init() {
         let data = dataString.data(using: .utf8)!
-        let decodedResponse = try? JSONDecoder().decode([String: Workout].self, from: data)
-        self._workout = State(initialValue: decodedResponse?["data"] ?? _previewWorkouts[1])
+        let decodedResponse = try? JSONDecoder().decode([String: WorkoutPlan].self, from: data)
+        self._workoutPlan = State(initialValue: decodedResponse?["data"] ?? _previewWorkoutPlans[1])
     }
     
     var body: some View {
         NavigationView {
-            WorkoutStartedView(workout: workout)
+            WorkoutStartedView(workoutPlan: workoutPlan)
         }
     }
 }

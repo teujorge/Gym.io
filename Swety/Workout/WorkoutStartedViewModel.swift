@@ -15,15 +15,15 @@ class WorkoutStartedViewModel: ObservableObject{
     @Published var restCounter = 0
     @Published var isResting = false
     @Published var currentExercise: Exercise
-    @Published var isPresentingSetCompletedAlert = false
     @Published var initState: LoaderState = .idle
     
     var workoutTimerCancellable: AnyCancellable? = nil
     var restTimerCancellable: AnyCancellable? = nil
     
-    init(workout: Workout) {
-        self.workout = workout
-        self.currentExercise = workout.exercises[0]
+    init(workoutPlan: WorkoutPlan) {
+        let startedWorkout = Workout(workoutPlan: workoutPlan)
+        self.workout = startedWorkout
+        self.currentExercise = startedWorkout.exercises[0]
     }
     
     func startWorkoutTimer() {
@@ -44,7 +44,7 @@ class WorkoutStartedViewModel: ObservableObject{
     
     func startRestTimer() {
         restTimerCancellable?.cancel()  // Cancel any existing rest timer
-        restCounter = currentExercise.restDuration // Reset the rest counter
+        restCounter = currentExercise.restTime // Reset the rest counter
         
         restTimerCancellable = Timer.publish(every: 1.0, on: .main, in: .common)
             .autoconnect()
@@ -53,7 +53,6 @@ class WorkoutStartedViewModel: ObservableObject{
                 if self.restCounter <= 0 {
                     self.stopRestTimer()
                     self.isResting = false
-                    self.isPresentingSetCompletedAlert = true
                     return
                 }
             }
@@ -82,9 +81,9 @@ class WorkoutStartedViewModel: ObservableObject{
     
     private func createNewWorkout() async -> Workout? {
         initState = .loading
-        workout.title = "\(workout.title) | (completed)"
+        workout.name = "\(workout.name) | (completed)"
         workout.completedAt = Date()
-        let result: HTTPResponse<Workout> = await sendRequest(endpoint: "/workouts", body: workout, method: .POST)
+        let result: HTTPResponse<Workout> = await sendRequest(endpoint: "/workouts/templates", body: workout, method: .POST)
         
         switch result {
         case .success(let newWorkout):

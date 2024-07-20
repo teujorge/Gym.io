@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-class WorkoutsViewModel: ObservableObject {
+class WorkoutPlansViewModel: ObservableObject {
     @Published var searchText = ""
     @Published var state: LoaderState = .idle {
         didSet {
@@ -33,17 +33,16 @@ class WorkoutsViewModel: ObservableObject {
             }
     }
     
-    func fetchWorkouts(for userId: String) async -> [Workout]? {
+    func fetchWorkouts(for userId: String) async -> [WorkoutPlan]? {
         DispatchQueue.main.async {
             self.state = .loading
         }
         
-        let result: HTTPResponse<[Workout]> = await sendRequest(
-            endpoint: "/workouts",
+        let result: HTTPResponse<[WorkoutPlan]> = await sendRequest(
+            endpoint: "/workouts/templates",
             queryItems: [
                 URLQueryItem(name: "findMany", value: "true"),
                 URLQueryItem(name: "includeAll", value: "true"),
-                URLQueryItem(name: "isTemplate", value: "true"),
                 URLQueryItem(name: "ownerId", value: userId)
             ],
             method: .GET
@@ -51,13 +50,13 @@ class WorkoutsViewModel: ObservableObject {
         
         switch result {
         case .success(let workouts):
-            print("Workouts fetched: \(workouts)")
+            print("Workout plans fetched: \(workouts)")
             DispatchQueue.main.async {
                 self.state = .success
             }
             return workouts
         case .failure(let error):
-            print("Failed to fetch workouts: \(error)")
+            print("Failed to fetch workout plans: \(error)")
             DispatchQueue.main.async {
                 self.state = .failure(error)
             }

@@ -7,17 +7,17 @@
 
 import SwiftUI
 
-struct WorkoutsView: View {
+struct WorkoutPlansView: View {
     @EnvironmentObject var currentUser: User
-    @StateObject private var viewModel = WorkoutsViewModel()
+    @StateObject private var viewModel = WorkoutPlansViewModel()
     
-    var filteredWorkouts: [Workout] {
-        let incompleteWorkouts = currentUser.workouts.filter { $0.completedAt == nil }
-        
+    var filteredWorkouts: [WorkoutPlan] {
         if viewModel.searchText.isEmpty {
-            return incompleteWorkouts
+            return currentUser.workoutPlans
         } else {
-            return incompleteWorkouts.filter { $0.title.localizedCaseInsensitiveContains(viewModel.searchText) }
+            return currentUser.workoutPlans.filter {
+                $0.name.localizedCaseInsensitiveContains(viewModel.searchText)
+            }
         }
     }
     
@@ -44,7 +44,7 @@ struct WorkoutsView: View {
                     }
                     
                     ForEach(filteredWorkouts.indices, id: \.self) { index in
-                        WorkoutCardView(workout: currentUser.workouts[index])
+                        WorkoutPlanCardView(workoutPlan: currentUser.workoutPlans[index])
                             .transition(
                                 .scale(scale: 0.85)
                                 .combined(with: .opacity)
@@ -64,9 +64,9 @@ struct WorkoutsView: View {
             .background(Color(.systemBackground))
             .navigationTitle("Workouts")
             .sheet(isPresented: $viewModel.isPresentingWorkoutForm) {
-                WorkoutFormView(onSave: { workout in
+                WorkoutPlanFormView(onSave: { workoutPlan in
                     DispatchQueue.main.async {
-                        currentUser.workouts.append(workout)
+                        currentUser.workoutPlans.append(workoutPlan)
                         viewModel.isPresentingWorkoutForm = false
                     }
                 })
@@ -80,13 +80,13 @@ struct WorkoutsView: View {
         }
         .onAppear {
             Task {
-                let workouts = await viewModel.fetchWorkouts(for: currentUser.id)
-                if let workouts = workouts {
-                    for workout in workouts {
-                        if let index = currentUser.workouts.firstIndex(where: { $0.id == workout.id }) {
-                            currentUser.workouts[index] = workout
+                let workoutPlans = await viewModel.fetchWorkouts(for: currentUser.id)
+                if let plans = workoutPlans {
+                    for plan in plans {
+                        if let index = currentUser.workoutPlans.firstIndex(where: { $0.id == plan.id }) {
+                            currentUser.workoutPlans[index] = plan
                         } else {
-                            currentUser.workouts.append(workout)
+                            currentUser.workoutPlans.append(plan)
                         }
                     }
                 }
@@ -96,14 +96,14 @@ struct WorkoutsView: View {
     
 }
 
-struct WorkoutCardView: View {
+struct WorkoutPlanCardView: View {
     
-    var workout: Workout
+    var workoutPlan: WorkoutPlan
     
     var body: some View {
-        NavigationLink(destination: WorkoutView(workout: workout)) {
+        NavigationLink(destination: WorkoutPlanView(workoutPlan: workoutPlan)) {
             VStack(alignment: .leading, spacing: 10) {
-                Text(workout.title)
+                Text(workoutPlan.name)
                     .fontWeight(.bold)
                     .font(.title2)
                     .foregroundColor(.primary)
@@ -112,18 +112,18 @@ struct WorkoutCardView: View {
                     Image(systemName: "dumbbell.fill")
                         .foregroundColor(.accent)
                     
-                    Text("Exercises: \(workout.exercises.count)")
+                    Text("Exercises: \(workoutPlan.exercisePlans.count)")
                         .foregroundColor(.secondary)
                 }
                 
-                if let description = workout.notes {
+                if let description = workoutPlan.notes {
                     Text(description)
                         .font(.body)
                         .foregroundColor(.secondary)
                         .lineLimit(2)
                 }
                 
-                NavigationLink(destination:WorkoutStartedView(workout: workout)) {
+                NavigationLink(destination: WorkoutStartedView(workoutPlan: workoutPlan)) {
                     Text("Start Workout")
                         .padding()
                         .frame(maxWidth: .infinity)
@@ -143,7 +143,7 @@ struct WorkoutCardView: View {
 
 
 #Preview {
-    WorkoutsView()
+    WorkoutPlansView()
         .environmentObject(
             User(
                 id: "000739.b5fe4b10f0654ffcb1b9c5109c11887c.1710",
@@ -154,27 +154,26 @@ struct WorkoutCardView: View {
         )
 }
 
-let _previewWorkouts = [
-    Workout(
-        ownerId: "1",
-        title: "Davi's workout",
+let _previewWorkoutPlans = [
+    WorkoutPlan(
+        name: "Davi's workout",
         notes: "A challenging workout to test your limits.",
-        exercises: _previewExercises
+        exercisePlans: _previewExercisePlans
     ),
-    Workout(
-        ownerId: "1",
-        title: "Ricardo's workout",
+    WorkoutPlan(
+        name: "Ricardo's workout",
         notes: "pussy shit",
-        exercises: [
-            Exercise(
-                index: 1,
+        exercisePlans: [
+            ExercisePlan(
                 name: "sit on 8=D",
-                sets: [
-                    ExerciseSet(index: 1, reps: 6, weight: 35),
-                    ExerciseSet(index: 1, reps: 5, weight: 30),
-                    ExerciseSet(index: 1, reps: 4, weight: 25)
-                ],
-                isRepBased: true
+                isRepBased: true,
+                equipment: .ball,
+                muscleGroups: [.chest],
+                setPlans: [
+                    ExerciseSetPlan(reps: 6, weight: 35),
+                    ExerciseSetPlan(reps: 5, weight: 30),
+                    ExerciseSetPlan(reps: 4, weight: 25)
+                ]
             )
         ]
     )

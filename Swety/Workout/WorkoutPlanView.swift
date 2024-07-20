@@ -7,17 +7,17 @@
 
 import SwiftUI
 
-struct WorkoutView: View {
+struct WorkoutPlanView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @EnvironmentObject var currentUser: User
     
-    var workout: Workout
+    var workoutPlan: WorkoutPlan
     @State var isPresentingWorkoutForm = false
     
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                if let description = workout.notes {
+                if let description = workoutPlan.notes {
                     Text(description)
                         .foregroundColor(.secondary)
                         .padding(.horizontal)
@@ -25,7 +25,7 @@ struct WorkoutView: View {
                 }
                 
                 // Start Workout Button
-                NavigationLink(destination: WorkoutStartedView(workout: workout)) {
+                NavigationLink(destination: WorkoutStartedView(workoutPlan: workoutPlan)) {
                     Text("Start Workout")
                         .padding()
                         .frame(maxWidth: .infinity)
@@ -40,26 +40,27 @@ struct WorkoutView: View {
                 VStack(alignment: .leading, spacing: 15) {
                     Text("Exercises")
                         .font(.title2)
-                    ForEach(workout.exercises) { exercise in
-                        VStack(alignment: .leading) {
-                            NavigationLink(destination: ExerciseView(exercise: exercise)) {
-                                Text(exercise.name)
-                                    .font(.title2)
-                                    .fontWeight(.semibold)
-                                    .foregroundColor(.accent)
-                            }
-                            DetailsView(sets: exercise.sets, isRepBased: exercise.isRepBased)
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding()
-                        .background(Color(.systemGray6))
-                        .cornerRadius(.medium)
-                    }
+                    // TODO: fix
+//                    ForEach(workoutPlan.exercisePlans) { exercisePlan in
+//                        VStack(alignment: .leading) {
+//                            NavigationLink(destination: ExercisePlanView(exercisePlan: exercisePlan)) {
+//                                Text(exercisePlan.name)
+//                                    .font(.title2)
+//                                    .fontWeight(.semibold)
+//                                    .foregroundColor(.accent)
+//                            }
+//                            DetailsView(sets: exercisePlan.sets, isRepBased: exercisePlan.isRepBased)
+//                        }
+//                        .frame(maxWidth: .infinity, alignment: .leading)
+//                        .padding()
+//                        .background(Color(.systemGray6))
+//                        .cornerRadius(.medium)
+//                    }
                 }
             }
             .padding()
         }
-        .navigationTitle(workout.title)
+        .navigationTitle(workoutPlan.name)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button(action: { isPresentingWorkoutForm.toggle() }) {
@@ -80,12 +81,12 @@ struct WorkoutView: View {
             }
         }
         .sheet(isPresented: $isPresentingWorkoutForm) {
-            WorkoutFormView(
-                workout: workout,
+            WorkoutPlanFormView(
+                workoutPlan: workoutPlan,
                 onSave: { workout in
                     DispatchQueue.main.async {
-                        if let workoutIndex = currentUser.workouts.firstIndex(where: { $0.id == workout.id }) {
-                            currentUser.workouts[workoutIndex] = workout
+                        if let workoutIndex = currentUser.workoutPlans.firstIndex(where: { $0.id == workout.id }) {
+                            currentUser.workoutPlans[workoutIndex] = workout
                         }
                         isPresentingWorkoutForm = false
                     }
@@ -132,12 +133,9 @@ private struct DetailsView: View {
                 } else {
                     Text("\(exerciseSet.duration)")
                     Text(exerciseSet.intensity.rawValue.lowercased())
-                    
-                    
-                    
-                    
                 }
-            }.font(.title3)
+            }
+            .font(.title3)
         }
     }
     
@@ -183,58 +181,65 @@ private struct DetailsView: View {
 
 #Preview {
     NavigationView {
-        WorkoutView(workout: Workout(
-            ownerId: "1",
-            title: "Full Body Workout",
+        WorkoutPlanView(workoutPlan: WorkoutPlan(
+            name: "Full Body Workout",
             notes: "A complete workout targeting all major muscle groups.",
-            exercises: _previewExercises
+            exercisePlans: _previewExercisePlans
         ))
     }
 }
 
-var _previewExercises: [Exercise] = [
-    Exercise(
-        index: 2,
+var _previewExercisePlans: [ExercisePlan] = [
+    ExercisePlan(
         name: "Squats",
         notes: "Stand with your feet shoulder-width apart. Lower your body as if you were sitting back into a chair. Push through your heels to return to the starting position.",
-        sets: [
-            ExerciseSet(index: 1, reps: 12, weight: 185),
-            ExerciseSet(index: 2, reps: 10, weight: 185),
-            ExerciseSet(index: 3, reps: 12, weight: 185),
-            ExerciseSet(index: 4, reps: 10, weight: 185),
-        ],
-        isRepBased: true
+        isRepBased: true,
+        index: 2,
+        equipment: .bodyweight,
+        muscleGroups: [.legs],
+        setPlans: [
+            ExerciseSetPlan(reps: 12, weight: 185),
+            ExerciseSetPlan(reps: 10, weight: 185),
+            ExerciseSetPlan(reps: 12, weight: 185),
+            ExerciseSetPlan(reps: 10, weight: 185),
+        ]
     ),
-    Exercise(
-        index: 3,
+    ExercisePlan(
         name: "Plank",
-        sets: [
-            ExerciseSet(index: 1, duration: 45, intensity: .low, completedAt: Date()),
-            ExerciseSet(index: 2, duration: 35, intensity: .low),
-        ],
-        isRepBased: false
+        isRepBased: false,
+        index: 3,
+        equipment: .bodyweight,
+        muscleGroups: [.core],
+        setPlans: [
+            ExerciseSetPlan(duration: 45, intensity: .low),
+            ExerciseSetPlan(duration: 35, intensity: .low),
+        ]
     ),
-    Exercise(
-        index: 1,
+    ExercisePlan(
         name: "Bench Press",
         notes: "Lie on a flat bench with your feet flat on the floor. Grip the barbell with your hands slightly wider than shoulder-width apart. Lower the bar to your chest, then press it back up.",
-        sets: [
-            ExerciseSet(index: 1, reps: 10, weight: 135),
-            ExerciseSet(index: 2, reps: 8, weight: 135),
-            ExerciseSet(index: 3, reps: 10, weight: 135),
-            ExerciseSet(index: 4, reps: 8, weight: 135),
-        ],
-        isRepBased: true
+        isRepBased: true,
+        index: 1,
+        equipment: .barbell,
+        muscleGroups: [.chest, .arms],
+        setPlans: [
+            ExerciseSetPlan(reps: 10, weight: 135),
+            ExerciseSetPlan(reps: 8, weight: 135),
+            ExerciseSetPlan(reps: 10, weight: 135),
+            ExerciseSetPlan(reps: 8, weight: 135),
+        ]
     ),
-    Exercise(
-        index: 4,
+    ExercisePlan(
         name: "Deadlift",
         notes: "Stand with your feet hip-width apart. Bend at the hips and knees to grip the barbell. Keep your back straight as you lift the barbell off the ground.",
-        sets: [
-            ExerciseSet(index: 1, reps: 8, weight: 225),
-            ExerciseSet(index: 2, reps: 8, weight: 225),
-            ExerciseSet(index: 3, reps: 8, weight: 225),
-        ],
-        isRepBased: true
+        isRepBased: true,
+        index: 4,
+        equipment: .barbell,
+        muscleGroups: [.legs, .core],
+        setPlans: [
+            ExerciseSetPlan(reps: 8, weight: 225),
+            ExerciseSetPlan(reps: 8, weight: 225),
+            ExerciseSetPlan(reps: 8, weight: 225),
+        ]
     )
 ]

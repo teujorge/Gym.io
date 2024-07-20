@@ -23,15 +23,15 @@ class ChallengeFormViewModel: ObservableObject {
         self.onSave = onSave
         self.onDelete = nil
         self.challenge = Challenge(
-            ownerId: currentUserId,
-            startAt: Date(),
-            endAt: Date().addingTimeInterval(60 * 60 * 24 * 7),
+            name: "",
+            notes: "",
             pointsPerHour: 10,
             pointsPerRep: 10,
             pointsPerKg: 10,
-            name: "",
-            notes: "",
-            participants: []
+            ownerId: currentUserId,
+            participants: [],
+            startAt: Date(),
+            endAt: Date().addingTimeInterval(60 * 60 * 24 * 7)
         )
     }
     

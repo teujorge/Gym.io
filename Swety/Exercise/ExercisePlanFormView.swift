@@ -7,34 +7,45 @@
 
 import SwiftUI
 
-struct ExerciseFormView: View {
-    @StateObject private var viewModel: ExerciseFormViewModel
+struct ExercisePlanFormView: View {
+    @StateObject private var viewModel: ExercisePlanFormViewModel
     
     // Initializer with save functionality only
-    init(onSave: @escaping (Exercise) -> Void) {
-        _viewModel = StateObject(wrappedValue: ExerciseFormViewModel(exercise: nil, onSave: onSave, onDelete: nil))
+    init(onSave: @escaping (ExercisePlan) -> Void) {
+        _viewModel = StateObject(wrappedValue: ExercisePlanFormViewModel(exercisePlan: nil, onSave: onSave, onDelete: nil))
     }
     
     // Initializer with save and delete functionality
-    init(exercise: Exercise, onSave: @escaping (Exercise) -> Void, onDelete: @escaping (Exercise) -> Void) {
-        _viewModel = StateObject(wrappedValue: ExerciseFormViewModel(exercise: exercise, onSave: onSave, onDelete: onDelete))
+    init(exercisePlan: ExercisePlan, onSave: @escaping (ExercisePlan) -> Void, onDelete: @escaping (ExercisePlan) -> Void) {
+        _viewModel = StateObject(wrappedValue: ExercisePlanFormViewModel(exercisePlan: exercisePlan, onSave: onSave, onDelete: onDelete))
     }
     
     var body: some View {
         NavigationView {
             Form {
                 Section(header: Text("Exercise Details")) {
-                    TextField("Name", text: $viewModel.exercise.name)
+                    TextField("Name", text: $viewModel.exercisePlan.name)
 //                    TextField("Image Name", text: viewModel.exercise.imageName)
 //                    TextField("Notes", text: viewModel.exercise.notes)
-                    Picker("Type", selection: $viewModel.exercise.isRepBased.animation()) {
+                    Picker("Type", selection: $viewModel.exercisePlan.isRepBased.animation()) {
                         Text("Rep Based").tag(true)
                         Text("Time Based").tag(false)
                     }
                     .pickerStyle(.segmented)
                 }
                 Section {
-                    SetDetailsView(exercise: viewModel.exercise, autoSave: false)
+                    SetDetailsView(
+                        sets: viewModel.exercisePlan.setPlans.map { SetDetails(
+                                reps: $0.reps,
+                                weight: $0.weight,
+                                duration: $0.duration,
+                                intensity: $0.intensity,
+                                completedAt: nil
+                        ) },
+                        isPlan: true,
+                        isRepBased: viewModel.exercisePlan.isRepBased,
+                        autoSave: false
+                    )
                 }
                 .padding()
             }
@@ -68,14 +79,14 @@ struct ExerciseFormView: View {
 
 
 #Preview("New") {
-    ExerciseFormView(onSave: { exercise in
+    ExercisePlanFormView(onSave: { exercise in
         print(exercise)
     })
 }
 
 #Preview("Edit") {
-    ExerciseFormView(
-        exercise: _previewExercises[0],
+    ExercisePlanFormView(
+        exercisePlan: _previewExercisePlans[0],
         onSave: { exercise in print("Save \(exercise)") },
         onDelete: { exercise in print("Delete \(exercise)") }
     )

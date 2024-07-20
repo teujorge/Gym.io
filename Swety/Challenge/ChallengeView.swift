@@ -288,15 +288,15 @@ struct PointCard: View {
 }
 
 let _previewChallenge = Challenge(
-    ownerId: _previewParticipants[0].id,
-    startAt: Date().addingTimeInterval(-60 * 60 * 24 * 10),
-    endAt: Date().addingTimeInterval(60 * 60 * 24 * 30),
+    name: "30-Day Fitness",
+    notes: "Join us in this 30-day fitness challenge!",
     pointsPerHour: 100,
     pointsPerRep: 5,
     pointsPerKg: 10,
-    name: "30-Day Fitness",
-    notes: "Join us in this 30-day fitness challenge!",
-    participants: _previewParticipants
+    ownerId: _previewParticipants[0].id,
+    participants: _previewParticipants,
+    startAt: Date().addingTimeInterval(-60 * 60 * 24 * 10),
+    endAt: Date().addingTimeInterval(60 * 60 * 24 * 30)
 )
 
 let _previewParticipants = [

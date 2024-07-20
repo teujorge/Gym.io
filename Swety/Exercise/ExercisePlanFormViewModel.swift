@@ -7,61 +7,68 @@
 
 import SwiftUI
 
-class ExerciseFormViewModel: ObservableObject {
-    @Published var exercise: Exercise
+class ExercisePlanFormViewModel: ObservableObject {
+    @Published var exercisePlan: ExercisePlan
     @Published var state: LoaderState = .idle
     
-    let onSave: (Exercise) -> Void
-    let onDelete: ((Exercise) -> Void)?
+    let onSave: (ExercisePlan) -> Void
+    let onDelete: ((ExercisePlan) -> Void)?
     
     let isEditing: Bool
     
-    init(exercise: Exercise?, onSave: @escaping (Exercise) -> Void, onDelete: ((Exercise) -> Void)?) {
+    init(exercisePlan: ExercisePlan?, onSave: @escaping (ExercisePlan) -> Void, onDelete: ((ExercisePlan) -> Void)?) {
         self.onSave = onSave
         self.onDelete = onDelete
         
-        if let exercise = exercise {
+        if let exercisePlan = exercisePlan {
             self.isEditing = true
-            self.exercise = exercise
+            self.exercisePlan = exercisePlan
         } else {
             self.isEditing = false
-            self.exercise = Exercise(index: 1, name: "", notes: "", sets: [], isRepBased: true)
+            self.exercisePlan = ExercisePlan(
+                name: "",
+                notes: "",
+                isRepBased: true,
+                equipment: .none,
+                muscleGroups: [],
+                setPlans: []
+            )
         }
     }
     
     func addSet() {
-        let newIndex = exercise.sets.count
-        exercise.sets.append(ExerciseSet(index: newIndex))
+        let newIndex = exercisePlan.setPlans.count
+        exercisePlan.setPlans.append(ExerciseSetPlan(index: newIndex))
     }
     
     func handleSave() {
         if isEditing {
             Task {
-                if let newExercise = await self.requestSave(exercise.id) {
+                if let newExercise = await self.requestSave(exercisePlan.id) {
                     self.onSave(newExercise)
                 }
             }
         } else {
-            self.onSave(exercise)
+            self.onSave(exercisePlan)
         }
     }
     
     func handleDelete() {
         Task {
-            if await self.requestDelete(exercise.id) {
-                self.onDelete?(exercise)
+            if await self.requestDelete(exercisePlan.id) {
+                self.onDelete?(exercisePlan)
             }
         }
     }
     
-    private func requestSave(_ id: String) async -> Exercise? {
+    private func requestSave(_ id: String) async -> ExercisePlan? {
         guard isEditing else { return nil }
         
         DispatchQueue.main.async {
             self.state = .loading
         }
         
-        let result: HTTPResponse<Exercise> = await sendRequest(endpoint: "/exercises/\(id)", body: exercise, method: .PUT)
+        let result: HTTPResponse<ExercisePlan> = await sendRequest(endpoint: "/exercises/templates/\(id)", body: exercisePlan, method: .PUT)
         
         switch result {
         case .success(let exercise):
@@ -84,7 +91,7 @@ class ExerciseFormViewModel: ObservableObject {
             self.state = .loading
         }
         
-        let result: HTTPResponse<EmptyBody> = await sendRequest(endpoint: "/exercises/\(id)", method: .DELETE)
+        let result: HTTPResponse<EmptyBody> = await sendRequest(endpoint: "/exercises/templates/\(id)", method: .DELETE)
         
         switch result {
         case .success:

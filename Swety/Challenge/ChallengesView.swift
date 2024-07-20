@@ -139,14 +139,14 @@ struct _ChallengesPreview: View {
 let _previewChallenges: [Challenge] = [
     _previewChallenge,
     Challenge(
-        ownerId: _previewParticipants[1].id,
-        startAt: Date(),
-        endAt: Date().addingTimeInterval(60 * 60 * 24 * 7),
+        name: "Weekly Running",
+        notes: "Run 5 miles every day for a week!",
         pointsPerHour: 0,
         pointsPerRep: 0,
         pointsPerKg: 0,
-        name: "Weekly Running",
-        notes: "Run 5 miles every day for a week!"
+        ownerId: _previewParticipants[1].id,
         //        participants: _previewParticipants
+        startAt: Date(),
+        endAt: Date().addingTimeInterval(60 * 60 * 24 * 7)
     )
 ]

@@ -1,5 +1,5 @@
 //
-//  WorkoutsViewModel.swift
+//  WorkoutPlanFormViewModel.swift
 //  Swety
 //
 //  Created by Matheus Jorge on 7/10/24.
@@ -7,44 +7,37 @@
 
 import SwiftUI
 
-enum WorkoutFormViewState {
-    case idle
-    case operating
-    case finished
-    case error(String)
-}
-
-class WorkoutFormViewModel: ObservableObject {
+class WorkoutPlanFormViewModel: ObservableObject {
     
     let isEditing: Bool
-    var onSave: (Workout) -> Void
-    var onDelete: (Workout) -> Void
+    var onSave: (WorkoutPlan) -> Void
+    var onDelete: (WorkoutPlan) -> Void
     
-    @Published var workout: Workout
+    @Published var workoutPlan: WorkoutPlan
     @Published var isPresentingExerciseForm = false
-    @Published var selectedExercise: Exercise?
-    @Published var state: WorkoutFormViewState = .idle
+    @Published var selectedExercise: ExercisePlan?
+    @Published var state: LoaderState = .idle
     
-    @Published var titleText = "" {
+    @Published var nameText = "" {
         didSet {
-            workout.title = titleText
+            workoutPlan.name = nameText
         }
     }
     @Published var notesText = "" {
         didSet {
-            workout.notes = notesText
+            workoutPlan.notes = notesText
         }
     }
     
-    init(workout: Workout?, onSave: @escaping (Workout) -> Void, onDelete: @escaping (Workout) -> Void) {
-        if let workout = workout {
+    init(workoutPlan: WorkoutPlan?, onSave: @escaping (WorkoutPlan) -> Void, onDelete: @escaping (WorkoutPlan) -> Void) {
+        if let workoutPlan = workoutPlan {
             self.isEditing = true
-            self.workout = workout
-            self.titleText = workout.title
-            self.notesText = workout.notes ?? ""
+            self.workoutPlan = workoutPlan
+            self.nameText = workoutPlan.name
+            self.notesText = workoutPlan.notes ?? ""
         } else {
             self.isEditing = false
-            self.workout = Workout(ownerId: currentUserId, title: "", notes: "", exercises: [])
+            self.workoutPlan = WorkoutPlan(name: "", notes: "", ownerId: currentUserId, exercisePlans: [])
         }
         self.onSave = onSave
         self.onDelete = onDelete
@@ -56,34 +49,34 @@ class WorkoutFormViewModel: ObservableObject {
     }
     
     func moveExercise(from source: IndexSet, to destination: Int) {
-        workout.exercises.move(fromOffsets: source, toOffset: destination)
+        workoutPlan.exercisePlans.move(fromOffsets: source, toOffset: destination)
     }
     
     func deleteExercise(at offsets: IndexSet) {
-        workout.exercises.remove(atOffsets: offsets)
+        workoutPlan.exercisePlans.remove(atOffsets: offsets)
     }
     
-    func editExercise(_ exercise: Exercise) {
+    func editExercise(_ exercise: ExercisePlan) {
         selectedExercise = exercise
         isPresentingExerciseForm = true
     }
     
-    func handleSaveExercise(_ updatedExercise: Exercise) {
+    func handleSaveExercise(_ updatedExercise: ExercisePlan) {
         if let selectedExercise = selectedExercise {
-            if let index = workout.exercises.firstIndex(where: { $0.id == selectedExercise.id }) {
-                workout.exercises[index] = updatedExercise
+            if let index = workoutPlan.exercisePlans.firstIndex(where: { $0.id == selectedExercise.id }) {
+                workoutPlan.exercisePlans[index] = updatedExercise
             } else {
-                workout.exercises.append(updatedExercise)
+                workoutPlan.exercisePlans.append(updatedExercise)
             }
         } else {
-            workout.exercises.append(updatedExercise)
+            workoutPlan.exercisePlans.append(updatedExercise)
         }
         isPresentingExerciseForm = false
     }
     
-    func handleDeleteExercise(_ exercise: Exercise) {
-        if let index = workout.exercises.firstIndex(where: { $0.id == exercise.id }) {
-            workout.exercises.remove(at: index)
+    func handleDeleteExercise(_ exercise: ExercisePlan) {
+        if let index = workoutPlan.exercisePlans.firstIndex(where: { $0.id == exercise.id }) {
+            workoutPlan.exercisePlans.remove(at: index)
         }
         isPresentingExerciseForm = false
     }
@@ -106,81 +99,81 @@ class WorkoutFormViewModel: ObservableObject {
         }
     }
     
-    private func createWorkout() async -> Workout? {
-        guard !workout.title.isEmpty else {
+    private func createWorkout() async -> WorkoutPlan? {
+        guard !workoutPlan.name.isEmpty else {
             DispatchQueue.main.async {
                 print("Please provide a title for your workout")
-                self.state = .error("Please provide a title for your workout")
+                self.state = .failure("Please provide a title for your workout")
             }
             return nil
         }
         
-        guard !workout.ownerId.isEmpty else {
+        guard !workoutPlan.ownerId.isEmpty else {
             DispatchQueue.main.async {
                 print("Please provide an owner ID for your workout")
-                self.state = .error("Please provide an owner ID for your workout")
+                self.state = .failure("Please provide an owner ID for your workout")
             }
             return nil
         }
         
         DispatchQueue.main.async {
-            self.state = .operating
+            self.state = .loading
         }
         
-        let result: HTTPResponse<Workout> = await sendRequest(endpoint: "/workouts", body: workout, method: .POST)
+        let result: HTTPResponse<WorkoutPlan> = await sendRequest(endpoint: "/workouts/templates", body: workoutPlan, method: .POST)
         
         
         switch result {
         case .success(let createdWorkout):
             DispatchQueue.main.async {
                 print("Workout created: \(createdWorkout)")
-                self.state = .finished
+                self.state = .success
             }
             return createdWorkout
         case .failure(let error):
             DispatchQueue.main.async {
                 print("Failed to create workout: \(error)")
-                self.state = .error(error)
+                self.state = .failure(error)
             }
             return nil
             
         }
     }
     
-    private func updateWorkout() async -> Workout? {
-        guard !workout.title.isEmpty else {
+    private func updateWorkout() async -> WorkoutPlan? {
+        guard !workoutPlan.name.isEmpty else {
             DispatchQueue.main.async {
                 print("Please provide a title for your workout")
-                self.state = .error("Please provide a title for your workout")
+                self.state = .failure("Please provide a title for your workout")
             }
             return nil
         }
         
-        guard !workout.ownerId.isEmpty else {
+        guard !workoutPlan.ownerId.isEmpty else {
             DispatchQueue.main.async {
                 print("Please provide an owner ID for your workout")
-                self.state = .error("Please provide an owner ID for your workout")
+                self.state = .failure("Please provide an owner ID for your workout")
             }
             return nil
         }
         
         DispatchQueue.main.async {
-            self.state = .operating
+            self.state = .loading
         }
         
-        let result: HTTPResponse<Workout> = await sendRequest(endpoint: "/workouts/\(workout.id)", body: workout, method: .PUT)
+        let result: HTTPResponse<WorkoutPlan> = await sendRequest(endpoint: "/workouts/templates/\(workoutPlan.id)", body: workoutPlan, method: .PUT)
         
         switch result {
         case .success(let updatedWorkout):
             DispatchQueue.main.async {
                 print("Workout updated: \(updatedWorkout)")
-                self.state = .finished
+                self.state = .success
             }
             return updatedWorkout
         case .failure(let error):
             DispatchQueue.main.async {
                 print("Failed to update workout: \(error)")
-                self.state = .error(error)
+                self.state = .failure(error)
             }
             return nil
         }
@@ -190,7 +183,7 @@ class WorkoutFormViewModel: ObservableObject {
         Task {
             let success = await handleDeleteWorkout()
             if success {
-                onDelete(workout)
+                onDelete(workoutPlan)
             }
             else {
                 print("Failed to delete workout")
@@ -200,22 +193,22 @@ class WorkoutFormViewModel: ObservableObject {
     
     private func handleDeleteWorkout() async -> Bool {
         DispatchQueue.main.async {
-            self.state = .operating
+            self.state = .loading
         }
         
-        let result: HTTPResponse<EmptyBody> = await sendRequest(endpoint: "/workouts/\(workout.id)", body: nil, method: .DELETE)
+        let result: HTTPResponse<EmptyBody> = await sendRequest(endpoint: "/workouts/templates/\(workoutPlan.id)", body: nil, method: .DELETE)
         
         switch result {
         case .success:
             DispatchQueue.main.async {
                 print("Workout successfully deleted")
-                self.state = .finished
+                self.state = .success
             }
             return true
         case .failure(let error):
             DispatchQueue.main.async {
                 print("Failed to delete workout: \(error)")
-                self.state = .error(error)
+                self.state = .failure(error)
             }
             return false
         }
