@@ -24,6 +24,7 @@ class SetDetailsViewModel: ObservableObject {
         }
     }
     
+    let isEditable: Bool
     let isPlan: Bool
     
     @Published var listHeight = 0.0
@@ -39,6 +40,7 @@ class SetDetailsViewModel: ObservableObject {
     
     init(
         sets: [SetDetails],
+        isEditable: Bool,
         isPlan: Bool,
         isRepBased: Bool,
         autoSave: Bool,
@@ -47,6 +49,7 @@ class SetDetailsViewModel: ObservableObject {
         onDebounceTriggered: (() -> Void)? = nil
     ) {
         self.sets = sets
+        self.isEditable = isEditable
         self.isPlan = isPlan
         self.isRepBased = isRepBased
         self.autoSave = autoSave
@@ -86,9 +89,9 @@ class SetDetailsViewModel: ObservableObject {
         onSetsChanged?(sets)
     }
     
-    
     func addSet() {
         sets.append(SetDetails(
+            id: UUID().uuidString,
             reps: 0,
             weight: 0,
             duration: 0,
@@ -169,14 +172,25 @@ class SetDetailsViewModel: ObservableObject {
 }
 
 
-struct SetDetails {
-    var reps: Int
-    var weight: Int
-    var duration: Int
-    var intensity: Intensity
-    var completedAt: Date?
+class SetDetails: ObservableObject, Equatable {
+    static func == (lhs: SetDetails, rhs: SetDetails) -> Bool {
+        lhs.id == rhs.id &&
+        lhs.reps == rhs.reps &&
+        lhs.weight == rhs.weight &&
+        lhs.duration == rhs.duration &&
+        lhs.intensity == rhs.intensity &&
+        lhs.completedAt == rhs.completedAt
+    }
     
-    init(reps: Int, weight: Int, duration: Int, intensity: Intensity, completedAt: Date?) {
+    @Published var id: String
+    @Published var reps: Int
+    @Published var weight: Int
+    @Published var duration: Int
+    @Published var intensity: Intensity
+    @Published var completedAt: Date?
+    
+    init(id: String, reps: Int, weight: Int, duration: Int, intensity: Intensity, completedAt: Date?) {
+        self.id = id
         self.reps = reps
         self.weight = weight
         self.duration = duration
@@ -185,6 +199,7 @@ struct SetDetails {
     }
     
     init(exerciseSet: ExerciseSet) {
+        id = exerciseSet.id
         reps = exerciseSet.reps
         weight = exerciseSet.weight
         duration = exerciseSet.duration
@@ -193,6 +208,7 @@ struct SetDetails {
     }
     
     init(exerciseSetPlan: ExerciseSetPlan) {
+        id = exerciseSetPlan.id
         reps = exerciseSetPlan.reps
         weight = exerciseSetPlan.weight
         duration = exerciseSetPlan.duration
@@ -202,6 +218,7 @@ struct SetDetails {
     
     func toSet(index: Int) -> ExerciseSet {
         ExerciseSet(
+            id: id,
             reps: reps,
             weight: weight,
             duration: duration,
@@ -213,6 +230,7 @@ struct SetDetails {
     
     func toSetPlan(index: Int) -> ExerciseSetPlan {
         ExerciseSetPlan(
+            id: id,
             reps: reps,
             weight: weight,
             duration: duration,

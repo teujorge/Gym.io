@@ -66,21 +66,21 @@ private struct ExerciseCardView: View {
                 .font(.caption)
                 .foregroundColor(.accent)
             
-            // TODO: fix
-//            SetDetailsView(
-//                sets: exercise.sets.map { SetDetails(exerciseSet: $0) },
-//                isPlan: false,
-//                isRepBased: exercise.isRepBased,
-//                autoSave: true,
-//                onSetsChanged: { setDetails in
-//                    exercise.sets = setDetails.enumerated().map { (index, setDetail) in
-//                        setDetail.toSet(index: index)
-//                    }
-//                }
-//                onDebounceTriggered: {
-//                    print("onDebounceTriggered")
-//                }
-//            )
+            SetDetailsView(
+                sets: exercise.sets.map { SetDetails(exerciseSet: $0) },
+                isEditable: true,
+                isPlan: false,
+                isRepBased: exercise.isRepBased,
+                autoSave: true,
+                onSetsChanged: { setDetails in
+                    exercise.sets = setDetails.enumerated().map { (index, setDetail) in
+                        setDetail.toSet(index: index)
+                    }
+                },
+                onDebounceTriggered: {
+                    print("onDebounceTriggered")
+                }
+            )
             
         }
         .frame(maxWidth: .infinity, alignment: .leading)

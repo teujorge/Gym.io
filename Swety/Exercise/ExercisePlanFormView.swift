@@ -1,5 +1,5 @@
 //
-//  ExerciseFormView.swift
+//  ExercisePlanFormView.swift
 //  Swety
 //
 //  Created by Matheus Jorge on 7/5/24.
@@ -25,23 +25,21 @@ struct ExercisePlanFormView: View {
             Form {
                 Section(header: Text("Exercise Details")) {
                     TextField("Name", text: $viewModel.exercisePlan.name)
-//                    TextField("Image Name", text: viewModel.exercise.imageName)
-//                    TextField("Notes", text: viewModel.exercise.notes)
-                    Picker("Type", selection: $viewModel.exercisePlan.isRepBased.animation()) {
-                        Text("Rep Based").tag(true)
-                        Text("Time Based").tag(false)
-                    }
-                    .pickerStyle(.segmented)
+                    TextField("Notes", text: $viewModel.notes)
                 }
                 Section {
                     SetDetailsView(
-                        sets: viewModel.exercisePlan.setPlans.map { SetDetails(
+                        sets: viewModel.exercisePlan.setPlans.map {
+                            SetDetails(
+                                id: $0.id,
                                 reps: $0.reps,
                                 weight: $0.weight,
                                 duration: $0.duration,
                                 intensity: $0.intensity,
                                 completedAt: nil
-                        ) },
+                            )
+                        },
+                        isEditable: true,
                         isPlan: true,
                         isRepBased: viewModel.exercisePlan.isRepBased,
                         autoSave: false

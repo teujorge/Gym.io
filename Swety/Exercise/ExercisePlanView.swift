@@ -42,6 +42,7 @@ struct ExercisePlanView: View {
                     sets: exercisePlan.setPlans.map { plan in
                         SetDetails(exerciseSetPlan: plan)
                     },
+                    isEditable: true,
                     isPlan: true,
                     isRepBased: exercisePlan.isRepBased,
                     autoSave: false

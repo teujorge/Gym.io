@@ -11,13 +11,16 @@ struct WorkoutPlanView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @EnvironmentObject var currentUser: User
     
-    var workoutPlan: WorkoutPlan
-    @State var isPresentingWorkoutForm = false
+    @StateObject var viewModel: WorkoutPlanViewModel
+    
+    init(workoutPlan: WorkoutPlan) {
+        _viewModel = StateObject(wrappedValue: WorkoutPlanViewModel(workoutPlan: workoutPlan))
+    }
     
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                if let description = workoutPlan.notes {
+                if let description = viewModel.workoutPlan.notes {
                     Text(description)
                         .foregroundColor(.secondary)
                         .padding(.horizontal)
@@ -25,7 +28,7 @@ struct WorkoutPlanView: View {
                 }
                 
                 // Start Workout Button
-                NavigationLink(destination: WorkoutStartedView(workoutPlan: workoutPlan)) {
+                NavigationLink(destination: WorkoutStartedView(workoutPlan: viewModel.workoutPlan)) {
                     Text("Start Workout")
                         .padding()
                         .frame(maxWidth: .infinity)
@@ -40,30 +43,37 @@ struct WorkoutPlanView: View {
                 VStack(alignment: .leading, spacing: 15) {
                     Text("Exercises")
                         .font(.title2)
-                    // TODO: fix
-//                    ForEach(workoutPlan.exercisePlans) { exercisePlan in
-//                        VStack(alignment: .leading) {
-//                            NavigationLink(destination: ExercisePlanView(exercisePlan: exercisePlan)) {
-//                                Text(exercisePlan.name)
-//                                    .font(.title2)
-//                                    .fontWeight(.semibold)
-//                                    .foregroundColor(.accent)
-//                            }
-//                            DetailsView(sets: exercisePlan.sets, isRepBased: exercisePlan.isRepBased)
-//                        }
-//                        .frame(maxWidth: .infinity, alignment: .leading)
-//                        .padding()
-//                        .background(Color(.systemGray6))
-//                        .cornerRadius(.medium)
-//                    }
+                    ForEach(viewModel.workoutPlan.exercisePlans) { exercisePlan in
+                        VStack(alignment: .leading) {
+                            NavigationLink(destination: ExercisePlanView(exercisePlan: exercisePlan)) {
+                                Text(exercisePlan.name)
+                                    .font(.title2)
+                                    .fontWeight(.semibold)
+                                    .foregroundColor(.accent)
+                            }
+                            SetDetailsView(
+                                sets: exercisePlan.setPlans.map { setPlan in
+                                    SetDetails(exerciseSetPlan: setPlan)
+                                },
+                                isEditable: false,
+                                isPlan: false,
+                                isRepBased: exercisePlan.isRepBased,
+                                autoSave: false
+                            )
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding()
+                        .background(Color(.systemGray6))
+                        .cornerRadius(.medium)
+                    }
                 }
             }
             .padding()
         }
-        .navigationTitle(workoutPlan.name)
+        .navigationTitle(viewModel.workoutPlan.name)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button(action: { isPresentingWorkoutForm.toggle() }) {
+                Button(action: { viewModel.isPresentingWorkoutForm.toggle() }) {
                     Text("Edit")
                         .font(.caption)
                         .fontWeight(.bold)
@@ -80,15 +90,15 @@ struct WorkoutPlanView: View {
                 .cornerRadius(.large)
             }
         }
-        .sheet(isPresented: $isPresentingWorkoutForm) {
+        .sheet(isPresented: $viewModel.isPresentingWorkoutForm) {
             WorkoutPlanFormView(
-                workoutPlan: workoutPlan,
+                workoutPlan: viewModel.workoutPlan,
                 onSave: { workout in
                     DispatchQueue.main.async {
                         if let workoutIndex = currentUser.workoutPlans.firstIndex(where: { $0.id == workout.id }) {
                             currentUser.workoutPlans[workoutIndex] = workout
                         }
-                        isPresentingWorkoutForm = false
+                        viewModel.isPresentingWorkoutForm = false
                     }
                 },
                 onDelete: { workout in
@@ -96,7 +106,7 @@ struct WorkoutPlanView: View {
                         if let workoutIndex = currentUser.workouts.firstIndex(where: { $0.id == workout.id }) {
                             currentUser.workouts.remove(at: workoutIndex)
                         }
-                        isPresentingWorkoutForm = false
+                        viewModel.isPresentingWorkoutForm = false
                         presentationMode.wrappedValue.dismiss()
                     }
                 }
@@ -105,79 +115,74 @@ struct WorkoutPlanView: View {
     }
 }
 
-private struct DetailsView: View {
-    var sets: [ExerciseSet]
-    var isRepBased:Bool
-    
-    
-    
-    var body: some View {
-        VStack(alignment: .center) {
-            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], alignment: .center) {
-                headerView
-                setsList
-                
-            }
-            
-        }
-        
-    }
-    
-    private var setsList: some View {
-        ForEach(sets) {exerciseSet in
-            GridRow(alignment: .center) {
-                Text("\(exerciseSet.index)")
-                if isRepBased {
-                    Text("\(exerciseSet.reps)")
-                    Text("\(exerciseSet.weight)")
-                } else {
-                    Text("\(exerciseSet.duration)")
-                    Text(exerciseSet.intensity.rawValue.lowercased())
-                }
-            }
-            .font(.title3)
-        }
-    }
-    
-    private var headerView: some View {
-        GridRow(alignment: .center) {
-            VStack {
-                Image(systemName: "number")
-                    .fontWeight(.semibold)
-                Text("Set")
-                    .font(.headline)
-            }
-            if isRepBased {
-                VStack {
-                    Image(systemName: "arrow.up.arrow.down")
-                        .fontWeight(.semibold)
-                    Text("Reps")
-                        .font(.headline)
-                }
-                VStack {
-                    Image(systemName: "scalemass")
-                        .fontWeight(.semibold)
-                    Text("Kg")
-                        .font(.headline)
-                }
-            } else {
-                VStack {
-                    Image(systemName: "timer")
-                        .fontWeight(.semibold)
-                    Text("Sec")
-                        .font(.headline)
-                }
-                VStack {
-                    Image(systemName: "flame")
-                        .fontWeight(.semibold)
-                    Text("Intensity")
-                        .font(.headline)
-                }
-            }
-        }
-        .frame(minHeight: 40)
-    }
-}
+//private struct DetailsView: View {
+//    var sets: [ExerciseSet]
+//    var isRepBased:Bool
+//
+//    var body: some View {
+//        VStack(alignment: .center) {
+//            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], alignment: .center) {
+//                headerView
+//                setsList
+//            }
+//        }
+//    }
+//
+//    private var setsList: some View {
+//        ForEach(sets) {exerciseSet in
+//            GridRow(alignment: .center) {
+//                Text("\(exerciseSet.index)")
+//                if isRepBased {
+//                    Text("\(exerciseSet.reps)")
+//                    Text("\(exerciseSet.weight)")
+//                } else {
+//                    Text("\(exerciseSet.duration)")
+//                    Text(exerciseSet.intensity.rawValue.lowercased())
+//                }
+//            }
+//            .font(.title3)
+//        }
+//    }
+//
+//    private var headerView: some View {
+//        GridRow(alignment: .center) {
+//            VStack {
+//                Image(systemName: "number")
+//                    .fontWeight(.semibold)
+//                Text("Set")
+//                    .font(.headline)
+//            }
+//            if isRepBased {
+//                VStack {
+//                    Image(systemName: "arrow.up.arrow.down")
+//                        .fontWeight(.semibold)
+//                    Text("Reps")
+//                        .font(.headline)
+//                }
+//                VStack {
+//                    Image(systemName: "scalemass")
+//                        .fontWeight(.semibold)
+//                    Text("Kg")
+//                        .font(.headline)
+//                }
+//            } else {
+//                VStack {
+//                    Image(systemName: "timer")
+//                        .fontWeight(.semibold)
+//                    Text("Sec")
+//                        .font(.headline)
+//                }
+//                VStack {
+//                    Image(systemName: "flame")
+//                        .fontWeight(.semibold)
+//                    Text("Intensity")
+//                        .font(.headline)
+//                }
+//            }
+//        }
+//        .frame(minHeight: 40)
+//    }
+//}
 
 #Preview {
     NavigationView {

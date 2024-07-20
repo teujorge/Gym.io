@@ -31,35 +31,31 @@ struct WorkoutPlanFormView: View {
                         TextField("Description", text: $viewModel.notesText)
                     }
                     
-                    // TODO: fix
-//                    // Exercises section
-//                    Section(header: Text("Exercises")) {
-//                        ForEach(viewModel.workout.exercises, id: \.id) { exercise in
-//                            HStack{
-//                                Text(exercise.name)
-//                                Spacer()
-//                                Image(systemName: "line.horizontal.3")
-//                                    .foregroundColor(.accent)
-//                            }
-//                            
-//                            
-//                            .swipeActions {
-//                                Button(action: { viewModel.editExercise(exercise) }) {
-//                                    Label("Edit", systemImage: "pencil")
-//                                }
-//                                
-//                                Button(role: .destructive, action: {
-//                                    if let index = viewModel.workout.exercises.firstIndex(where: { $0.id == exercise.id }) {
-//                                        viewModel.workout.exercises.remove(at: index)
-//                                    }
-//                                }) {
-//                                    Label("Delete", systemImage: "trash")
-//                                }
-//                            }
-//                        }
-//                        .onMove(perform: viewModel.moveExercise)
-//                        .onDelete(perform: viewModel.deleteExercise)
-//                    }
+                    // Exercises section
+                    Section(header: Text("Exercises")) {
+                        ForEach(viewModel.workoutPlan.exercisePlans) { exercise in
+                            HStack{
+                                Text(exercise.name)
+                                Spacer()
+                                Image(systemName: "line.horizontal.3")
+                                    .foregroundColor(.accent)
+                            }
+                            .swipeActions {
+                                Button(action: { viewModel.editExercise(exercise) }) {
+                                    Label("Edit", systemImage: "pencil")
+                                }
+                                Button(role: .destructive, action: {
+                                    if let index = viewModel.workoutPlan.exercisePlans.firstIndex(where: { $0.id == exercise.id }) {
+                                        viewModel.workoutPlan.exercisePlans.remove(at: index)
+                                    }
+                                }) {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                            }
+                        }
+                        .onMove(perform: viewModel.moveExercise)
+                        .onDelete(perform: viewModel.deleteExercise)
+                    }
                     
                     // Add exercise button
                     Button(action: viewModel.addExercise) {

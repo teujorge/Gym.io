@@ -54,7 +54,11 @@ var currentUserId: String {
 /// Gets and Set current user access token from UserDefaults
 var currentUserAccessToken: String? {
     get {
+        #if DEBUG
+        UserDefaults.standard.string(forKey: .userAccessToken) ?? "test"
+        #else
         UserDefaults.standard.string(forKey: .userAccessToken)
+        #endif
     }
     set {
         UserDefaults.standard.set(newValue, forKey: .userAccessToken)

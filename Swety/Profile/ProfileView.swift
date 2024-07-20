@@ -181,30 +181,29 @@ struct ProfileView: View {
         VStack(alignment: .leading) {
             Text("Workouts")
                 .font(.headline)
-            // TODO: fix
-//            ForEach(filteredWorkouts) { workout in
-//                VStack(alignment: .leading) {
-//                    HStack {
-//                        Spacer()
-//                        Text(workout.completedAt!, style: .date)
-//                            .foregroundColor(.secondary)
-//                    }
-//                    .font(.subheadline)
-//                    Text(workout.title)
-//                        .font(.headline)
-//                    if let notes = workout.notes {
-//                        Text(notes)
-//                            .foregroundColor(.secondary)
-//                    }
-//                    HStack {
-//                        Text("Time: \(formatTime(workout.updatedAt.timeIntervalSince(workout.createdAt)))")
-//                        Text("Volume: \(calculateVolume(for: workout))")
-//                    }
-//                    .foregroundColor(.secondary)
-//                    Divider()
-//                }
-//                .padding()
-//            }
+            ForEach(filteredWorkouts) { workout in
+                VStack(alignment: .leading) {
+                    HStack {
+                        Spacer()
+                        Text(workout.completedAt!, style: .date)
+                            .foregroundColor(.secondary)
+                    }
+                    .font(.subheadline)
+                    Text(workout.name)
+                        .font(.headline)
+                    if let notes = workout.notes {
+                        Text(notes)
+                            .foregroundColor(.secondary)
+                    }
+                    HStack {
+                        Text("Time: \(formatTime(workout.updatedAt.timeIntervalSince(workout.createdAt)))")
+                        Text("Volume: \(calculateVolume(for: workout))")
+                    }
+                    .foregroundColor(.secondary)
+                    Divider()
+                }
+                .padding()
+            }
             
             if viewModel.workoutsCursor != nil {
                 HStack(alignment: .center) {

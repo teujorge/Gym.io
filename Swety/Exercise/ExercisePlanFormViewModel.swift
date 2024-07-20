@@ -1,5 +1,5 @@
 //
-//  ExerciseFormViewModel.swift
+//  ExercisePlanFormViewModel.swift
 //  Swety
 //
 //  Created by Matheus Jorge on 7/10/24.
@@ -10,6 +10,12 @@ import SwiftUI
 class ExercisePlanFormViewModel: ObservableObject {
     @Published var exercisePlan: ExercisePlan
     @Published var state: LoaderState = .idle
+    
+    @Published var notes = "" {
+        didSet {
+            exercisePlan.notes = notes
+        }
+    }
     
     let onSave: (ExercisePlan) -> Void
     let onDelete: ((ExercisePlan) -> Void)?
