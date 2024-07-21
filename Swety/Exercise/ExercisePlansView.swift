@@ -9,37 +9,90 @@ import SwiftUI
 
 struct ExercisePlansView: View {
     
-    let onSaveSelection: ([ExercisePlan]) -> Void
+    @Binding var selectedExercises: [ExercisePlan]
     
     @State private var searchQuery = ""
-    @State private var exercises: [ExercisePlan] = []
-    @State private var selectedExercises: [ExercisePlan] = []
+    @State private var selectedEquipment: Equipment? = nil
+    @State private var selectedMuscleGroup: MuscleGroup? = nil
+    @State private var allDefaultExercises: [ExercisePlan] = []
     
     var filteredExercises: [ExercisePlan] {
-        if searchQuery.isEmpty {
-            return exercises
-        } else {
-            return exercises.filter { $0.name.localizedCaseInsensitiveContains(searchQuery) }
+        allDefaultExercises.filter { exercise in
+            (searchQuery.isEmpty || exercise.name.localizedCaseInsensitiveContains(searchQuery)) &&
+            (selectedEquipment == nil || exercise.equipment == selectedEquipment) &&
+            (selectedMuscleGroup == nil || exercise.muscleGroups.contains(selectedMuscleGroup!))
         }
     }
     
     var body: some View {
         NavigationView {
-            List {
-                ForEach(filteredExercises) { exercise in
-                    Button(role: nil, action: { selectedExercises.append(exercise) }) {
-                        ExerciseRowView(exercise: exercise)
+            ScrollView {
+                LazyVStack(spacing: 16) {
+                    ForEach(filteredExercises) { exercise in
+                        Button(role: nil, action: {
+                            if selectedExercises.contains(where: { $0.name == exercise.name }) {
+                                selectedExercises.removeAll(where: { $0.name == exercise.name })
+                            } else {
+                                selectedExercises.append(exercise)
+                            }
+                        }) {
+                            HStack {
+                                ExerciseRowView(exercise: exercise)
+                                Spacer()
+                                if selectedExercises.contains(where: { $0.name == exercise.name }) {
+                                    Image(systemName: "checkmark.circle")
+                                        .foregroundColor(.accent)
+                                } else {
+                                    Image(systemName: "circle")
+                                        .foregroundColor(.gray)
+                                }
+                            }
+                            .transition(.opacity)
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.horizontal)
+                        
+                        Divider()
                     }
-                    .buttonStyle(.plain)
                 }
+                .padding()
+                .padding(.bottom, 92) // needs to match filter section height
             }
-            .navigationBarTitle("Exercises")
-            .navigationBarItems(trailing:
-                                    Button(action: loadExercises) {
-                Text("Load")
-            }
+            .overlay(
+                VStack {
+                    HStack {
+                        // Picker for equipment
+                        Picker("Equipment", selection: $selectedEquipment) {
+                            Text("Equipment").tag(Equipment?.none)
+                            ForEach(Equipment.allCases, id: \.self) { equipment in
+                                Text(equipment.rawValue.capitalized.replacing("_", with: " ")).tag(equipment as Equipment?)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        .padding(.horizontal)
+                        
+                        Spacer()
+                        
+                        // Picker for muscle groups
+                        Picker("Muscle Group", selection: $selectedMuscleGroup) {
+                            Text("Muscles").tag(MuscleGroup?.none)
+                            ForEach(MuscleGroup.allCases, id: \.self) { muscleGroup in
+                                Text(muscleGroup.rawValue.capitalized).tag(muscleGroup as MuscleGroup?)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        .padding(.horizontal)
+                    }
+                    // Search bar
+                    TextField("Search", text: $searchQuery)
+                        .textFieldStyle(.roundedBorder)
+                        .padding(.horizontal)
+                }
+                    .padding()
+                    .background(.ultraThinMaterial)
+                , alignment: .bottom
             )
-            .searchable(text: $searchQuery)
+            .navigationBarTitle("Exercises")
             .onAppear(perform: loadExercises)
         }
     }
@@ -50,7 +103,7 @@ struct ExercisePlansView: View {
             switch response {
             case .success(let plans):
                 DispatchQueue.main.async {
-                    self.exercises = plans.map { $0.toExercisePlan() }
+                    self.allDefaultExercises = plans.map { $0.toExercisePlan() }
                 }
             case .failure(let error):
                 print("Failed to load exercises: \(error)")
@@ -76,13 +129,26 @@ private struct ExerciseRowView: View {
                 Text(exercise.notes ?? "")
                     .font(.subheadline)
                     .foregroundColor(.gray)
+                Text("Equipment: \(exercise.equipment.rawValue.capitalized)")
+                    .font(.footnote)
+                    .foregroundColor(.blue)
+                Text("Muscles: \(exercise.muscleGroups.map { $0.rawValue.capitalized }.joined(separator: ", "))")
+                    .font(.footnote)
+                    .foregroundColor(.green)
             }
         }
     }
 }
 
+struct ViewOffsetKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = nextValue()
+    }
+}
+
 #Preview {
     ExercisePlansView(
-        onSaveSelection: { _ in }
+        selectedExercises: .constant([ExercisePlan(name: "Plank", notes: "some large notes, some large notes, some more notes blah blah blah... heyo", isRepBased: true, equipment: .bodyweight, muscleGroups: [.core, .arms])])
     )
 }

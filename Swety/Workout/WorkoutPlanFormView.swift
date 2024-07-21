@@ -86,11 +86,7 @@ struct WorkoutPlanFormView: View {
                 }
             }
             .sheet(isPresented: $viewModel.isPresentingExerciseForm) {
-                ExercisePlansView(
-                    onSaveSelection: { selection in
-                        viewModel.workoutPlan.exercisePlans.append(contentsOf: selection)
-                    }
-                )
+                ExercisePlansView(selectedExercises: $viewModel.workoutPlan.exercisePlans)
             }
         }
     }
