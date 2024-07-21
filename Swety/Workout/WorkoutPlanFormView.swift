@@ -81,13 +81,13 @@ struct WorkoutPlanFormView: View {
             }
             .sheet(isPresented: $viewModel.isPresentingExerciseForm) {
                 if let selectedExercise = viewModel.selectedExercise {
-                    ExercisePlanFormView(
+                    CustomExercisePlanFormView(
                         exercisePlan: selectedExercise,
                         onSave: viewModel.handleSaveExercise,
                         onDelete: viewModel.handleDeleteExercise
                     )
                 } else {
-                    ExercisePlanFormView(
+                    CustomExercisePlanFormView(
                         onSave: viewModel.handleSaveExercise
                     )
                 }

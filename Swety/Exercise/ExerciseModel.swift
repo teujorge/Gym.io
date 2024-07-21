@@ -8,6 +8,24 @@
 import SwiftUI
 import Combine
 
+struct DefaultExercisePlan: Codable {
+    var name: String
+    var notes: String?
+    var isRepBased: Bool
+    var equipment: Equipment
+    var muscleGroups: [MuscleGroup]
+    
+    func toExercisePlan() -> ExercisePlan {
+        return ExercisePlan(
+            name: name,
+            notes: notes,
+            isRepBased: isRepBased,
+            equipment: .ball, // TODO: fix
+            muscleGroups: [.arms] // TODO: fix
+        )
+    }
+}
+
 class ExercisePlan: Codable, Identifiable, ObservableObject {
     @Published var id: String
     @Published var name: String
@@ -99,8 +117,8 @@ class ExercisePlan: Codable, Identifiable, ObservableObject {
         setPlans = try container.decodeIfPresent([ExerciseSetPlan].self, forKey: .setPlans) ?? []
         history = try container.decodeIfPresent([Exercise].self, forKey: .history) ?? []
         workoutPlan = try container.decodeIfPresent(WorkoutPlan.self, forKey: .workoutPlan)
-        createdAt = try container.decode(Date.self, forKey: .createdAt)
-        updatedAt = try container.decode(Date.self, forKey: .updatedAt)
+        createdAt = try decodeDate(from: container, forKey: .createdAt)
+        updatedAt = try decodeDate(from: container, forKey: .updatedAt)
     }
     
     func encode(to encoder: Encoder) throws {

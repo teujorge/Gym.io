@@ -1,5 +1,5 @@
 //
-//  ExercisePlanFormViewModel.swift
+//  CustomExercisePlanFormViewModel.swift
 //  Swety
 //
 //  Created by Matheus Jorge on 7/10/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-class ExercisePlanFormViewModel: ObservableObject {
+class CustomExercisePlanFormViewModel: ObservableObject {
     @Published var exercisePlan: ExercisePlan
     @Published var state: LoaderState = .idle
     

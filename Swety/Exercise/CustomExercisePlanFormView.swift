@@ -1,5 +1,5 @@
 //
-//  ExercisePlanFormView.swift
+//  CustomExercisePlanFormView.swift
 //  Swety
 //
 //  Created by Matheus Jorge on 7/5/24.
@@ -7,17 +7,17 @@
 
 import SwiftUI
 
-struct ExercisePlanFormView: View {
-    @StateObject private var viewModel: ExercisePlanFormViewModel
+struct CustomExercisePlanFormView: View {
+    @StateObject private var viewModel: CustomExercisePlanFormViewModel
     
     // Initializer with save functionality only
     init(onSave: @escaping (ExercisePlan) -> Void) {
-        _viewModel = StateObject(wrappedValue: ExercisePlanFormViewModel(exercisePlan: nil, onSave: onSave, onDelete: nil))
+        _viewModel = StateObject(wrappedValue: CustomExercisePlanFormViewModel(exercisePlan: nil, onSave: onSave, onDelete: nil))
     }
     
     // Initializer with save and delete functionality
     init(exercisePlan: ExercisePlan, onSave: @escaping (ExercisePlan) -> Void, onDelete: @escaping (ExercisePlan) -> Void) {
-        _viewModel = StateObject(wrappedValue: ExercisePlanFormViewModel(exercisePlan: exercisePlan, onSave: onSave, onDelete: onDelete))
+        _viewModel = StateObject(wrappedValue: CustomExercisePlanFormViewModel(exercisePlan: exercisePlan, onSave: onSave, onDelete: onDelete))
     }
     
     var body: some View {
@@ -77,13 +77,13 @@ struct ExercisePlanFormView: View {
 
 
 #Preview("New") {
-    ExercisePlanFormView(onSave: { exercise in
+    CustomExercisePlanFormView(onSave: { exercise in
         print(exercise)
     })
 }
 
 #Preview("Edit") {
-    ExercisePlanFormView(
+    CustomExercisePlanFormView(
         exercisePlan: _previewExercisePlans[0],
         onSave: { exercise in print("Save \(exercise)") },
         onDelete: { exercise in print("Delete \(exercise)") }
