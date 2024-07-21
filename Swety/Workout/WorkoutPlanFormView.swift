@@ -34,11 +34,17 @@ struct WorkoutPlanFormView: View {
                     // Exercises section
                     Section(header: Text("Exercises")) {
                         ForEach(viewModel.workoutPlan.exercisePlans) { exercise in
-                            HStack{
+                            VStack {
                                 Text(exercise.name)
-                                Spacer()
-                                Image(systemName: "line.horizontal.3")
-                                    .foregroundColor(.accent)
+                                SetDetailsView(
+                                    sets: exercise.setPlans.map { plan in
+                                        SetDetails(exerciseSetPlan: plan)
+                                    },
+                                    isEditable: true,
+                                    isPlan: true,
+                                    isRepBased: exercise.isRepBased,
+                                    autoSave: false
+                                )
                             }
                             .swipeActions {
                                 Button(action: { viewModel.editExercise(exercise) }) {
@@ -80,17 +86,11 @@ struct WorkoutPlanFormView: View {
                 }
             }
             .sheet(isPresented: $viewModel.isPresentingExerciseForm) {
-                if let selectedExercise = viewModel.selectedExercise {
-                    CustomExercisePlanFormView(
-                        exercisePlan: selectedExercise,
-                        onSave: viewModel.handleSaveExercise,
-                        onDelete: viewModel.handleDeleteExercise
-                    )
-                } else {
-                    CustomExercisePlanFormView(
-                        onSave: viewModel.handleSaveExercise
-                    )
-                }
+                ExercisePlansView(
+                    onSaveSelection: { selection in
+                        viewModel.workoutPlan.exercisePlans.append(contentsOf: selection)
+                    }
+                )
             }
         }
     }

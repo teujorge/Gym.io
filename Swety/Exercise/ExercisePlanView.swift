@@ -62,17 +62,15 @@ struct ExercisePlanView: View {
                 .padding()
             }
             .sheet(isPresented: $isPresentingExerciseForm) {
-                // TODO: fix
-//                ExercisePlanFormView(
-//                    exercisePlan: exercisePlan,
-//                    onSave: { exercise in
-//                        isPresentingExerciseForm = false
-//                    },
-//                    onDelete: { exercise in
-//                        isPresentingExerciseForm = false
-//                    }
-//                )
-                ExercisePlansView()
+                CustomExercisePlanFormView(
+                    exercisePlan: exercisePlan,
+                    onSave: { exercise in
+                        isPresentingExerciseForm = false
+                    },
+                    onDelete: { exercise in
+                        isPresentingExerciseForm = false
+                    }
+                )
             }
         }
         .navigationTitle(exercisePlan.name)

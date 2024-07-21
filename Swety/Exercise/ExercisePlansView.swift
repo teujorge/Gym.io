@@ -8,8 +8,12 @@
 import SwiftUI
 
 struct ExercisePlansView: View {
+    
+    let onSaveSelection: ([ExercisePlan]) -> Void
+    
     @State private var searchQuery = ""
-     @State private var exercises: [ExercisePlan] = []
+    @State private var exercises: [ExercisePlan] = []
+    @State private var selectedExercises: [ExercisePlan] = []
     
     var filteredExercises: [ExercisePlan] {
         if searchQuery.isEmpty {
@@ -23,14 +27,17 @@ struct ExercisePlansView: View {
         NavigationView {
             List {
                 ForEach(filteredExercises) { exercise in
-                    ExerciseRowView(exercise: exercise)
+                    Button(role: nil, action: { selectedExercises.append(exercise) }) {
+                        ExerciseRowView(exercise: exercise)
+                    }
+                    .buttonStyle(.plain)
                 }
             }
             .navigationBarTitle("Exercises")
             .navigationBarItems(trailing:
-                Button(action: loadExercises) {
-                    Text("Load")
-                }
+                                    Button(action: loadExercises) {
+                Text("Load")
+            }
             )
             .searchable(text: $searchQuery)
             .onAppear(perform: loadExercises)
@@ -75,5 +82,7 @@ private struct ExerciseRowView: View {
 }
 
 #Preview {
-    ExercisePlansView()
+    ExercisePlansView(
+        onSaveSelection: { _ in }
+    )
 }
