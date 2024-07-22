@@ -26,7 +26,11 @@ struct DefaultExercisePlan: Codable {
     }
 }
 
-class ExercisePlan: Codable, Identifiable, ObservableObject {
+class ExercisePlan: Codable, Equatable, Identifiable, ObservableObject {
+    static func == (lhs: ExercisePlan, rhs: ExercisePlan) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
     @Published var id: String
     @Published var name: String
     @Published var image: String?

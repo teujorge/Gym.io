@@ -21,42 +21,48 @@ struct CustomExercisePlanFormView: View {
     }
     
     var body: some View {
-        NavigationView {
-            Form {
-                Section(header: Text("Exercise Details")) {
-                    TextField("Name", text: $viewModel.exercisePlan.name)
-                    TextField("Notes", text: $viewModel.notes)
-                }
-                Section {
-                    SetDetailsView(
-                        sets: viewModel.exercisePlan.setPlans.map {
-                            SetDetails(
-                                id: $0.id,
-                                reps: $0.reps,
-                                weight: $0.weight,
-                                duration: $0.duration,
-                                intensity: $0.intensity,
-                                completedAt: nil
-                            )
-                        },
-                        isEditable: true,
-                        isPlan: true,
-                        isRepBased: viewModel.exercisePlan.isRepBased,
-                        autoSave: false
-                    )
-                }
-                .padding()
+        ScrollView {
+            VStack {
+                LabeledTextFieldView(label: "Name", placeholder: "Name", text: $viewModel.exercisePlan.name)
+                    .padding(.top)
+                    .padding(.horizontal)
+                LabeledTextFieldView(label: "Instructions", placeholder: "Instructions", text: $viewModel.notes, lines: 3)
+                    .padding()
             }
-            .navigationTitle(viewModel.isEditing ? "Edit Exercise" : "New Exercise")
-            .toolbar {
-                if viewModel.isEditing {
-                    leadingToolbarItem
+            .padding(.vertical)
+            
+            SetDetailsView(
+                sets: viewModel.exercisePlan.setPlans.map {
+                    SetDetails(
+                        id: $0.id,
+                        reps: $0.reps,
+                        weight: $0.weight,
+                        duration: $0.duration,
+                        intensity: $0.intensity,
+                        completedAt: nil
+                    )
+                },
+                isEditable: true,
+                isPlan: true,
+                isRepBased: viewModel.exercisePlan.isRepBased,
+                autoSave: false,
+                onSetsChanged: { setDetails in
+                    viewModel.exercisePlan.setPlans = setDetails.enumerated().map { (index, setDetail) in
+                        setDetail.toSetPlan(index: index)
+                    }
                 }
-                trailingToolbarItem
-                ToolbarItemGroup(placement: .keyboard) {
-                    Spacer()
-                    Button("Done", action: dismissKeyboard)
-                }
+            )
+            .padding()
+        }
+        .navigationTitle(viewModel.isEditing ? "Edit Exercise Plan" : "New Exercise Plan")
+        .toolbar {
+            if viewModel.isEditing {
+                leadingToolbarItem
+            }
+            trailingToolbarItem
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button("Done", action: dismissKeyboard)
             }
         }
     }
@@ -77,15 +83,19 @@ struct CustomExercisePlanFormView: View {
 
 
 #Preview("New") {
-    CustomExercisePlanFormView(onSave: { exercise in
-        print(exercise)
-    })
+    NavigationView {
+        CustomExercisePlanFormView(onSave: { exercise in
+            print(exercise)
+        })
+    }
 }
 
 #Preview("Edit") {
-    CustomExercisePlanFormView(
-        exercisePlan: _previewExercisePlans[0],
-        onSave: { exercise in print("Save \(exercise)") },
-        onDelete: { exercise in print("Delete \(exercise)") }
-    )
+    NavigationView {
+        CustomExercisePlanFormView(
+            exercisePlan: _previewExercisePlans[0],
+            onSave: { exercise in print("Save \(exercise)") },
+            onDelete: { exercise in print("Delete \(exercise)") }
+        )
+    }
 }

@@ -10,15 +10,19 @@ import SwiftUI
 struct SetDetailsView: View {
     @StateObject var viewModel: SetDetailsViewModel
     
+    private var showCheckColumn: Bool {
+        return !viewModel.isPlan && viewModel.isEditable
+    }
+    
     private var gridItems: [GridItem] {
-        viewModel.isPlan
+        showCheckColumn
         ? [
+            GridItem(.flexible()),
             GridItem(.flexible()),
             GridItem(.flexible()),
             GridItem(.flexible())
         ]
         : [
-            GridItem(.flexible()),
             GridItem(.flexible()),
             GridItem(.flexible()),
             GridItem(.flexible())
@@ -48,33 +52,36 @@ struct SetDetailsView: View {
     }
     
     var body: some View {
-        VStack(alignment: .center) {
-            Picker("Type", selection: $viewModel.isRepBased.animation()) {
-                Text("Rep Based").tag(true)
-                Text("Time Based").tag(false)
+        VStack(alignment: .center, spacing: 16) {
+            if viewModel.isEditable && viewModel.onToggleIsRepBased != nil {
+                Picker("Type", selection: $viewModel.isRepBased.animation()) {
+                    Text("Rep Based").tag(true)
+                    Text("Time Based").tag(false)
+                }
+                .pickerStyle(.segmented)
+                .padding(.bottom)
+                .padding(.horizontal)
             }
-            .pickerStyle(.segmented)
-            .padding(.bottom)
-            .padding(.horizontal)
             
             headerView
-            Divider()
             setsList
             
-            Button(action: viewModel.addSet) {
-                HStack {
-                    Text("Add set")
-                    Image(systemName: "plus.circle")
-                        .foregroundColor(.accent)
+            if viewModel.isEditable && viewModel.onSetsChanged != nil {
+                Button(action: viewModel.addSet) {
+                    HStack {
+                        Text("Add set")
+                        Image(systemName: "plus.circle")
+                            .foregroundColor(.accent)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(10)
+                    .background(Color.accent.opacity(0.2))
+                    .cornerRadius(.medium)
                 }
-                .frame(maxWidth: .infinity)
-                .padding(10)
-                .background(Color.accent.opacity(0.2))
-                .cornerRadius(.medium)
+                .buttonStyle(.plain)
+                .padding(.horizontal)
+                .transition(.move(edge: .bottom))
             }
-            .buttonStyle(.plain)
-            .padding(.horizontal)
-            .transition(.move(edge: .bottom))
         }
         .animation(.easeInOut, value: viewModel.sets)
     }
@@ -88,7 +95,7 @@ struct SetDetailsView: View {
                     isEditable: viewModel.isEditable,
                     isRepBased: viewModel.isRepBased,
                     index: index,
-                    toggleSetCompletion: viewModel.isPlan ? nil : viewModel.toggleSetCompletion
+                    toggleSetCompletion: showCheckColumn ? viewModel.toggleSetCompletion : nil
                 )
                 .listRowInsets(EdgeInsets(
                     top: viewModel.rowInsets / 2,
@@ -98,10 +105,12 @@ struct SetDetailsView: View {
                 ))
                 .frame(minHeight: viewModel.rowHeight)
                 .swipeActions {
-                    Button(role: .destructive, action: {
-                        viewModel.deleteSet(index: index)
-                    }) {
-                        Label("Delete", systemImage: "trash")
+                    if viewModel.isEditable {
+                        Button(role: .destructive, action: {
+                            viewModel.deleteSet(index: index)
+                        }) {
+                            Label("Delete", systemImage: "trash")
+                        }
                     }
                 }
             }
@@ -130,7 +139,7 @@ struct SetDetailsView: View {
                 Text("Sec")
                 Text("Intensity")
             }
-            if !viewModel.isPlan {
+            if showCheckColumn {
                 Image(systemName: "checkmark")
             }
         }
@@ -145,6 +154,17 @@ private struct ExerciseSetView: View {
     let isRepBased: Bool
     let index: Int
     let toggleSetCompletion: ((Int) -> Void)?
+    
+    private var rowColor: Color? {
+        if let completedAt = exerciseSet.completedAt {
+            return .green.opacity(0.7)
+        }
+        if index % 2 == 0 {
+            return .gray.opacity(0.12)
+        } else {
+            return .gray.opacity(0.18)
+        }
+    }
     
     var body: some View {
         LazyVGrid(columns: gridItems, alignment: .center) {
@@ -166,16 +186,19 @@ private struct ExerciseSetView: View {
                     TextField("Duration", value: $exerciseSet.duration, formatter: NumberFormatter())
                         .multilineTextAlignment(.center)
                         .keyboardType(.decimalPad)
+                    Picker("", selection: $exerciseSet.intensity) {
+                        ForEach(Intensity.allCases, id: \.self) { intensity in
+                            Text(intensity.rawValue.first.map(String.init) ?? "")
+                                .tag(intensity)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .padding(.horizontal)
                 } else {
                     Text("\(exerciseSet.duration)")
+                    Text(exerciseSet.intensity.rawValue.capitalized(with: .current))
+                        .font(.callout)
                 }
-                Picker("", selection: $exerciseSet.intensity) {
-                    ForEach(Intensity.allCases, id: \.self) { intensity in
-                        Text(intensity.rawValue.first.map(String.init) ?? "")
-                            .tag(intensity)
-                    }
-                }
-                .pickerStyle(.segmented)
             }
             if let toggle = toggleSetCompletion {
                 Button(action: { toggle(index) }) {
@@ -184,7 +207,7 @@ private struct ExerciseSetView: View {
                 .transition(.opacity)
             }
         }
-        .listRowBackground(exerciseSet.completedAt == nil ? nil : Color.green.opacity(0.7))
+        .listRowBackground(rowColor)
     }
 }
 
@@ -200,7 +223,7 @@ private struct ExerciseSetView: View {
                             reps: 10,
                             weight: 50,
                             duration: 0,
-                            intensity: .low,
+                            intensity: .high,
                             completedAt: nil
                         ),
                         SetDetails(
@@ -208,13 +231,13 @@ private struct ExerciseSetView: View {
                             reps: 10,
                             weight: 50,
                             duration: 0,
-                            intensity: .low,
+                            intensity: .medium,
                             completedAt: nil
                         )
                     ],
-                    isEditable: true,
+                    isEditable: false,
                     isPlan: false,
-                    isRepBased: true,
+                    isRepBased: false,
                     autoSave: false
                 )
             }

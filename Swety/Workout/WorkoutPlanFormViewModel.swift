@@ -50,12 +50,22 @@ class WorkoutPlanFormViewModel: ObservableObject {
         workoutPlan.exercisePlans.move(fromOffsets: source, toOffset: destination)
     }
     
-    func deleteExercise(at offsets: IndexSet) {
-        workoutPlan.exercisePlans.remove(atOffsets: offsets)
+    func deleteExercise(index: Int) {
+        workoutPlan.exercisePlans.remove(at: index)
     }
     
     func editExercise(_ exercise: ExercisePlan) {
         selectedExercise = exercise
+    }
+    
+    func moveExerciseUp(index: Int) {
+        if index <= 0 { return }
+        workoutPlan.exercisePlans.swapAt(index, index - 1)
+    }
+    
+    func moveExerciseDown(index: Int) {
+        if index >= workoutPlan.exercisePlans.count - 1 { return }
+        workoutPlan.exercisePlans.swapAt(index, index + 1)
     }
     
     func handleSaveExercise(_ updatedExercise: ExercisePlan) {

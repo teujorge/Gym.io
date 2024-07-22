@@ -39,7 +39,7 @@ struct WorkoutPlanView: View {
                 VStack(alignment: .leading, spacing: 15) {
                     Text("Exercises")
                         .font(.title2)
-                    ForEach(workoutPlan.exercisePlans) { exercisePlan in
+                    ForEach(Array(workoutPlan.exercisePlans.enumerated()), id: \.element.id) { index, exercisePlan in
                         VStack(alignment: .leading) {
                             NavigationLink(destination: ExercisePlanView(exercisePlan: exercisePlan)) {
                                 Text(exercisePlan.name)
@@ -47,20 +47,24 @@ struct WorkoutPlanView: View {
                                     .fontWeight(.semibold)
                                     .foregroundColor(.accent)
                             }
+                            
                             SetDetailsView(
                                 sets: exercisePlan.setPlans.map { setPlan in
                                     SetDetails(exerciseSetPlan: setPlan)
                                 },
                                 isEditable: false,
-                                isPlan: false,
+                                isPlan: true,
                                 isRepBased: exercisePlan.isRepBased,
                                 autoSave: false
                             )
+                            
+                            if index != workoutPlan.exercisePlans.count - 1 {
+                                Divider()
+                                    .padding(.top, 32)
+                            }
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding()
-                        .background(Color(.systemGray6))
-                        .cornerRadius(.medium)
                     }
                 }
             }

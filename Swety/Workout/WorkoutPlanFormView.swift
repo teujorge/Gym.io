@@ -22,66 +22,118 @@ struct WorkoutPlanFormView: View {
     }
     
     var body: some View {
-        VStack {
-            Form {
-                // Workout details section
-                Section(header: Text("Workout Plan Details")) {
-                    TextField("Name", text: $viewModel.nameText)
-                    TextField("Description", text: $viewModel.notesText)
+        VStack(alignment: .leading) {
+            ScrollView {
+                VStack {
+                    // Workout details section
+                    LabeledTextFieldView(label: "Name", placeholder: "Name", text: $viewModel.nameText)
+                        .padding(.top)
+                        .padding(.horizontal)
+                    LabeledTextFieldView(label: "Description", placeholder: "Description", text: $viewModel.notesText, lines: 3)
+                        .padding()
                 }
+                .padding(.vertical)
                 
                 // Exercises section
-                Section(header: Text("Exercises")) {
-                    ForEach(viewModel.workoutPlan.exercisePlans) { exercise in
-                        VStack {
+                ForEach(Array(viewModel.workoutPlan.exercisePlans.enumerated()), id: \.offset) { index, exercise in
+                    VStack(alignment: .leading) {
+                        HStack {
+                            // Title
                             Text(exercise.name)
-                            SetDetailsView(
-                                sets: exercise.setPlans.map { plan in
-                                    SetDetails(exerciseSetPlan: plan)
-                                },
-                                isEditable: true,
-                                isPlan: true,
-                                isRepBased: exercise.isRepBased,
-                                autoSave: false,
-                                onToggleIsRepBased: { isRepBased in
-                                    exercise.isRepBased = isRepBased
-                                },
-                                onSetsChanged: { sets in
-                                    exercise.setPlans = sets.enumerated().map { index, set in
-                                        set.toSetPlan(index: index)
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                            Spacer()
+                            // Move and Delete Buttons
+                            HStack(spacing: 16) {
+                                if index != 0 {
+                                    Button(action: {
+                                        withAnimation {
+                                            viewModel.moveExerciseUp(index: index)
+                                        }
+                                    }) {
+                                        Image(systemName: "arrow.up")
+                                            .foregroundColor(.accent)
                                     }
                                 }
-                            )
-                        }
-                        .swipeActions {
-                            Button(action: { viewModel.editExercise(exercise) }) {
-                                Label("Edit", systemImage: "pencil")
-                            }
-                            Button(role: .destructive, action: {
-                                if let index = viewModel.workoutPlan.exercisePlans.firstIndex(where: { $0.id == exercise.id }) {
-                                    viewModel.workoutPlan.exercisePlans.remove(at: index)
+                                if index != viewModel.workoutPlan.exercisePlans.count - 1 {
+                                    Button(action: {
+                                        withAnimation {
+                                            viewModel.moveExerciseDown(index: index)
+                                        }
+                                    }) {
+                                        Image(systemName: "arrow.down")
+                                            .foregroundColor(.accent)
+                                    }
                                 }
-                            }) {
-                                Label("Delete", systemImage: "trash")
+                                Button(action: {
+                                    withAnimation {
+                                        viewModel.deleteExercise(index: index)
+                                    }
+                                }) {
+                                    Image(systemName: "trash")
+                                        .foregroundColor(.red)
+                                }
                             }
+                        }
+                        .padding()
+                        
+                        SetDetailsView(
+                            sets: exercise.setPlans.map { plan in
+                                SetDetails(exerciseSetPlan: plan)
+                            },
+                            isEditable: true,
+                            isPlan: true,
+                            isRepBased: exercise.isRepBased,
+                            autoSave: false,
+                            onToggleIsRepBased: { isRepBased in
+                                exercise.isRepBased = isRepBased
+                            },
+                            onSetsChanged: { sets in
+                                exercise.setPlans = sets.enumerated().map { index, set in
+                                    set.toSetPlan(index: index)
+                                }
+                            }
+                        )
+                        .id(exercise.id)
+                        
+                        if index < viewModel.workoutPlan.exercisePlans.count - 1 {
+                            Divider()
+                                .padding(.top, 32)
                         }
                     }
-                    .onMove(perform: viewModel.moveExercise)
-                    .onDelete(perform: viewModel.deleteExercise)
+                    .padding()
+                    .transition(.move(edge: .bottom))
+                    .swipeActions {
+                        Button(action: { viewModel.editExercise(exercise) }) {
+                            Label("Edit", systemImage: "pencil")
+                        }
+                        Button(role: .destructive, action: {
+                            if let index = viewModel.workoutPlan.exercisePlans.firstIndex(where: { $0.id == exercise.id }) {
+                                viewModel.workoutPlan.exercisePlans.remove(at: index)
+                            }
+                        }) {
+                            Label("Delete", systemImage: "trash")
+                        }
+                    }
                 }
+                .animation(.default, value: viewModel.workoutPlan.exercisePlans)
                 
                 // Add exercise button
                 NavigationLink(
                     destination: ExercisePlansView(selectedExercises: $viewModel.workoutPlan.exercisePlans)
                 ) {
-                    HStack {
-                        Text("Add Exercise")
-                            .foregroundColor(.accent)
-                        Image(systemName: "plus.circle")
-                            .foregroundColor(.accent)
-                    }
+                    Text("Add Exercise")
+                        .foregroundColor(.accent)
+                    Image(systemName: "plus.circle")
+                        .foregroundColor(.accent)
                 }
+                .padding()
+                .buttonStyle(.plain)
+                .background(.accent.opacity(0.2))
+                .cornerRadius(.medium)
+                .padding()
             }
+            //            .animation(.default, value: viewModel.workoutPlan.exercisePlans)
         }
         .navigationTitle(viewModel.isEditing ? "Edit Workout" : "New Workout")
         .toolbar {

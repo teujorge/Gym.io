@@ -165,6 +165,16 @@ let _previewWorkoutPlans = [
                     ExerciseSetPlan(reps: 5, weight: 30),
                     ExerciseSetPlan(reps: 4, weight: 25)
                 ]
+            ),
+            ExercisePlan(
+                name: "give but whole",
+                isRepBased: false,
+                equipment: .bodyweight,
+                muscleGroups: [.back],
+                setPlans: [
+                    ExerciseSetPlan(duration: 60, intensity: .low),
+                    ExerciseSetPlan(reps: 30, intensity: .high),
+                ]
             )
         ]
     )

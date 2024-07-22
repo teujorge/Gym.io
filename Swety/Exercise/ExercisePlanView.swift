@@ -29,7 +29,7 @@ struct ExercisePlanView: View {
                 .padding()
                 
                 if let instructions = exercisePlan.notes {
-                    VStack(alignment: .leading, spacing: 10) {
+                    VStack(alignment: .leading, spacing: 8) {
                         Text("Instructions")
                             .font(.headline)
                         Text(instructions)
@@ -47,30 +47,7 @@ struct ExercisePlanView: View {
                     isRepBased: exercisePlan.isRepBased,
                     autoSave: false
                 )
-                
-                Spacer()
-                Button(action: {
-                    // Start exercise action
-                }) {
-                    Text("Start Exercise")
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.accent)
-                        .foregroundColor(.white)
-                        .cornerRadius(.medium)
-                }
                 .padding()
-            }
-            .sheet(isPresented: $isPresentingExerciseForm) {
-                CustomExercisePlanFormView(
-                    exercisePlan: exercisePlan,
-                    onSave: { exercise in
-                        isPresentingExerciseForm = false
-                    },
-                    onDelete: { exercise in
-                        isPresentingExerciseForm = false
-                    }
-                )
             }
         }
         .navigationTitle(exercisePlan.name)

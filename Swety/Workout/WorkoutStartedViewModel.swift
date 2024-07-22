@@ -15,7 +15,7 @@ class WorkoutStartedViewModel: ObservableObject{
     @Published var restCounter = 0
     @Published var isResting = false
     @Published var currentExercise: Exercise
-    @Published var initState: LoaderState = .idle
+    @Published var state: LoaderState = .idle
     
     var workoutTimerCancellable: AnyCancellable? = nil
     var restTimerCancellable: AnyCancellable? = nil
@@ -76,27 +76,38 @@ class WorkoutStartedViewModel: ObservableObject{
     
     func initiateWorkout() {
         startWorkoutTimer()
-        Task { await createNewWorkout() }
+    }
+    
+    func isLastExercise(exercise: Exercise) -> Bool {
+        return workout.exercises.last?.id == exercise.id
+    }
+    
+    func completeWorkout(onSuccess: @escaping (Workout) -> Void) {
+        Task {
+            if let newWorkout = await createNewWorkout() {
+                onSuccess(newWorkout)
+            }
+        }
     }
     
     private func createNewWorkout() async -> Workout? {
-        initState = .loading
-        workout.name = "\(workout.name) | (completed)"
+        state = .loading
+        workout.name = "\(workout.name)"
         workout.completedAt = Date()
-        let result: HTTPResponse<Workout> = await sendRequest(endpoint: "/workouts/templates", body: workout, method: .POST)
+        let result: HTTPResponse<Workout> = await sendRequest(endpoint: "/workouts/history", body: workout, method: .POST)
         
         switch result {
         case .success(let newWorkout):
             print("Workout created: \(newWorkout)")
             DispatchQueue.main.async {
                 self.workout = newWorkout
-                self.initState = .success
+                self.state = .success
             }
             return newWorkout
         case .failure(let error):
             print("Failed to create workout: \(error)")
             DispatchQueue.main.async {
-                self.initState = .failure(error)
+                self.state = .failure(error)
             }
         }
         
