@@ -14,7 +14,6 @@ class WorkoutPlanFormViewModel: ObservableObject {
     var onDelete: (WorkoutPlan) -> Void
     
     @Published var workoutPlan: WorkoutPlan
-    @Published var isPresentingExerciseForm = false
     @Published var selectedExercise: ExercisePlan?
     @Published var state: LoaderState = .idle
     
@@ -45,7 +44,6 @@ class WorkoutPlanFormViewModel: ObservableObject {
     
     func addExercise() {
         selectedExercise = nil
-        isPresentingExerciseForm = true
     }
     
     func moveExercise(from source: IndexSet, to destination: Int) {
@@ -58,7 +56,6 @@ class WorkoutPlanFormViewModel: ObservableObject {
     
     func editExercise(_ exercise: ExercisePlan) {
         selectedExercise = exercise
-        isPresentingExerciseForm = true
     }
     
     func handleSaveExercise(_ updatedExercise: ExercisePlan) {
@@ -71,14 +68,12 @@ class WorkoutPlanFormViewModel: ObservableObject {
         } else {
             workoutPlan.exercisePlans.append(updatedExercise)
         }
-        isPresentingExerciseForm = false
     }
     
     func handleDeleteExercise(_ exercise: ExercisePlan) {
         if let index = workoutPlan.exercisePlans.firstIndex(where: { $0.id == exercise.id }) {
             workoutPlan.exercisePlans.remove(at: index)
         }
-        isPresentingExerciseForm = false
     }
     
     func save() {

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ExercisePlansView: View {
-    
+    @Environment(\.presentationMode) var presentationMode
     @Binding var selectedExercises: [ExercisePlan]
     
     @State private var searchQuery = ""
@@ -25,75 +25,80 @@ struct ExercisePlansView: View {
     }
     
     var body: some View {
-        NavigationView {
-            ScrollView {
-                LazyVStack(spacing: 16) {
-                    ForEach(filteredExercises) { exercise in
-                        Button(role: nil, action: {
+        ScrollView {
+            LazyVStack(spacing: 16) {
+                ForEach(filteredExercises) { exercise in
+                    Button(role: nil, action: {
+                        if selectedExercises.contains(where: { $0.name == exercise.name }) {
+                            selectedExercises.removeAll(where: { $0.name == exercise.name })
+                        } else {
+                            selectedExercises.append(exercise)
+                        }
+                    }) {
+                        HStack {
+                            ExerciseRowView(exercise: exercise)
+                            Spacer()
                             if selectedExercises.contains(where: { $0.name == exercise.name }) {
-                                selectedExercises.removeAll(where: { $0.name == exercise.name })
+                                Image(systemName: "checkmark.circle")
+                                    .foregroundColor(.accent)
                             } else {
-                                selectedExercises.append(exercise)
+                                Image(systemName: "circle")
+                                    .foregroundColor(.gray)
                             }
-                        }) {
-                            HStack {
-                                ExerciseRowView(exercise: exercise)
-                                Spacer()
-                                if selectedExercises.contains(where: { $0.name == exercise.name }) {
-                                    Image(systemName: "checkmark.circle")
-                                        .foregroundColor(.accent)
-                                } else {
-                                    Image(systemName: "circle")
-                                        .foregroundColor(.gray)
-                                }
-                            }
-                            .transition(.opacity)
                         }
-                        .buttonStyle(.plain)
-                        .padding(.horizontal)
-                        
-                        Divider()
+                        .transition(.opacity)
                     }
+                    .buttonStyle(.plain)
+                    .padding(.horizontal)
+                    
+                    Divider()
                 }
-                .padding()
-                .padding(.bottom, 92) // needs to match filter section height
             }
-            .overlay(
-                VStack {
-                    HStack {
-                        // Picker for equipment
-                        Picker("Equipment", selection: $selectedEquipment) {
-                            Text("Equipment").tag(Equipment?.none)
-                            ForEach(Equipment.allCases, id: \.self) { equipment in
-                                Text(equipment.rawValue.capitalized.replacing("_", with: " ")).tag(equipment as Equipment?)
-                            }
-                        }
-                        .pickerStyle(.menu)
-                        .padding(.horizontal)
-                        
-                        Spacer()
-                        
-                        // Picker for muscle groups
-                        Picker("Muscle Group", selection: $selectedMuscleGroup) {
-                            Text("Muscles").tag(MuscleGroup?.none)
-                            ForEach(MuscleGroup.allCases, id: \.self) { muscleGroup in
-                                Text(muscleGroup.rawValue.capitalized).tag(muscleGroup as MuscleGroup?)
-                            }
-                        }
-                        .pickerStyle(.menu)
-                        .padding(.horizontal)
-                    }
-                    // Search bar
-                    TextField("Search", text: $searchQuery)
-                        .textFieldStyle(.roundedBorder)
-                        .padding(.horizontal)
-                }
-                    .padding()
-                    .background(.ultraThinMaterial)
-                , alignment: .bottom
-            )
-            .navigationBarTitle("Exercises")
+            .padding()
+            .padding(.top)
+            .padding(.bottom, 116) // needs to match filter section height
             .onAppear(perform: loadExercises)
+        }
+        .overlay(
+            VStack {
+                HStack {
+                    // Picker for equipment
+                    Picker("Equipment", selection: $selectedEquipment) {
+                        Text("Equipment").tag(Equipment?.none)
+                        ForEach(Equipment.allCases, id: \.self) { equipment in
+                            Text(equipment.rawValue.capitalized.replacing("_", with: " ")).tag(equipment as Equipment?)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    
+                    Spacer()
+                    
+                    // Picker for muscle groups
+                    Picker("Muscle Group", selection: $selectedMuscleGroup) {
+                        Text("Muscles").tag(MuscleGroup?.none)
+                        ForEach(MuscleGroup.allCases, id: \.self) { muscleGroup in
+                            Text(muscleGroup.rawValue.capitalized).tag(muscleGroup as MuscleGroup?)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    
+                }
+                // Search bar
+                TextField("Search", text: $searchQuery)
+                    .textFieldStyle(.roundedBorder)
+            }
+                .padding()
+                .background(.ultraThinMaterial)
+                .cornerRadius(.large)
+                .padding()
+                .shadow(radius: .medium)
+            , alignment: .bottom
+        )
+        .navigationBarTitle("Exercises")
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button("Done", action: { presentationMode.wrappedValue.dismiss() })
+            }
         }
     }
     
@@ -148,7 +153,9 @@ struct ViewOffsetKey: PreferenceKey {
 }
 
 #Preview {
-    ExercisePlansView(
-        selectedExercises: .constant([ExercisePlan(name: "Plank", notes: "some large notes, some large notes, some more notes blah blah blah... heyo", isRepBased: true, equipment: .bodyweight, muscleGroups: [.core, .arms])])
-    )
+    NavigationView {
+        ExercisePlansView(
+            selectedExercises: .constant([ExercisePlan(name: "Plank", notes: "some large notes, some large notes, some more notes blah blah blah... heyo", isRepBased: true, equipment: .bodyweight, muscleGroups: [.core, .arms])])
+        )
+    }
 }

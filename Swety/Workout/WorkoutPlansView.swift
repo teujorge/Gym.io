@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct WorkoutPlansView: View {
+    @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var currentUser: User
     @StateObject private var viewModel = WorkoutPlansViewModel()
     
@@ -25,24 +26,6 @@ struct WorkoutPlansView: View {
         NavigationView {
             ScrollView {
                 VStack {
-                    HStack {
-                        TextField("Search", text: $viewModel.searchText)
-                            .padding()
-                            .frame(height: 50)
-                            .background(Color.accent.opacity(0.2))
-                            .cornerRadius(.medium)
-                        
-                        Button(action: { viewModel.isPresentingWorkoutForm.toggle() }) {
-                            Text("New Workout")
-                            Image(systemName: "plus.circle")
-                                .foregroundColor(.accent)
-                        }
-                        .padding()
-                        .frame(height: 50)
-                        .background(Color.accent.opacity(0.2))
-                        .cornerRadius(.medium)
-                    }
-                    
                     ForEach(filteredWorkouts.indices, id: \.self) { index in
                         WorkoutPlanCardView(workoutPlan: currentUser.workoutPlans[index])
                             .transition(
@@ -50,28 +33,38 @@ struct WorkoutPlansView: View {
                                 .combined(with: .opacity)
                                 .combined(with: .move(edge: .bottom))
                             )
+                        if index < filteredWorkouts.count - 1 {
+                            Divider()
+                        }
                     }
-                    
-                    if (viewModel.state != .idle) {
-                        LoaderView(state: viewModel.state, showErrorMessage: true)
-                            .padding()
-                    }
-                    
                 }
                 .padding()
                 .animation(.easeInOut, value: viewModel.state)
             }
             .background(Color(.systemBackground))
             .navigationTitle("Workouts")
-            .sheet(isPresented: $viewModel.isPresentingWorkoutForm) {
-                WorkoutPlanFormView(onSave: { workoutPlan in
-                    DispatchQueue.main.async {
-                        currentUser.workoutPlans.append(workoutPlan)
-                        viewModel.isPresentingWorkoutForm = false
-                    }
-                })
-            }
             .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    NavigationLink(
+                        destination: WorkoutPlanFormView(onSave: { workoutPlan in
+                            DispatchQueue.main.async {
+                                currentUser.workoutPlans.append(workoutPlan)
+                                presentationMode.wrappedValue.dismiss()
+                            }
+                        })
+                    ) {
+                        Text("New Workout")
+                        Image(systemName: "plus.circle")
+                            .foregroundColor(.accent)
+                    }
+                    
+                }
+                ToolbarItem(placement: .status) {
+                    if (viewModel.state != .idle) {
+                        LoaderView(state: viewModel.state, showErrorMessage: true)
+                            .padding()
+                    }
+                }
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
                     Button("Done", action: dismissKeyboard)
@@ -102,7 +95,7 @@ struct WorkoutPlanCardView: View {
     
     var body: some View {
         NavigationLink(destination: WorkoutPlanView(workoutPlan: workoutPlan)) {
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: 8) {
                 Text(workoutPlan.name)
                     .fontWeight(.bold)
                     .font(.title2)
@@ -134,8 +127,6 @@ struct WorkoutPlanCardView: View {
             }
             .padding()
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color(.systemGray6))
-            .cornerRadius(.medium)
         }
     }
     

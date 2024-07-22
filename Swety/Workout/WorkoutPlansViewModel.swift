@@ -15,7 +15,6 @@ class WorkoutPlansViewModel: ObservableObject {
             debounceStateChange()
         }
     }
-    @Published var isPresentingWorkoutForm = false
     
     private var debounceTimer: AnyCancellable?
     

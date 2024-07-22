@@ -367,8 +367,8 @@ class ExerciseSetPlan: Codable, Identifiable, ObservableObject {
         index = try container.decode(Int.self, forKey: .index)
         exercisePlanId = try container.decode(String.self, forKey: .exercisePlanId)
         exercisePlan = try container.decodeIfPresent(Exercise.self, forKey: .exercisePlan)
-        createdAt = try container.decode(Date.self, forKey: .createdAt)
-        updatedAt = try container.decode(Date.self, forKey: .updatedAt)
+        createdAt = try decodeDate(from: container, forKey: .createdAt)
+        updatedAt = try decodeDate(from: container, forKey: .updatedAt)
     }
     
     func encode(to encoder: Encoder) throws {

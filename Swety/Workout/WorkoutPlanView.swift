@@ -8,19 +8,15 @@
 import SwiftUI
 
 struct WorkoutPlanView: View {
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var currentUser: User
     
-    @StateObject var viewModel: WorkoutPlanViewModel
-    
-    init(workoutPlan: WorkoutPlan) {
-        _viewModel = StateObject(wrappedValue: WorkoutPlanViewModel(workoutPlan: workoutPlan))
-    }
+    @StateObject var workoutPlan: WorkoutPlan
     
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                if let description = viewModel.workoutPlan.notes {
+                if let description = workoutPlan.notes {
                     Text(description)
                         .foregroundColor(.secondary)
                         .padding(.horizontal)
@@ -28,7 +24,7 @@ struct WorkoutPlanView: View {
                 }
                 
                 // Start Workout Button
-                NavigationLink(destination: WorkoutStartedView(workoutPlan: viewModel.workoutPlan)) {
+                NavigationLink(destination: WorkoutStartedView(workoutPlan: workoutPlan)) {
                     Text("Start Workout")
                         .padding()
                         .frame(maxWidth: .infinity)
@@ -43,7 +39,7 @@ struct WorkoutPlanView: View {
                 VStack(alignment: .leading, spacing: 15) {
                     Text("Exercises")
                         .font(.title2)
-                    ForEach(viewModel.workoutPlan.exercisePlans) { exercisePlan in
+                    ForEach(workoutPlan.exercisePlans) { exercisePlan in
                         VStack(alignment: .leading) {
                             NavigationLink(destination: ExercisePlanView(exercisePlan: exercisePlan)) {
                                 Text(exercisePlan.name)
@@ -70,10 +66,31 @@ struct WorkoutPlanView: View {
             }
             .padding()
         }
-        .navigationTitle(viewModel.workoutPlan.name)
+        .navigationTitle(workoutPlan.name)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button(action: { viewModel.isPresentingWorkoutForm.toggle() }) {
+                NavigationLink(
+                    destination: WorkoutPlanFormView(
+                        workoutPlan: workoutPlan,
+                        onSave: { workout in
+                            DispatchQueue.main.async {
+                                if let workoutIndex = currentUser.workoutPlans.firstIndex(where: { $0.id == workout.id }) {
+                                    currentUser.workoutPlans[workoutIndex] = workout
+                                }
+                                presentationMode.wrappedValue.dismiss() // pop the form view
+                            }
+                        },
+                        onDelete: { workout in
+                            DispatchQueue.main.async {
+                                if let workoutIndex = currentUser.workouts.firstIndex(where: { $0.id == workout.id }) {
+                                    currentUser.workouts.remove(at: workoutIndex)
+                                }
+                                presentationMode.wrappedValue.dismiss() // pop the form view
+                                presentationMode.wrappedValue.dismiss() // then pop this view
+                            }
+                        }
+                    )
+                ) {
                     Text("Edit")
                         .font(.caption)
                         .fontWeight(.bold)
@@ -90,99 +107,9 @@ struct WorkoutPlanView: View {
                 .cornerRadius(.large)
             }
         }
-        .sheet(isPresented: $viewModel.isPresentingWorkoutForm) {
-            WorkoutPlanFormView(
-                workoutPlan: viewModel.workoutPlan,
-                onSave: { workout in
-                    DispatchQueue.main.async {
-                        if let workoutIndex = currentUser.workoutPlans.firstIndex(where: { $0.id == workout.id }) {
-                            currentUser.workoutPlans[workoutIndex] = workout
-                        }
-                        viewModel.isPresentingWorkoutForm = false
-                    }
-                },
-                onDelete: { workout in
-                    DispatchQueue.main.async {
-                        if let workoutIndex = currentUser.workouts.firstIndex(where: { $0.id == workout.id }) {
-                            currentUser.workouts.remove(at: workoutIndex)
-                        }
-                        viewModel.isPresentingWorkoutForm = false
-                        presentationMode.wrappedValue.dismiss()
-                    }
-                }
-            )
-        }
     }
 }
 
-//private struct DetailsView: View {
-//    var sets: [ExerciseSet]
-//    var isRepBased:Bool
-//
-//    var body: some View {
-//        VStack(alignment: .center) {
-//            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], alignment: .center) {
-//                headerView
-//                setsList
-//            }
-//        }
-//    }
-//
-//    private var setsList: some View {
-//        ForEach(sets) {exerciseSet in
-//            GridRow(alignment: .center) {
-//                Text("\(exerciseSet.index)")
-//                if isRepBased {
-//                    Text("\(exerciseSet.reps)")
-//                    Text("\(exerciseSet.weight)")
-//                } else {
-//                    Text("\(exerciseSet.duration)")
-//                    Text(exerciseSet.intensity.rawValue.lowercased())
-//                }
-//            }
-//            .font(.title3)
-//        }
-//    }
-//
-//    private var headerView: some View {
-//        GridRow(alignment: .center) {
-//            VStack {
-//                Image(systemName: "number")
-//                    .fontWeight(.semibold)
-//                Text("Set")
-//                    .font(.headline)
-//            }
-//            if isRepBased {
-//                VStack {
-//                    Image(systemName: "arrow.up.arrow.down")
-//                        .fontWeight(.semibold)
-//                    Text("Reps")
-//                        .font(.headline)
-//                }
-//                VStack {
-//                    Image(systemName: "scalemass")
-//                        .fontWeight(.semibold)
-//                    Text("Kg")
-//                        .font(.headline)
-//                }
-//            } else {
-//                VStack {
-//                    Image(systemName: "timer")
-//                        .fontWeight(.semibold)
-//                    Text("Sec")
-//                        .font(.headline)
-//                }
-//                VStack {
-//                    Image(systemName: "flame")
-//                        .fontWeight(.semibold)
-//                    Text("Intensity")
-//                        .font(.headline)
-//                }
-//            }
-//        }
-//        .frame(minHeight: 40)
-//    }
-//}
 
 #Preview {
     NavigationView {
