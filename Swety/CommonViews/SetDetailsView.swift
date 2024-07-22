@@ -188,14 +188,10 @@ struct SetDetailsView: View {
                     .fontWeight(.semibold)
                     .padding(.top)
                 
-                Picker("Rest Time", selection: $viewModel.restTime) {
-                    ForEach(viewModel.restTimeRange, id: \.self) { time in
-                        Text(viewModel.formatSeconds(time))
-                            .tag(time)
-                    }
-                }
-                .pickerStyle(.wheel)
-                .padding(.horizontal)
+//
+                
+                TimerView(minutes: $viewModel.restTimeMinutes, seconds: $viewModel.restTimeSeconds)
+                    .padding(.horizontal)
                 
                 Button("Done") {
                     viewModel.isShowingRestTimerOverlay = false

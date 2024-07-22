@@ -23,10 +23,12 @@ class SetDetailsViewModel: ObservableObject {
             onSetsChanged?(sets)
         }
     }
-    
-    @Published var restTime: Int
+    var restTime:Int{
+         restTimeMinutes * 60 + restTimeSeconds 
+    }
+    @Published var restTimeMinutes: Int
+    @Published var restTimeSeconds: Int
     @Published var isShowingRestTimerOverlay = false
-    let restTimeRange: [Int] = Array(stride(from: 0, through: 300, by: 30))
     
     let isEditable: Bool
     let isPlan: Bool
@@ -58,8 +60,8 @@ class SetDetailsViewModel: ObservableObject {
         self.isPlan = isPlan
         self.isRepBased = isRepBased
         self.autoSave = autoSave
-        self.restTime = restTime
-        
+        self.restTimeMinutes = restTime / 60
+        self.restTimeSeconds = restTime % 60
         self.onToggleIsRepBased = onToggleIsRepBased
         self.onSetsChanged = onSetsChanged
         self.onDebounceTriggered = onDebounceTriggered
