@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct WorkoutPlanView: View {
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) var dismiss
     @EnvironmentObject var currentUser: User
     
     @StateObject var workoutPlan: WorkoutPlan
@@ -55,7 +55,8 @@ struct WorkoutPlanView: View {
                                 isEditable: false,
                                 isPlan: true,
                                 isRepBased: exercisePlan.isRepBased,
-                                autoSave: false
+                                autoSave: false,
+                                restTime: exercisePlan.restTime
                             )
                             
                             if index != workoutPlan.exercisePlans.count - 1 {
@@ -76,21 +77,19 @@ struct WorkoutPlanView: View {
                 NavigationLink(
                     destination: WorkoutPlanFormView(
                         workoutPlan: workoutPlan,
-                        onSave: { workout in
+                        onSave: { workoutPlan in
                             DispatchQueue.main.async {
-                                if let workoutIndex = currentUser.workoutPlans.firstIndex(where: { $0.id == workout.id }) {
-                                    currentUser.workoutPlans[workoutIndex] = workout
+                                if let workoutIndex = currentUser.workoutPlans.firstIndex(where: { $0.id == workoutPlan.id }) {
+                                    currentUser.workoutPlans[workoutIndex] = workoutPlan
                                 }
-                                presentationMode.wrappedValue.dismiss() // pop the form view
+                                dismiss() // pop the form view
                             }
                         },
-                        onDelete: { workout in
+                        onDelete: { workoutPlan in
                             DispatchQueue.main.async {
-                                if let workoutIndex = currentUser.workouts.firstIndex(where: { $0.id == workout.id }) {
-                                    currentUser.workouts.remove(at: workoutIndex)
-                                }
-                                presentationMode.wrappedValue.dismiss() // pop the form view
-                                presentationMode.wrappedValue.dismiss() // then pop this view
+                                currentUser.workoutPlans.removeAll(where: { $0.id == workoutPlan.id })
+                                dismiss() // pop the form view
+                                dismiss() // then pop this view
                             }
                         }
                     )

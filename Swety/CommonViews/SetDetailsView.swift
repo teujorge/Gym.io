@@ -35,8 +35,10 @@ struct SetDetailsView: View {
         isPlan: Bool,
         isRepBased: Bool,
         autoSave: Bool,
+        restTime: Int,
         onToggleIsRepBased: ((Bool) -> Void)? = nil,
         onSetsChanged: (([SetDetails]) -> Void)? = nil,
+        onRestTimeChanged: ((Int) -> Void)? = nil,
         onDebounceTriggered: (() -> Void)? = nil
     ) {
         _viewModel = StateObject(wrappedValue: SetDetailsViewModel(
@@ -45,6 +47,7 @@ struct SetDetailsView: View {
             isPlan: isPlan,
             isRepBased: isRepBased,
             autoSave: autoSave,
+            restTime: restTime,
             onToggleIsRepBased: onToggleIsRepBased,
             onSetsChanged: onSetsChanged,
             onDebounceTriggered: onDebounceTriggered
@@ -52,38 +55,49 @@ struct SetDetailsView: View {
     }
     
     var body: some View {
-        VStack(alignment: .center, spacing: 16) {
-            if viewModel.isEditable && viewModel.onToggleIsRepBased != nil {
-                Picker("Type", selection: $viewModel.isRepBased.animation()) {
-                    Text("Rep Based").tag(true)
-                    Text("Time Based").tag(false)
+        ZStack {
+            VStack(alignment: .center, spacing: 16) {
+                if viewModel.isEditable {
+                    restTimeButton
                 }
-                .pickerStyle(.segmented)
-                .padding(.bottom)
-                .padding(.horizontal)
-            }
-            
-            headerView
-            setsList
-            
-            if viewModel.isEditable && viewModel.onSetsChanged != nil {
-                Button(action: viewModel.addSet) {
-                    HStack {
-                        Text("Add set")
-                        Image(systemName: "plus.circle")
-                            .foregroundColor(.accent)
+                
+                if viewModel.isEditable && viewModel.onToggleIsRepBased != nil {
+                    Picker("Type", selection: $viewModel.isRepBased.animation()) {
+                        Text("Rep Based").tag(true)
+                        Text("Time Based").tag(false)
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(10)
-                    .background(Color.accent.opacity(0.2))
-                    .cornerRadius(.medium)
+                    .pickerStyle(.segmented)
+                    .padding(.bottom)
+                    .padding(.horizontal)
                 }
-                .buttonStyle(.plain)
-                .padding(.horizontal)
-                .transition(.move(edge: .bottom))
+                
+                headerView
+                setsList
+                
+                if viewModel.isEditable && viewModel.onSetsChanged != nil {
+                    Button(action: viewModel.addSet) {
+                        HStack {
+                            Text("Add set")
+                            Image(systemName: "plus.circle")
+                                .foregroundColor(.accent)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(10)
+                        .background(Color.accent.opacity(0.2))
+                        .cornerRadius(.medium)
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.horizontal)
+                    .transition(.move(edge: .bottom))
+                }
+            }
+            .animation(.easeInOut, value: viewModel.sets)
+            
+            if viewModel.isShowingRestTimerOverlay {
+                restTimeOverlay
+                    .animation(.easeInOut, value: viewModel.isShowingRestTimerOverlay)
             }
         }
-        .animation(.easeInOut, value: viewModel.sets)
     }
     
     private var setsList: some View {
@@ -144,6 +158,56 @@ struct SetDetailsView: View {
             }
         }
         .fontWeight(.medium)
+    }
+    
+    private var restTimeButton: some View {
+        HStack {
+            Button(action: { viewModel.isShowingRestTimerOverlay.toggle() }) {
+                Text(viewModel.formatSeconds(viewModel.restTime))
+                Image(systemName: "stopwatch")
+                    .foregroundColor(.accent)
+            }
+            .buttonStyle(.plain)
+            Spacer()
+        }
+        .padding(.horizontal)
+        .padding(.bottom)
+    }
+    
+    private var restTimeOverlay: some View {
+        ZStack {
+            Color.black.opacity(0.4)
+                .edgesIgnoringSafeArea(.all)
+                .onTapGesture {
+                    viewModel.isShowingRestTimerOverlay = false
+                }
+            
+            VStack {
+                Text("Rest Time")
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .padding(.top)
+                
+                Picker("Rest Time", selection: $viewModel.restTime) {
+                    ForEach(viewModel.restTimeRange, id: \.self) { time in
+                        Text(viewModel.formatSeconds(time))
+                            .tag(time)
+                    }
+                }
+                .pickerStyle(.wheel)
+                .padding(.horizontal)
+                
+                Button("Done") {
+                    viewModel.isShowingRestTimerOverlay = false
+                }
+                .padding(.bottom)
+            }
+            .frame(maxWidth: .infinity)
+            .background(.ultraThinMaterial)
+            .cornerRadius(.large)
+            .padding(.horizontal, 40)
+        }
+        .transition(.opacity)
     }
 }
 
@@ -235,10 +299,11 @@ private struct ExerciseSetView: View {
                             completedAt: nil
                         )
                     ],
-                    isEditable: false,
+                    isEditable: true,
                     isPlan: false,
                     isRepBased: false,
-                    autoSave: false
+                    autoSave: false,
+                    restTime: 0
                 )
             }
         }

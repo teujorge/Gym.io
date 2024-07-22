@@ -16,7 +16,7 @@ struct WorkoutPlanFormView: View {
         _viewModel = StateObject(wrappedValue: WorkoutPlanFormViewModel(workoutPlan: nil, onSave: onSave, onDelete: {workoutPlan in}))
     }
     
-    // Initializer with workout and delete functionality
+    // Initializer with workout, save and delete functionality
     init(workoutPlan: WorkoutPlan, onSave: @escaping (WorkoutPlan) -> Void, onDelete: @escaping (WorkoutPlan) -> Void) {
         _viewModel = StateObject(wrappedValue: WorkoutPlanFormViewModel(workoutPlan: workoutPlan, onSave: onSave, onDelete: onDelete))
     }
@@ -85,6 +85,7 @@ struct WorkoutPlanFormView: View {
                             isPlan: true,
                             isRepBased: exercise.isRepBased,
                             autoSave: false,
+                            restTime: exercise.restTime,
                             onToggleIsRepBased: { isRepBased in
                                 exercise.isRepBased = isRepBased
                             },
@@ -131,7 +132,6 @@ struct WorkoutPlanFormView: View {
                 .cornerRadius(.medium)
                 .padding()
             }
-            //            .animation(.default, value: viewModel.workoutPlan.exercisePlans)
         }
         .navigationTitle(viewModel.isEditing ? "Edit Workout" : "New Workout")
         .toolbar {

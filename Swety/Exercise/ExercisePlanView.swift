@@ -45,7 +45,8 @@ struct ExercisePlanView: View {
                     isEditable: true,
                     isPlan: true,
                     isRepBased: exercisePlan.isRepBased,
-                    autoSave: false
+                    autoSave: false,
+                    restTime: exercisePlan.restTime
                 )
                 .padding()
             }

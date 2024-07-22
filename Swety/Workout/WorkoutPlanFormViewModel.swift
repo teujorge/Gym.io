@@ -194,8 +194,7 @@ class WorkoutPlanFormViewModel: ObservableObject {
     
     func delete() {
         Task {
-            let success = await handleDeleteWorkout()
-            if success {
+            if await handleDeleteWorkout() {
                 onDelete(workoutPlan)
             }
             else {

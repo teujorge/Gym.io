@@ -24,6 +24,10 @@ class SetDetailsViewModel: ObservableObject {
         }
     }
     
+    @Published var restTime: Int
+    @Published var isShowingRestTimerOverlay = false
+    let restTimeRange: [Int] = Array(stride(from: 0, through: 300, by: 30))
+    
     let isEditable: Bool
     let isPlan: Bool
     
@@ -44,6 +48,7 @@ class SetDetailsViewModel: ObservableObject {
         isPlan: Bool,
         isRepBased: Bool,
         autoSave: Bool,
+        restTime: Int,
         onToggleIsRepBased: ((Bool) -> Void)? = nil,
         onSetsChanged: (([SetDetails]) -> Void)? = nil,
         onDebounceTriggered: (() -> Void)? = nil
@@ -53,12 +58,22 @@ class SetDetailsViewModel: ObservableObject {
         self.isPlan = isPlan
         self.isRepBased = isRepBased
         self.autoSave = autoSave
+        self.restTime = restTime
         
         self.onToggleIsRepBased = onToggleIsRepBased
         self.onSetsChanged = onSetsChanged
         self.onDebounceTriggered = onDebounceTriggered
         
         self.listHeight = Double(sets.count) * (rowHeight + rowInsets)
+    }
+    
+    func formatSeconds(_ seconds: Int) -> String {
+        switch seconds {
+        case 0:
+            return "None"
+        default:
+            return String(format: "%d:%02d", seconds / 60, seconds % 60)
+        }
     }
     
     private func debouncedExerciseEdited() {

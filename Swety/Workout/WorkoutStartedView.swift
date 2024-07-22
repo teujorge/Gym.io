@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct WorkoutStartedView: View {
-    @Environment (\.presentationMode) var presentationMode
+    @Environment (\.dismiss) var dismiss
     @EnvironmentObject var currentUser: User
     @StateObject var viewModel: WorkoutStartedViewModel
     
@@ -41,7 +41,7 @@ struct WorkoutStartedView: View {
                     viewModel.stopWorkoutTimer()
                     viewModel.completeWorkout() { newWorkout in
                         currentUser.workouts.append(newWorkout)
-                        presentationMode.wrappedValue.dismiss()
+                        dismiss()
                     }
                 })
             }
@@ -75,6 +75,7 @@ private struct ExerciseCardView: View {
                 isPlan: false,
                 isRepBased: exercise.isRepBased,
                 autoSave: false,
+                restTime: exercise.restTime,
                 onSetsChanged: { setDetails in
                     exercise.sets = setDetails.enumerated().map { (index, setDetail) in
                         setDetail.toSet(index: index)

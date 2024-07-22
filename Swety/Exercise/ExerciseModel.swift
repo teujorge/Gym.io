@@ -36,7 +36,7 @@ class ExercisePlan: Codable, Equatable, Identifiable, ObservableObject {
     @Published var image: String?
     @Published var notes: String?
     @Published var duration: Int?
-    @Published var restTime: Int?
+    @Published var restTime: Int
     @Published var isRepBased: Bool
     @Published var index: Int
     @Published var equipment: Equipment
@@ -56,7 +56,7 @@ class ExercisePlan: Codable, Equatable, Identifiable, ObservableObject {
         image: String? = nil,
         notes: String? = nil,
         duration: Int? = nil,
-        restTime: Int? = nil,
+        restTime: Int = 0,
         isRepBased: Bool,
         index: Int = 0,
         equipment: Equipment,
@@ -112,7 +112,7 @@ class ExercisePlan: Codable, Equatable, Identifiable, ObservableObject {
         image = try container.decodeIfPresent(String.self, forKey: .image)
         notes = try container.decodeIfPresent(String.self, forKey: .notes)
         duration = try container.decodeIfPresent(Int.self, forKey: .duration)
-        restTime = try container.decodeIfPresent(Int.self, forKey: .restTime)
+        restTime = try container.decode(Int.self, forKey: .restTime)
         isRepBased = try container.decode(Bool.self, forKey: .isRepBased)
         index = try container.decode(Int.self, forKey: .index)
         equipment = try container.decode(Equipment.self, forKey: .equipment)
