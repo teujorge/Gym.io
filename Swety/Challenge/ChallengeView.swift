@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ChallengeView: View {
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @Environment(\.dismiss) var dismiss
     @EnvironmentObject var currentUser: User
     
     @State var challenge: Challenge
@@ -100,7 +100,7 @@ struct ChallengeView: View {
                 onDelete: { challenge in
                     DispatchQueue.main.async {
                         self.isPresentingWorkoutForm = false
-                        presentationMode.wrappedValue.dismiss()
+                        dismiss()
                     }
                 }
             ))

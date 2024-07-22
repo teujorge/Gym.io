@@ -86,6 +86,14 @@ class WorkoutPlanFormViewModel: ObservableObject {
         }
     }
     
+    func updateExerciseSets(exerciseId: String, sets: [SetDetails]) {
+        if let index = workoutPlan.exercisePlans.firstIndex(where: { $0.id == exerciseId }) {
+            workoutPlan.exercisePlans[index].setPlans = sets.enumerated().map { index, set in
+                set.toSetPlan(index: index)
+            }
+        }
+    }
+    
     func save() {
         Task {
             if isEditing {
@@ -186,8 +194,7 @@ class WorkoutPlanFormViewModel: ObservableObject {
     
     func delete() {
         Task {
-            let success = await handleDeleteWorkout()
-            if success {
+            if await handleDeleteWorkout() {
                 onDelete(workoutPlan)
             }
             else {

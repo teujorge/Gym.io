@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ExercisePlansView: View {
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) var dismiss
     @Binding var selectedExercises: [ExercisePlan]
     
     @State private var searchQuery = ""
@@ -97,7 +97,7 @@ struct ExercisePlansView: View {
         .navigationBarTitle("Exercises")
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button("Done", action: { presentationMode.wrappedValue.dismiss() })
+                Button("Done", action: { dismiss() })
             }
         }
     }

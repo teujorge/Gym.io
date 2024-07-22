@@ -46,6 +46,7 @@ struct CustomExercisePlanFormView: View {
                 isPlan: true,
                 isRepBased: viewModel.exercisePlan.isRepBased,
                 autoSave: false,
+                restTime: viewModel.exercisePlan.restTime,
                 onSetsChanged: { setDetails in
                     viewModel.exercisePlan.setPlans = setDetails.enumerated().map { (index, setDetail) in
                         setDetail.toSetPlan(index: index)

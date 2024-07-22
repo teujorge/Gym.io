@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct WorkoutPlansView: View {
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) var dismiss
     @EnvironmentObject var currentUser: User
     @StateObject private var viewModel = WorkoutPlansViewModel()
     
@@ -49,7 +49,7 @@ struct WorkoutPlansView: View {
                         destination: WorkoutPlanFormView(onSave: { workoutPlan in
                             DispatchQueue.main.async {
                                 currentUser.workoutPlans.append(workoutPlan)
-                                presentationMode.wrappedValue.dismiss()
+                                dismiss() // pop the form view TODO: not popping atm
                             }
                         })
                     ) {
@@ -57,7 +57,6 @@ struct WorkoutPlansView: View {
                         Image(systemName: "plus.circle")
                             .foregroundColor(.accent)
                     }
-                    
                 }
                 ToolbarItem(placement: .status) {
                     if (viewModel.state != .idle) {
