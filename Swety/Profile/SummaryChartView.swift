@@ -7,7 +7,7 @@
 
 import SwiftUI
 #if canImport(Charts)
-import Charts
+//import Charts
 #endif
 
 enum SummaryRange: String, CaseIterable, Identifiable {
@@ -113,41 +113,41 @@ struct SummaryChartView: View {
             }
             
 #if canImport(Charts)
-            Chart {
-                ForEach(filteredData, id: \.date) { item in
-                    BarMark(
-                        x: .value("Date", item.date),
-                        y: .value(type.rawValue, {
-                            switch type {
-                            case .duration:
-                                return Double(item.duration) / 3600 // Convert seconds to hours directly here
-                            case .weight:
-                                return Double(item.volume) // Directly use the volume
-                            case .reps:
-                                return Double(item.reps) // Directly use the reps
-                            }
-                        }())
-                    )
-                    .foregroundStyle(Color.accent)
-                }
-            }
+//            Chart {
+//                ForEach(filteredData, id: \.date) { item in
+//                    BarMark(
+//                        x: .value("Date", item.date),
+//                        y: .value(type.rawValue, {
+//                            switch type {
+//                            case .duration:
+//                                return Double(item.duration) / 3600 // Convert seconds to hours directly here
+//                            case .weight:
+//                                return Double(item.volume) // Directly use the volume
+//                            case .reps:
+//                                return Double(item.reps) // Directly use the reps
+//                            }
+//                        }())
+//                    )
+//                    .foregroundStyle(Color.accent)
+//                }
+//            }
             
-            .chartYAxis {
-                AxisMarks(position: .leading) {
-                    AxisGridLine()
-                    AxisTick()
-                    AxisValueLabel()
-                }
-            }
-            .chartXAxis {
-                let totalDays = daysBetweenDates()
-                let tickInterval = max(1, totalDays / 3)
-                AxisMarks(values: .stride(by: .day, count: tickInterval)) {
-                    AxisGridLine()
-                    AxisTick()
-                    AxisValueLabel(format: .dateTime.day().month())
-                }
-            }
+//            .chartYAxis {
+//                AxisMarks(position: .leading) {
+//                    AxisGridLine()
+//                    AxisTick()
+//                    AxisValueLabel()
+//                }
+//            }
+//            .chartXAxis {
+//                let totalDays = daysBetweenDates()
+//                let tickInterval = max(1, totalDays / 3)
+//                AxisMarks(values: .stride(by: .day, count: tickInterval)) {
+//                    AxisGridLine()
+//                    AxisTick()
+//                    AxisValueLabel(format: .dateTime.day().month())
+//                }
+//            }
 #endif
             
             Picker("Select Summary Range", selection: $range.animation()) {
