@@ -26,7 +26,6 @@ func sendRequest<T: Codable>(endpoint: String, queryItems: [URLQueryItem]? = nil
     print("Sending request to \(endpoint)")
     
     let baseURL = "https://swety.fit"
-//    let baseURL = "https://swety-git-authentication-mrljorge.vercel.app"
 //    let baseURL = "http://192.168.0.96:3000"
     var components = URLComponents(string: "\(baseURL)/api\(endpoint)")!
     

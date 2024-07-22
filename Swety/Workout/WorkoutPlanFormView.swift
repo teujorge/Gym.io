@@ -89,9 +89,7 @@ struct WorkoutPlanFormView: View {
                                 exercise.isRepBased = isRepBased
                             },
                             onSetsChanged: { sets in
-                                exercise.setPlans = sets.enumerated().map { index, set in
-                                    set.toSetPlan(index: index)
-                                }
+                                viewModel.updateExerciseSets(exerciseId: exercise.id, sets: sets)
                             }
                         )
                         .id(exercise.id)
