@@ -54,7 +54,7 @@ class WorkoutPlanFormViewModel: ObservableObject {
         workoutPlan.exercisePlans.remove(at: index)
     }
     
-    func editExercise(_ exercise: ExercisePlan) {
+    func editExercisePlan(_ exercise: ExercisePlan) {
         selectedExercise = exercise
     }
     
@@ -86,7 +86,7 @@ class WorkoutPlanFormViewModel: ObservableObject {
         }
     }
     
-    func updateExerciseSets(exerciseId: String, sets: [SetDetails]) {
+    func updateExerciseSets(exerciseId: String, sets: [SetDetail]) {
         if let index = workoutPlan.exercisePlans.firstIndex(where: { $0.id == exerciseId }) {
             workoutPlan.exercisePlans[index].setPlans = sets.enumerated().map { index, set in
                 set.toSetPlan(index: index)

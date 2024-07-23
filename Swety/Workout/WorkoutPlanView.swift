@@ -49,14 +49,10 @@ struct WorkoutPlanView: View {
                             }
                             
                             SetDetailsView(
-                                sets: exercisePlan.setPlans.map { setPlan in
-                                    SetDetails(exerciseSetPlan: setPlan)
-                                },
+                                details: SetDetails(exercisePlan: exercisePlan),
                                 isEditable: false,
                                 isPlan: true,
-                                isRepBased: exercisePlan.isRepBased,
-                                autoSave: false,
-                                restTime: exercisePlan.restTime
+                                autoSave: false
                             )
                             
                             if index != workoutPlan.exercisePlans.count - 1 {

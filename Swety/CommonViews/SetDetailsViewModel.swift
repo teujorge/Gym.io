@@ -10,24 +10,29 @@ import Combine
 
 class SetDetailsViewModel: ObservableObject {
     @Published var state: LoaderState = .idle
-
-    @Published var isRepBased: Bool {
+    
+    @Published var details: SetDetails {
         didSet {
+            print("hello 3")
             debouncedExerciseEdited()
-            onToggleIsRepBased?(isRepBased)
+            onDetailsChanged?(details)
+            setupObservers()
         }
     }
-    @Published var sets: [SetDetails] {
+    
+    var restTime: Int {
+        restTimeMinutes * 60 + restTimeSeconds
+    }
+    @Published var restTimeMinutes: Int {
         didSet {
-            debouncedExerciseEdited()
-            onSetsChanged?(sets)
+            details.restTime = restTime
         }
     }
-    var restTime:Int{
-         restTimeMinutes * 60 + restTimeSeconds 
+    @Published var restTimeSeconds: Int {
+        didSet {
+            details.restTime = restTime
+        }
     }
-    @Published var restTimeMinutes: Int
-    @Published var restTimeSeconds: Int
     @Published var isShowingRestTimerOverlay = false
     
     let isEditable: Bool
@@ -40,34 +45,48 @@ class SetDetailsViewModel: ObservableObject {
     private var autoSave: Bool
     private var updateTimer: Timer?
     
-    var onToggleIsRepBased: ((Bool) -> Void)?
-    var onSetsChanged: (([SetDetails]) -> Void)?
+    var onDetailsChanged: ((SetDetails) -> Void)?
     var onDebounceTriggered: (() -> Void)?
     
+    private var cancellables = Set<AnyCancellable>()
+    
     init(
-        sets: [SetDetails],
+        details: SetDetails,
         isEditable: Bool,
         isPlan: Bool,
-        isRepBased: Bool,
         autoSave: Bool,
-        restTime: Int,
-        onToggleIsRepBased: ((Bool) -> Void)? = nil,
-        onSetsChanged: (([SetDetails]) -> Void)? = nil,
+        onDetailsChanged: ((SetDetails) -> Void)? = nil,
         onDebounceTriggered: (() -> Void)? = nil
     ) {
-        self.sets = sets
+        self.details = details
         self.isEditable = isEditable
         self.isPlan = isPlan
-        self.isRepBased = isRepBased
         self.autoSave = autoSave
-        self.restTimeMinutes = restTime / 60
-        self.restTimeSeconds = restTime % 60
-        self.onToggleIsRepBased = onToggleIsRepBased
-        self.onSetsChanged = onSetsChanged
+        
+        self.restTimeMinutes = details.restTime / 60
+        self.restTimeSeconds = details.restTime % 60
+        
+        self.onDetailsChanged = onDetailsChanged
         self.onDebounceTriggered = onDebounceTriggered
         
-        self.listHeight = Double(sets.count) * (rowHeight + rowInsets)
+        self.listHeight = Double(details.sets.count) * (rowHeight + rowInsets)
+        setupObservers()
     }
+    
+    private func setupObservers() {
+        cancellables.removeAll()
+        details.sets.forEach { set in
+            set.objectWillChange.sink { [weak self] _ in
+                self?.callUpdateFunctions()
+            }.store(in: &cancellables)
+        }
+    }
+    
+    private func callUpdateFunctions() {
+         print("hello 2")
+         debouncedExerciseEdited()
+         onDetailsChanged?(details)
+     }
     
     func formatSeconds(_ seconds: Int) -> String {
         switch seconds {
@@ -78,9 +97,9 @@ class SetDetailsViewModel: ObservableObject {
         }
     }
     
-    private func debouncedExerciseEdited() {
+    func debouncedExerciseEdited() {
         print("Exercise edited")
-        print("-> all sets: \(sets.map { $0.reps })")
+        print("-> all sets: \(details.sets.map { $0.reps })")
         
         updateTimer?.invalidate() // Invalidate any existing timer
         updateTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { [weak self] _ in
@@ -91,23 +110,22 @@ class SetDetailsViewModel: ObservableObject {
     private func saveUpdatedExercise() {
         print("saveUpdatedExercise")
         guard autoSave else { return }
-
+        
         // TODO: update the exercise on the server
-        print("TODO: save -> all sets: \(sets)")
+        print("TODO: save all sets")
     }
     
     func toggleSetCompletion(index: Int) {
-        if sets[index].completedAt == nil {
-            sets[index].completedAt = Date()
+        if details.sets[index].completedAt == nil {
+            details.sets[index].completedAt = Date()
         } else {
-            sets[index].completedAt = nil
+            details.sets[index].completedAt = nil
         }
-        debouncedExerciseEdited()
-        onSetsChanged?(sets)
+        callUpdateFunctions()
     }
     
     func addSet() {
-        sets.append(SetDetails(
+        details.sets.append(SetDetail(
             id: UUID().uuidString,
             reps: 0,
             weight: 0,
@@ -115,82 +133,153 @@ class SetDetailsViewModel: ObservableObject {
             intensity: .medium,
             completedAt: nil
         ))
-        debouncedExerciseEdited()
+        callUpdateFunctions()
     }
     
-    func updateSet(index: Int, set: SetDetails) {
-        sets[index] = set
-        debouncedExerciseEdited()
+    func updateSet(index: Int, set: SetDetail) {
+        details.sets[index] = set
+        callUpdateFunctions()
     }
     
     func deleteSet(index: Int) {
-        sets.remove(at: index)
-        debouncedExerciseEdited()
+        details.sets.remove(at: index)
+        callUpdateFunctions()
     }
     
-//    private func saveUpdatedSet(set: ExerciseSet) {
-//        guard let index = exercise.sets.firstIndex(where: { $0.id == set.id }) else { return }
-//        let updatedSet = exercise.sets[index]
-//
-//        // Now call your async function to update the set on the server
-//        Task { await requestUpdateSet(at: index, with: updatedSet) }
-//    }
+    //    private func saveUpdatedSet(set: ExerciseSet) {
+    //        guard let index = exercise.sets.firstIndex(where: { $0.id == set.id }) else { return }
+    //        let updatedSet = exercise.sets[index]
+    //
+    //        // Now call your async function to update the set on the server
+    //        Task { await requestUpdateSet(at: index, with: updatedSet) }
+    //    }
     
-//    private func saveSet(_ set: ExerciseSet) async {
-//        guard autoSave else { return }
-//        var newSet = set
-//        newSet.exerciseId = exercise.id
-//
-//        let response: HTTPResponse<ExerciseSet> = await sendRequest(endpoint: "/sets", body: newSet, method: .POST)
-//        handleResponse(response)
-//
-//        // Update the model with the backend response
-//        switch response {
-//        case .success(let backendSet):
-//            if let index = exercise.sets.firstIndex(where: { $0.id == set.id }) {
-//                exercise.sets[index] = backendSet
-//            }
-//        case .failure(let error):
-//            print("Failed to decode set: \(error)")
-//        }
-//    }
+    //    private func saveSet(_ set: ExerciseSet) async {
+    //        guard autoSave else { return }
+    //        var newSet = set
+    //        newSet.exerciseId = exercise.id
+    //
+    //        let response: HTTPResponse<ExerciseSet> = await sendRequest(endpoint: "/sets", body: newSet, method: .POST)
+    //        handleResponse(response)
+    //
+    //        // Update the model with the backend response
+    //        switch response {
+    //        case .success(let backendSet):
+    //            if let index = exercise.sets.firstIndex(where: { $0.id == set.id }) {
+    //                exercise.sets[index] = backendSet
+    //            }
+    //        case .failure(let error):
+    //            print("Failed to decode set: \(error)")
+    //        }
+    //    }
     
-//    private func requestUpdateSet(at index: Int, with set: ExerciseSet) async {
-//        guard autoSave else { return }
-//        let response: HTTPResponse<ExerciseSet> = await sendRequest(endpoint: "/sets/\(set.id)", body: set, method: .PUT)
-//        handleResponse(response)
-//
-//        // Update the model with the backend response
-//        switch response {
-//        case .success(let backendSet):
-//            exercise.sets[index] = backendSet
-//        case .failure(let error):
-//            print("Failed to decode set: \(error)")
-//        }
-//    }
+    //    private func requestUpdateSet(at index: Int, with set: ExerciseSet) async {
+    //        guard autoSave else { return }
+    //        let response: HTTPResponse<ExerciseSet> = await sendRequest(endpoint: "/sets/\(set.id)", body: set, method: .PUT)
+    //        handleResponse(response)
+    //
+    //        // Update the model with the backend response
+    //        switch response {
+    //        case .success(let backendSet):
+    //            exercise.sets[index] = backendSet
+    //        case .failure(let error):
+    //            print("Failed to decode set: \(error)")
+    //        }
+    //    }
     
-//    private func requestDeleteSet(_ id: String) async {
-//        guard autoSave else { return }
-//        let response: HTTPResponse<EmptyBody> = await sendRequest(endpoint: "/sets/\(id)", method: .DELETE)
-//        handleResponse(response)
-//    }
+    //    private func requestDeleteSet(_ id: String) async {
+    //        guard autoSave else { return }
+    //        let response: HTTPResponse<EmptyBody> = await sendRequest(endpoint: "/sets/\(id)", method: .DELETE)
+    //        handleResponse(response)
+    //    }
     
-//    private func handleResponse<T>(_ response: HTTPResponse<T>) {
-//        DispatchQueue.main.async {
-//            switch response {
-//            case .success:
-//                self.state = .success
-//            case .failure(let error):
-//                self.state = .failure(error)
-//            }
-//        }
-//    }
+    //    private func handleResponse<T>(_ response: HTTPResponse<T>) {
+    //        DispatchQueue.main.async {
+    //            switch response {
+    //            case .success:
+    //                self.state = .success
+    //            case .failure(let error):
+    //                self.state = .failure(error)
+    //            }
+    //        }
+    //    }
     
 }
 
-
 class SetDetails: ObservableObject, Equatable {
     static func == (lhs: SetDetails, rhs: SetDetails) -> Bool {
+        lhs.exerciseId == rhs.exerciseId &&
+        lhs.isRepBased == rhs.isRepBased &&
+        lhs.restTime == rhs.restTime &&
+        lhs.sets == rhs.sets
+    }
+    
+    @Published var exerciseId: String
+    @Published var isRepBased: Bool
+    @Published var restTime: Int
+    @Published var sets: [SetDetail] {
+        didSet {
+            setupObservers()
+        }
+    }
+    
+    private var cancellables = Set<AnyCancellable>()
+    
+    init(exerciseId: String, isRepBased: Bool, restTime: Int, sets: [SetDetail]) {
+        self.exerciseId = exerciseId
+        self.isRepBased = isRepBased
+        self.restTime = restTime
+        self.sets = sets
+        setupObservers()
+    }
+    
+    init(exercise: Exercise) {
+        self.exerciseId = exercise.id
+        self.isRepBased = exercise.isRepBased
+        self.restTime = exercise.restTime
+        self.sets = exercise.sets.map { SetDetail(exerciseSet: $0) }
+        setupObservers()
+    }
+    
+    init(exercisePlan: ExercisePlan) {
+        self.exerciseId = exercisePlan.id
+        self.isRepBased = exercisePlan.isRepBased
+        self.restTime = exercisePlan.restTime
+        self.sets = exercisePlan.setPlans.map { SetDetail(exerciseSetPlan: $0) }
+        setupObservers()
+    }
+    
+    private func setupObservers() {
+        cancellables.removeAll()
+        sets.forEach { set in
+            set.objectWillChange.sink { [weak self] _ in
+                self?.objectWillChange.send()
+            }.store(in: &cancellables)
+        }
+    }
+    
+    func updatedExercise(exercise: Exercise) -> Exercise {
+        exercise.isRepBased = isRepBased
+        exercise.restTime = restTime
+        exercise.sets = sets.enumerated().map { (index, setDetail) in
+            setDetail.toSet(index: index)
+        }
+        return exercise
+    }
+    
+    func updatedExercisePlan(exercisePlan: ExercisePlan) -> ExercisePlan {
+        exercisePlan.isRepBased = isRepBased
+        exercisePlan.restTime = restTime
+        exercisePlan.setPlans = sets.enumerated().map { (index, setDetail) in
+            setDetail.toSetPlan(index: index)
+        }
+        return exercisePlan
+    }
+    
+}
+
+class SetDetail: ObservableObject, Equatable {
+    static func == (lhs: SetDetail, rhs: SetDetail) -> Bool {
         lhs.id == rhs.id &&
         lhs.reps == rhs.reps &&
         lhs.weight == rhs.weight &&
@@ -199,12 +288,24 @@ class SetDetails: ObservableObject, Equatable {
         lhs.completedAt == rhs.completedAt
     }
     
-    @Published var id: String
-    @Published var reps: Int
-    @Published var weight: Int
-    @Published var duration: Int
-    @Published var intensity: Intensity
-    @Published var completedAt: Date?
+    @Published var id: String {
+        didSet { objectWillChange.send() }
+    }
+    @Published var reps: Int {
+        didSet { objectWillChange.send() }
+    }
+    @Published var weight: Int {
+        didSet { objectWillChange.send() }
+    }
+    @Published var duration: Int {
+        didSet { objectWillChange.send() }
+    }
+    @Published var intensity: Intensity {
+        didSet { objectWillChange.send() }
+    }
+    @Published var completedAt: Date? {
+        didSet { objectWillChange.send() }
+    }
     
     init(id: String, reps: Int, weight: Int, duration: Int, intensity: Intensity, completedAt: Date?) {
         self.id = id

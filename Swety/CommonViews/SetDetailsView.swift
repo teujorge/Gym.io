@@ -30,26 +30,19 @@ struct SetDetailsView: View {
     }
     
     init(
-        sets: [SetDetails],
+        details: SetDetails,
         isEditable: Bool,
         isPlan: Bool,
-        isRepBased: Bool,
         autoSave: Bool,
-        restTime: Int,
-        onToggleIsRepBased: ((Bool) -> Void)? = nil,
-        onSetsChanged: (([SetDetails]) -> Void)? = nil,
-        onRestTimeChanged: ((Int) -> Void)? = nil,
+        onDetailsChanged: ((SetDetails) -> Void)? = nil,
         onDebounceTriggered: (() -> Void)? = nil
     ) {
         _viewModel = StateObject(wrappedValue: SetDetailsViewModel(
-            sets: sets,
+            details: details,
             isEditable: isEditable,
             isPlan: isPlan,
-            isRepBased: isRepBased,
             autoSave: autoSave,
-            restTime: restTime,
-            onToggleIsRepBased: onToggleIsRepBased,
-            onSetsChanged: onSetsChanged,
+            onDetailsChanged: onDetailsChanged,
             onDebounceTriggered: onDebounceTriggered
         ))
     }
@@ -57,12 +50,20 @@ struct SetDetailsView: View {
     var body: some View {
         ZStack {
             VStack(alignment: .center, spacing: 16) {
-                if viewModel.isEditable {
-                    restTimeButton
-                }
-                
-                if viewModel.isEditable && viewModel.onToggleIsRepBased != nil {
-                    Picker("Type", selection: $viewModel.isRepBased.animation()) {
+                if viewModel.isEditable && viewModel.onDetailsChanged != nil {
+                    HStack {
+                        Button(action: { viewModel.isShowingRestTimerOverlay.toggle() }) {
+                            Text(viewModel.formatSeconds(viewModel.details.restTime))
+                            Image(systemName: "stopwatch")
+                                .foregroundColor(.accent)
+                        }
+                        .buttonStyle(.plain)
+                        Spacer()
+                    }
+                    .padding(.horizontal)
+                    .padding(.bottom)
+                    
+                    Picker("Type", selection: $viewModel.details.isRepBased.animation()) {
                         Text("Rep Based").tag(true)
                         Text("Time Based").tag(false)
                     }
@@ -74,7 +75,7 @@ struct SetDetailsView: View {
                 headerView
                 setsList
                 
-                if viewModel.isEditable && viewModel.onSetsChanged != nil {
+                if viewModel.isEditable && viewModel.onDetailsChanged != nil {
                     Button(action: viewModel.addSet) {
                         HStack {
                             Text("Add set")
@@ -91,7 +92,17 @@ struct SetDetailsView: View {
                     .transition(.move(edge: .bottom))
                 }
             }
-            .animation(.easeInOut, value: viewModel.sets)
+            .animation(.easeInOut, value: viewModel.details.sets)
+            .onChange(of: viewModel.details) {
+                print("hello")
+                viewModel.debouncedExerciseEdited()
+                viewModel.onDetailsChanged?(viewModel.details)
+             }
+            .onChange(of: viewModel.details.sets) {
+                print("hello2")
+                viewModel.debouncedExerciseEdited()
+                viewModel.onDetailsChanged?(viewModel.details)
+             }
             
             if viewModel.isShowingRestTimerOverlay {
                 restTimeOverlay
@@ -102,12 +113,12 @@ struct SetDetailsView: View {
     
     private var setsList: some View {
         List {
-            ForEach(viewModel.sets.indices, id: \.self) { index in
+            ForEach(viewModel.details.sets.indices, id: \.self) { index in
                 ExerciseSetView(
-                    exerciseSet: viewModel.sets[index],
+                    exerciseSet: viewModel.details.sets[index],
                     gridItems: gridItems,
                     isEditable: viewModel.isEditable,
-                    isRepBased: viewModel.isRepBased,
+                    isRepBased: viewModel.details.isRepBased,
                     index: index,
                     toggleSetCompletion: showCheckColumn ? viewModel.toggleSetCompletion : nil
                 )
@@ -135,7 +146,7 @@ struct SetDetailsView: View {
         .padding(0)
         .background(.clear)
         .transition(.move(edge: .bottom))
-        .onChange(of: viewModel.sets.count) { oldCount, newCount in
+        .onChange(of: viewModel.details.sets.count) { oldCount, newCount in
             withAnimation {
                 viewModel.listHeight = Double(newCount) * (viewModel.rowHeight + viewModel.rowInsets)
             }
@@ -145,7 +156,7 @@ struct SetDetailsView: View {
     private var headerView: some View {
         LazyVGrid(columns: gridItems, alignment: .center) {
             Text("Set")
-            if viewModel.isRepBased {
+            if viewModel.details.isRepBased {
                 Text("Reps")
                 Text("Kg")
                 
@@ -158,20 +169,6 @@ struct SetDetailsView: View {
             }
         }
         .fontWeight(.medium)
-    }
-    
-    private var restTimeButton: some View {
-        HStack {
-            Button(action: { viewModel.isShowingRestTimerOverlay.toggle() }) {
-                Text(viewModel.formatSeconds(viewModel.restTime))
-                Image(systemName: "stopwatch")
-                    .foregroundColor(.accent)
-            }
-            .buttonStyle(.plain)
-            Spacer()
-        }
-        .padding(.horizontal)
-        .padding(.bottom)
     }
     
     private var restTimeOverlay: some View {
@@ -187,8 +184,6 @@ struct SetDetailsView: View {
                     .font(.title3)
                     .fontWeight(.semibold)
                     .padding(.top)
-                
-//
                 
                 TimerView(minutes: $viewModel.restTimeMinutes, seconds: $viewModel.restTimeSeconds)
                     .padding(.horizontal)
@@ -208,7 +203,7 @@ struct SetDetailsView: View {
 }
 
 private struct ExerciseSetView: View {
-    @ObservedObject var exerciseSet: SetDetails
+    @ObservedObject var exerciseSet: SetDetail
     let gridItems: [GridItem]
     let isEditable: Bool
     let isRepBased: Bool
@@ -216,7 +211,7 @@ private struct ExerciseSetView: View {
     let toggleSetCompletion: ((Int) -> Void)?
     
     private var rowColor: Color? {
-        if let completedAt = exerciseSet.completedAt {
+        if exerciseSet.completedAt != nil {
             return .green.opacity(0.7)
         }
         if index % 2 == 0 {
@@ -277,29 +272,32 @@ private struct ExerciseSetView: View {
         ScrollView {
             Section {
                 SetDetailsView(
-                    sets: [
-                        SetDetails(
-                            id: "1",
-                            reps: 10,
-                            weight: 50,
-                            duration: 0,
-                            intensity: .high,
-                            completedAt: nil
-                        ),
-                        SetDetails(
-                            id: "2",
-                            reps: 10,
-                            weight: 50,
-                            duration: 0,
-                            intensity: .medium,
-                            completedAt: nil
-                        )
-                    ],
+                    details: SetDetails(
+                        exerciseId: "",
+                        isRepBased: true,
+                        restTime: 30,
+                        sets: [
+                            SetDetail(
+                                id: "1",
+                                reps: 10,
+                                weight: 50,
+                                duration: 0,
+                                intensity: .high,
+                                completedAt: nil
+                            ),
+                            SetDetail(
+                                id: "2",
+                                reps: 10,
+                                weight: 50,
+                                duration: 0,
+                                intensity: .medium,
+                                completedAt: nil
+                            )
+                        ]
+                    ),
                     isEditable: true,
                     isPlan: false,
-                    isRepBased: false,
-                    autoSave: false,
-                    restTime: 0
+                    autoSave: false
                 )
             }
         }

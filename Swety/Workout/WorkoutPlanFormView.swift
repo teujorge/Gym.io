@@ -35,11 +35,11 @@ struct WorkoutPlanFormView: View {
                 .padding(.vertical)
                 
                 // Exercises section
-                ForEach(Array(viewModel.workoutPlan.exercisePlans.enumerated()), id: \.offset) { index, exercise in
+                ForEach(Array(viewModel.workoutPlan.exercisePlans.enumerated()), id: \.offset) { index, exercisePlan in
                     VStack(alignment: .leading) {
                         HStack {
                             // Title
-                            Text(exercise.name)
+                            Text(exercisePlan.name)
                                 .font(.title3)
                                 .fontWeight(.semibold)
                             Spacer()
@@ -78,22 +78,20 @@ struct WorkoutPlanFormView: View {
                         .padding()
                         
                         SetDetailsView(
-                            sets: exercise.setPlans.map { plan in
-                                SetDetails(exerciseSetPlan: plan)
-                            },
+                            details: SetDetails(exercisePlan: exercisePlan),
                             isEditable: true,
                             isPlan: true,
-                            isRepBased: exercise.isRepBased,
                             autoSave: false,
-                            restTime: exercise.restTime,
-                            onToggleIsRepBased: { isRepBased in
-                                exercise.isRepBased = isRepBased
-                            },
-                            onSetsChanged: { sets in
-                                viewModel.updateExerciseSets(exerciseId: exercise.id, sets: sets)
+                            onDetailsChanged: { setDetails in
+                                let updatedExercisePlan = setDetails.updatedExercisePlan(exercisePlan: exercisePlan)
+                                viewModel.workoutPlan.exercisePlans[index] = updatedExercisePlan
+                                // viewModel.updateExerciseSets(exerciseId: exercisePlan.id, sets: sets) // do we need this?
+                                viewModel.workoutPlan.exercisePlans[index].setPlans.map {
+                                    $0.print()
+                                }
                             }
                         )
-                        .id(exercise.id)
+                        .id(exercisePlan.id)
                         
                         if index < viewModel.workoutPlan.exercisePlans.count - 1 {
                             Divider()
@@ -103,11 +101,11 @@ struct WorkoutPlanFormView: View {
                     .padding()
                     .transition(.move(edge: .bottom))
                     .swipeActions {
-                        Button(action: { viewModel.editExercise(exercise) }) {
+                        Button(action: { viewModel.editExercisePlan(exercisePlan) }) {
                             Label("Edit", systemImage: "pencil")
                         }
                         Button(role: .destructive, action: {
-                            if let index = viewModel.workoutPlan.exercisePlans.firstIndex(where: { $0.id == exercise.id }) {
+                            if let index = viewModel.workoutPlan.exercisePlans.firstIndex(where: { $0.id == exercisePlan.id }) {
                                 viewModel.workoutPlan.exercisePlans.remove(at: index)
                             }
                         }) {

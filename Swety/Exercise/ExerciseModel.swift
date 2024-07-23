@@ -56,7 +56,7 @@ class ExercisePlan: Codable, Equatable, Identifiable, ObservableObject {
         image: String? = nil,
         notes: String? = nil,
         duration: Int? = nil,
-        restTime: Int = 0,
+        restTime: Int = 90,
         isRepBased: Bool,
         index: Int = 0,
         equipment: Equipment,
@@ -204,7 +204,7 @@ class Exercise: Codable, Identifiable, ObservableObject {
         self.notes = exercisePlan.notes
         self.index = exercisePlan.index
         self.isRepBased = exercisePlan.duration == nil
-        self.restTime = exercisePlan.restTime ?? 90
+        self.restTime = exercisePlan.restTime
         self.equipment = exercisePlan.equipment
         self.muscleGroups = exercisePlan.muscleGroups
         self.workoutId = exercisePlan.workoutPlanId ?? UUID().uuidString
@@ -311,7 +311,6 @@ class ExerciseSetPlan: Codable, Identifiable, ObservableObject {
     @Published var weight: Int
     @Published var duration: Int
     @Published var intensity: Intensity
-    @Published var restTime: Int?
     @Published var index: Int
     @Published var exercisePlanId: String
     
@@ -326,7 +325,6 @@ class ExerciseSetPlan: Codable, Identifiable, ObservableObject {
         weight: Int = 0,
         duration: Int = 0,
         intensity: Intensity = .medium,
-        restTime: Int = 0,
         index: Int = 0,
         exercisePlanId: String = UUID().uuidString,
         exercisePlan: Exercise? = nil,
@@ -338,7 +336,6 @@ class ExerciseSetPlan: Codable, Identifiable, ObservableObject {
         self.weight = weight
         self.duration = duration
         self.intensity = intensity
-        self.restTime = restTime
         self.index = index
         self.exercisePlanId = exercisePlanId
         self.exercisePlan = exercisePlan
@@ -352,7 +349,6 @@ class ExerciseSetPlan: Codable, Identifiable, ObservableObject {
         case weight
         case duration
         case intensity
-        case restTime
         case index
         case exercisePlanId
         case exercisePlan
@@ -367,7 +363,6 @@ class ExerciseSetPlan: Codable, Identifiable, ObservableObject {
         weight = try container.decode(Int.self, forKey: .weight)
         duration = try container.decode(Int.self, forKey: .duration)
         intensity = try container.decode(Intensity.self, forKey: .intensity)
-        restTime = try container.decodeIfPresent(Int.self, forKey: .restTime)
         index = try container.decode(Int.self, forKey: .index)
         exercisePlanId = try container.decode(String.self, forKey: .exercisePlanId)
         exercisePlan = try container.decodeIfPresent(Exercise.self, forKey: .exercisePlan)
@@ -382,12 +377,15 @@ class ExerciseSetPlan: Codable, Identifiable, ObservableObject {
         try container.encode(weight, forKey: .weight)
         try container.encode(duration, forKey: .duration)
         try container.encode(intensity, forKey: .intensity)
-        try container.encodeIfPresent(restTime, forKey: .restTime)
         try container.encode(index, forKey: .index)
         try container.encode(exercisePlanId, forKey: .exercisePlanId)
         try container.encodeIfPresent(exercisePlan, forKey: .exercisePlan)
         try container.encode(createdAt, forKey: .createdAt)
         try container.encode(updatedAt, forKey: .updatedAt)
+    }
+    
+    func print() {
+        Swift.print("ExerciseSetPlan: \(reps) - \(weight) - \(duration) - \(intensity) - \(index)")
     }
 }
 
@@ -397,7 +395,6 @@ class ExerciseSet: Codable, Identifiable, ObservableObject {
     @Published var weight: Int
     @Published var duration: Int
     @Published var intensity: Intensity
-    @Published var restTime: Int
     @Published var index: Int
     @Published var completedAt: Date?
     @Published var exerciseId: String
@@ -411,7 +408,6 @@ class ExerciseSet: Codable, Identifiable, ObservableObject {
         self.weight = exerciseSetPlan.weight
         self.duration = exerciseSetPlan.duration
         self.intensity = exerciseSetPlan.intensity
-        self.restTime = exerciseSetPlan.exercisePlan?.restTime ?? 0
         self.index = exerciseSetPlan.index
         self.exerciseId = UUID().uuidString
         self.createdAt = Date()
@@ -424,7 +420,6 @@ class ExerciseSet: Codable, Identifiable, ObservableObject {
         weight: Int = 0,
         duration: Int = 0,
         intensity: Intensity = .medium,
-        restTime: Int = 0,
         index: Int,
         completedAt: Date? = nil,
         exerciseId: String = UUID().uuidString,
@@ -437,7 +432,6 @@ class ExerciseSet: Codable, Identifiable, ObservableObject {
         self.weight = weight
         self.duration = duration
         self.intensity = intensity
-        self.restTime = restTime
         self.completedAt = completedAt
         self.exerciseId = exerciseId
         self.createdAt = createdAt
@@ -451,7 +445,6 @@ class ExerciseSet: Codable, Identifiable, ObservableObject {
         case weight
         case duration
         case intensity
-        case restTime
         case completedAt
         case exerciseId
         case createdAt
@@ -465,7 +458,6 @@ class ExerciseSet: Codable, Identifiable, ObservableObject {
         weight = try container.decode(Int.self, forKey: .weight)
         duration = try container.decode(Int.self, forKey: .duration)
         intensity = try container.decode(Intensity.self, forKey: .intensity)
-        restTime = try container.decode(Int.self, forKey: .restTime)
         index = try container.decode(Int.self, forKey: .index)
         completedAt = try decodeNullableDate(from: container, forKey: .completedAt)
         exerciseId = try container.decode(String.self, forKey: .exerciseId)
@@ -480,13 +472,17 @@ class ExerciseSet: Codable, Identifiable, ObservableObject {
         try container.encode(weight, forKey: .weight)
         try container.encode(duration, forKey: .duration)
         try container.encode(intensity, forKey: .intensity)
-        try container.encode(restTime, forKey: .restTime)
         try container.encode(index, forKey: .index)
         try container.encodeIfPresent(completedAt, forKey: .completedAt)
         try container.encode(exerciseId, forKey: .exerciseId)
         try container.encode(createdAt, forKey: .createdAt)
         try container.encode(updatedAt, forKey: .updatedAt)
     }
+    
+    func print() {
+        Swift.print("ExerciseSet: \(reps) - \(weight) - \(duration) - \(intensity) - \(index)")
+    }
+    
 }
 
 enum Intensity: String, Codable, CaseIterable, Identifiable {

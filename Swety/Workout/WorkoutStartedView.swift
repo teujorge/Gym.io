@@ -70,16 +70,12 @@ private struct ExerciseCardView: View {
                 .padding(.bottom, 8)
             
             SetDetailsView(
-                sets: exercise.sets.map { SetDetails(exerciseSet: $0) },
+                details: SetDetails(exercise: exercise),
                 isEditable: true,
                 isPlan: false,
-                isRepBased: exercise.isRepBased,
                 autoSave: false,
-                restTime: exercise.restTime,
-                onSetsChanged: { setDetails in
-                    exercise.sets = setDetails.enumerated().map { (index, setDetail) in
-                        setDetail.toSet(index: index)
-                    }
+                onDetailsChanged: { setDetails in
+                    exercise = setDetails.updatedExercise(exercise: exercise)
                 }
             )
             

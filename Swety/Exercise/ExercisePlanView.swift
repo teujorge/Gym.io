@@ -39,14 +39,10 @@ struct ExercisePlanView: View {
                 }
                 
                 SetDetailsView(
-                    sets: exercisePlan.setPlans.map { plan in
-                        SetDetails(exerciseSetPlan: plan)
-                    },
+                    details: SetDetails(exercisePlan: exercisePlan),
                     isEditable: true,
                     isPlan: true,
-                    isRepBased: exercisePlan.isRepBased,
-                    autoSave: false,
-                    restTime: exercisePlan.restTime
+                    autoSave: false
                 )
                 .padding()
             }

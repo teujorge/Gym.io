@@ -32,25 +32,12 @@ struct CustomExercisePlanFormView: View {
             .padding(.vertical)
             
             SetDetailsView(
-                sets: viewModel.exercisePlan.setPlans.map {
-                    SetDetails(
-                        id: $0.id,
-                        reps: $0.reps,
-                        weight: $0.weight,
-                        duration: $0.duration,
-                        intensity: $0.intensity,
-                        completedAt: nil
-                    )
-                },
+                details: SetDetails(exercisePlan: viewModel.exercisePlan),
                 isEditable: true,
                 isPlan: true,
-                isRepBased: viewModel.exercisePlan.isRepBased,
                 autoSave: false,
-                restTime: viewModel.exercisePlan.restTime,
-                onSetsChanged: { setDetails in
-                    viewModel.exercisePlan.setPlans = setDetails.enumerated().map { (index, setDetail) in
-                        setDetail.toSetPlan(index: index)
-                    }
+                onDetailsChanged: { setDetails in
+                    viewModel.exercisePlan = setDetails.updatedExercisePlan(exercisePlan: viewModel.exercisePlan)
                 }
             )
             .padding()
