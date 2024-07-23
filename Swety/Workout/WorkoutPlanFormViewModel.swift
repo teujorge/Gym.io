@@ -102,20 +102,40 @@ class WorkoutPlanFormViewModel: ObservableObject {
         objectWillChange.send()
     }
     
-    func save() {
+    func save(onSuccess: @escaping () -> Void) {
         Task {
             if isEditing {
                 if let newWorkout = await updateWorkout() {
-                    onSave(newWorkout)
+                    DispatchQueue.main.async {
+                        onSuccess()
+                        self.onSave(newWorkout)
+                    }
                 } else {
                     print("Failed to update workout")
                 }
             } else {
                 if let newWorkout = await createWorkout() {
-                    onSave(newWorkout)
+                    DispatchQueue.main.async {
+                        onSuccess()
+                        self.onSave(newWorkout)
+                    }
                 } else {
                     print("Failed to create workout")
                 }
+            }
+        }
+    }
+    
+    func delete(onSuccess: @escaping () -> Void) {
+        Task {
+            if await handleDeleteWorkout() {
+                DispatchQueue.main.async {
+                    onSuccess()
+                    self.onDelete(self.workoutPlan)
+                }
+            }
+            else {
+                print("Failed to delete workout")
             }
         }
     }
@@ -197,17 +217,6 @@ class WorkoutPlanFormViewModel: ObservableObject {
                 self.state = .failure(error)
             }
             return nil
-        }
-    }
-    
-    func delete() {
-        Task {
-            if await handleDeleteWorkout() {
-                onDelete(workoutPlan)
-            }
-            else {
-                print("Failed to delete workout")
-            }
         }
     }
     

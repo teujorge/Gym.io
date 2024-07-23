@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct WorkoutPlanFormView: View {
+    @Environment(\.dismiss) var dismiss
+    @Environment(\.dismissAll) var dismissAll
     @EnvironmentObject private var currentUser: User
     @StateObject private var viewModel: WorkoutPlanFormViewModel
     
@@ -135,12 +137,12 @@ struct WorkoutPlanFormView: View {
         .toolbar {
             if viewModel.isEditing {
                 ToolbarItem(placement: .destructiveAction) {
-                    Button("Delete") { viewModel.delete() }
+                    Button("Delete") { viewModel.delete() { dismissAll() } }
                         .foregroundColor(.red)
                 }
             }
             ToolbarItem(placement: .confirmationAction) {
-                Button("Save") { viewModel.save() }
+                Button("Save") { viewModel.save() { dismiss() } }
             }
             if viewModel.state != .idle {
                 ToolbarItem(placement: .status) {

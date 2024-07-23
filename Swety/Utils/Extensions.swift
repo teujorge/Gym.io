@@ -52,3 +52,16 @@ extension UserDefaults {
         removeObject(forKey: key.rawValue)
     }
 }
+
+// ===== Environment =====
+
+struct DismissAllKey: EnvironmentKey {
+    static let defaultValue: () -> Void = {}
+}
+
+extension EnvironmentValues {
+    var dismissAll: () -> Void {
+        get { self[DismissAllKey.self] }
+        set { self[DismissAllKey.self] = newValue }
+    }
+}

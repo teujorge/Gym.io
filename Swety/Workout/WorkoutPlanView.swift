@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct WorkoutPlanView: View {
-    @Environment(\.dismiss) var dismiss
     @EnvironmentObject var currentUser: User
     
     @StateObject var workoutPlan: WorkoutPlan
@@ -74,19 +73,12 @@ struct WorkoutPlanView: View {
                     destination: WorkoutPlanFormView(
                         workoutPlan: workoutPlan,
                         onSave: { workoutPlan in
-                            DispatchQueue.main.async {
-                                if let workoutIndex = currentUser.workoutPlans.firstIndex(where: { $0.id == workoutPlan.id }) {
-                                    currentUser.workoutPlans[workoutIndex] = workoutPlan
-                                }
-                                dismiss() // pop the form view
+                            if let workoutIndex = currentUser.workoutPlans.firstIndex(where: { $0.id == workoutPlan.id }) {
+                                currentUser.workoutPlans[workoutIndex] = workoutPlan
                             }
                         },
                         onDelete: { workoutPlan in
-                            DispatchQueue.main.async {
-                                currentUser.workoutPlans.removeAll(where: { $0.id == workoutPlan.id })
-                                dismiss() // pop the form view
-                                dismiss() // then pop this view
-                            }
+                            currentUser.workoutPlans.removeAll(where: { $0.id == workoutPlan.id })
                         }
                     )
                 ) {

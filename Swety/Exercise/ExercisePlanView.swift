@@ -9,7 +9,6 @@ import SwiftUI
 
 struct ExercisePlanView: View {
     @StateObject var exercisePlan: ExercisePlan
-    @State private var isPresentingExerciseForm = false
     
     var body: some View {
         ScrollView {
@@ -48,29 +47,6 @@ struct ExercisePlanView: View {
             }
         }
         .navigationTitle(exercisePlan.name)
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button(action: { isPresentingExerciseForm.toggle() }) {
-                    Text("Edit")
-                        .font(.caption)
-                        .fontWeight(.bold)
-                        .foregroundColor(.accent)
-                    Image(systemName: "pencil")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 12, height: 12)
-                        .foregroundColor(.accent)
-                }
-                .padding(.vertical, 4)
-                .padding(.horizontal, 8)
-                .background(Color.accent.opacity(0.2))
-                .cornerRadius(.large)
-            }
-            ToolbarItemGroup(placement: .keyboard) {
-                Spacer()
-                Button("Done", action: dismissKeyboard)
-            }
-        }
     }
     
 }
