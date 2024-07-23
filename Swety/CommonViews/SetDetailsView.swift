@@ -93,16 +93,6 @@ struct SetDetailsView: View {
                 }
             }
             .animation(.easeInOut, value: viewModel.details.sets)
-            .onChange(of: viewModel.details) {
-                print("hello")
-                viewModel.debouncedExerciseEdited()
-                viewModel.onDetailsChanged?(viewModel.details)
-             }
-            .onChange(of: viewModel.details.sets) {
-                print("hello2")
-                viewModel.debouncedExerciseEdited()
-                viewModel.onDetailsChanged?(viewModel.details)
-             }
             
             if viewModel.isShowingRestTimerOverlay {
                 restTimeOverlay

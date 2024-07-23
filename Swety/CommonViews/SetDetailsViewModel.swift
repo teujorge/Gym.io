@@ -13,10 +13,10 @@ class SetDetailsViewModel: ObservableObject {
     
     @Published var details: SetDetails {
         didSet {
-            print("hello 3")
+            print("details didSet")
+            setupObservers()
             debouncedExerciseEdited()
             onDetailsChanged?(details)
-            setupObservers()
         }
     }
     
@@ -25,12 +25,16 @@ class SetDetailsViewModel: ObservableObject {
     }
     @Published var restTimeMinutes: Int {
         didSet {
+            print("restTimeMinutes didSet")
             details.restTime = restTime
+            callUpdateFunctions()
         }
     }
     @Published var restTimeSeconds: Int {
         didSet {
+            print("restTimeSeconds didSet")
             details.restTime = restTime
+            callUpdateFunctions()
         }
     }
     @Published var isShowingRestTimerOverlay = false
@@ -83,10 +87,16 @@ class SetDetailsViewModel: ObservableObject {
     }
     
     private func callUpdateFunctions() {
-         print("hello 2")
-         debouncedExerciseEdited()
-         onDetailsChanged?(details)
-     }
+        print("callUpdateFunctions")
+        details = SetDetails(
+            exerciseId: details.exerciseId,
+            isRepBased: details.isRepBased,
+            restTime: details.restTime,
+            sets: details.sets
+        )
+        debouncedExerciseEdited()
+        onDetailsChanged?(details)
+    }
     
     func formatSeconds(_ seconds: Int) -> String {
         switch seconds {
@@ -219,6 +229,7 @@ class SetDetails: ObservableObject, Equatable {
     @Published var restTime: Int
     @Published var sets: [SetDetail] {
         didSet {
+            objectWillChange.send() // Explicitly notify about the change
             setupObservers()
         }
     }
@@ -258,7 +269,7 @@ class SetDetails: ObservableObject, Equatable {
         }
     }
     
-    func updatedExercise(exercise: Exercise) -> Exercise {
+    func updateExercise(exercise: Exercise) -> Exercise {
         exercise.isRepBased = isRepBased
         exercise.restTime = restTime
         exercise.sets = sets.enumerated().map { (index, setDetail) in
@@ -267,7 +278,7 @@ class SetDetails: ObservableObject, Equatable {
         return exercise
     }
     
-    func updatedExercisePlan(exercisePlan: ExercisePlan) -> ExercisePlan {
+    func updateExercisePlan(exercisePlan: ExercisePlan) -> ExercisePlan {
         exercisePlan.isRepBased = isRepBased
         exercisePlan.restTime = restTime
         exercisePlan.setPlans = sets.enumerated().map { (index, setDetail) in
