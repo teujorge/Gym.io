@@ -83,7 +83,7 @@ struct WorkoutPlanFormView: View {
                             isPlan: true,
                             autoSave: false,
                             onDetailsChanged: { setDetails in
-                                let updatedExercisePlan = setDetails.updatedExercisePlan(exercisePlan: exercisePlan)
+                                let updatedExercisePlan = setDetails.updateExercisePlan(exercisePlan: exercisePlan)
                                 viewModel.workoutPlan.exercisePlans[index] = updatedExercisePlan
                                 // viewModel.updateExerciseSets(exerciseId: exercisePlan.id, sets: sets) // do we need this?
                                 viewModel.workoutPlan.exercisePlans[index].setPlans.map {

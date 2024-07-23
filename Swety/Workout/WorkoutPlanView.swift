@@ -126,7 +126,7 @@ var _previewExercisePlans: [ExercisePlan] = [
         notes: "Stand with your feet shoulder-width apart. Lower your body as if you were sitting back into a chair. Push through your heels to return to the starting position.",
         isRepBased: true,
         index: 2,
-        equipment: .bodyweight,
+        equipment: .none,
         muscleGroups: [.legs],
         setPlans: [
             ExerciseSetPlan(reps: 12, weight: 185),
@@ -139,7 +139,7 @@ var _previewExercisePlans: [ExercisePlan] = [
         name: "Plank",
         isRepBased: false,
         index: 3,
-        equipment: .bodyweight,
+        equipment: .none,
         muscleGroups: [.core],
         setPlans: [
             ExerciseSetPlan(duration: 45, intensity: .low),

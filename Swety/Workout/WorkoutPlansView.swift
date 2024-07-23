@@ -168,7 +168,7 @@ let _previewWorkoutPlans = [
             ExercisePlan(
                 name: "give but whole",
                 isRepBased: false,
-                equipment: .bodyweight,
+                equipment: .none,
                 muscleGroups: [.back],
                 setPlans: [
                     ExerciseSetPlan(duration: 60, intensity: .low),

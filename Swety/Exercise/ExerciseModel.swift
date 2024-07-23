@@ -20,8 +20,8 @@ struct DefaultExercisePlan: Codable {
             name: name,
             notes: notes,
             isRepBased: isRepBased,
-            equipment: .ball, // TODO: fix
-            muscleGroups: [.arms] // TODO: fix
+            equipment: equipment, // .ball, // TODO: fix
+            muscleGroups: muscleGroups // [.arms] // TODO: fix
         )
     }
 }
@@ -160,18 +160,9 @@ enum MuscleGroup: String, Codable, CaseIterable, Identifiable {
 enum Equipment: String, Codable, CaseIterable, Identifiable {
     case barbell = "BARBELL"
     case dumbbell = "DUMBBELL"
-    case kettlebell = "KETTLEBELL"
     case machine = "MACHINE"
-    case bodyweight = "BODYWEIGHT"
-    case cable = "CABLE"
-    case band = "BAND"
-    case plate = "PLATE"
+    case flexible = "FLEXIBLE"
     case ball = "BALL"
-    case bench = "BENCH"
-    case box = "BOX"
-    case medicineBall = "MEDICINE_BALL"
-    case resistanceBand = "RESISTANCE_BAND"
-    case rope = "ROPE"
     case other = "OTHER"
     case none = "NONE"
     

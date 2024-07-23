@@ -155,7 +155,7 @@ struct ViewOffsetKey: PreferenceKey {
 #Preview {
     NavigationView {
         ExercisePlansView(
-            selectedExercises: .constant([ExercisePlan(name: "Plank", notes: "some large notes, some large notes, some more notes blah blah blah... heyo", isRepBased: true, equipment: .bodyweight, muscleGroups: [.core, .arms])])
+            selectedExercises: .constant([ExercisePlan(name: "Plank", notes: "some large notes, some large notes, some more notes blah blah blah... heyo", isRepBased: true, equipment: .none, muscleGroups: [.core, .arms])])
         )
     }
 }

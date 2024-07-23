@@ -75,7 +75,7 @@ private struct ExerciseCardView: View {
                 isPlan: false,
                 autoSave: false,
                 onDetailsChanged: { setDetails in
-                    exercise = setDetails.updatedExercise(exercise: exercise)
+                    exercise = setDetails.updateExercise(exercise: exercise)
                 }
             )
             
