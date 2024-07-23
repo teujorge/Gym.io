@@ -23,7 +23,7 @@ struct LoaderView: View {
     
     @State private var isAnimating = false
     
-    init(size: Double = 50, weight: Font.Weight = .regular, state: LoaderState = .loading, showErrorMessage: Bool = false) {
+    init(size: Double = 30, weight: Font.Weight = .light, state: LoaderState = .loading, showErrorMessage: Bool = false) {
         self.size = size
         self.weight = weight
         self.state = state

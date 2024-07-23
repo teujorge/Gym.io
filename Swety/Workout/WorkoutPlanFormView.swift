@@ -142,6 +142,11 @@ struct WorkoutPlanFormView: View {
             ToolbarItem(placement: .confirmationAction) {
                 Button("Save") { viewModel.save() }
             }
+            if viewModel.state != .idle {
+                ToolbarItem(placement: .status) {
+                    LoaderView(state: viewModel.state)
+                }
+            }
             ToolbarItemGroup(placement: .keyboard) {
                 Spacer()
                 Button("Done", action: dismissKeyboard)

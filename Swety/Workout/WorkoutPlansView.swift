@@ -58,10 +58,9 @@ struct WorkoutPlansView: View {
                             .foregroundColor(.accent)
                     }
                 }
-                ToolbarItem(placement: .status) {
-                    if (viewModel.state != .idle) {
-                        LoaderView(state: viewModel.state, showErrorMessage: true)
-                            .padding()
+                if (viewModel.state != .idle) {
+                    ToolbarItem(placement: .status) {
+                        LoaderView(state: viewModel.state)
                     }
                 }
                 ToolbarItemGroup(placement: .keyboard) {
