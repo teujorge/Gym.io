@@ -48,24 +48,29 @@ class WorkoutPlanFormViewModel: ObservableObject {
     
     func moveExercise(from source: IndexSet, to destination: Int) {
         workoutPlan.exercisePlans.move(fromOffsets: source, toOffset: destination)
+        objectWillChange.send()
     }
     
     func deleteExercise(index: Int) {
         workoutPlan.exercisePlans.remove(at: index)
+        objectWillChange.send()
     }
     
     func editExercisePlan(_ exercise: ExercisePlan) {
         selectedExercise = exercise
+        objectWillChange.send()
     }
     
     func moveExerciseUp(index: Int) {
         if index <= 0 { return }
         workoutPlan.exercisePlans.swapAt(index, index - 1)
+        objectWillChange.send()
     }
     
     func moveExerciseDown(index: Int) {
         if index >= workoutPlan.exercisePlans.count - 1 { return }
         workoutPlan.exercisePlans.swapAt(index, index + 1)
+        objectWillChange.send()
     }
     
     func handleSaveExercise(_ updatedExercise: ExercisePlan) {
@@ -78,12 +83,14 @@ class WorkoutPlanFormViewModel: ObservableObject {
         } else {
             workoutPlan.exercisePlans.append(updatedExercise)
         }
+        objectWillChange.send()
     }
     
     func handleDeleteExercise(_ exercise: ExercisePlan) {
         if let index = workoutPlan.exercisePlans.firstIndex(where: { $0.id == exercise.id }) {
             workoutPlan.exercisePlans.remove(at: index)
         }
+        objectWillChange.send()
     }
     
     func updateExerciseSets(exerciseId: String, sets: [SetDetail]) {
@@ -92,6 +99,7 @@ class WorkoutPlanFormViewModel: ObservableObject {
                 set.toSetPlan(index: index)
             }
         }
+        objectWillChange.send()
     }
     
     func save() {
