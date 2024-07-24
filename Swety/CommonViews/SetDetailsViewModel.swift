@@ -37,7 +37,6 @@ class SetDetailsViewModel: ObservableObject {
             callUpdateFunctions()
         }
     }
-    @Published var isShowingRestTimerOverlay = false
     
     let isEditable: Bool
     let isPlan: Bool

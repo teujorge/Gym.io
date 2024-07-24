@@ -19,7 +19,7 @@
 		F50D80FA2C429EBB0061366E /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50D80F92C429EBB0061366E /* ErrorView.swift */; };
 		F5379E4C2C3993F20054E7A8 /* ChallengeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5379E4B2C3993F20054E7A8 /* ChallengeView.swift */; };
 		F53B94E62C3E152800C79FAB /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F53B94E52C3E152800C79FAB /* ProfileViewModel.swift */; };
-		F53B94E92C3E2C3400C79FAB /* LabeledTextFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F53B94E82C3E2C3400C79FAB /* LabeledTextFieldView.swift */; };
+		F53B94E92C3E2C3400C79FAB /* TextFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F53B94E82C3E2C3400C79FAB /* TextFieldView.swift */; };
 		F53B94EB2C3E2C6200C79FAB /* LoadingButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F53B94EA2C3E2C6200C79FAB /* LoadingButtonView.swift */; };
 		F53E848A2C3F89EB0038F82A /* LoaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F53E84892C3F89EB0038F82A /* LoaderView.swift */; };
 		F5482CD52C3EC21900BA2513 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5482CD42C3EC21900BA2513 /* Utils.swift */; };
@@ -50,6 +50,8 @@
 		F5D4A4122C398C9D00E880A7 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5D4A4112C398C9D00E880A7 /* ProfileModel.swift */; };
 		F5D91C182C3CE70F004356BC /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5D91C172C3CE70F004356BC /* AuthView.swift */; };
 		F5D91C1D2C3CF144004356BC /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5D91C1C2C3CF144004356BC /* SignUpView.swift */; };
+		F5F0B04F2C5078080033681D /* DialogManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5F0B04E2C5078080033681D /* DialogManager.swift */; };
+		F5F0B0512C50781B0033681D /* DialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5F0B0502C50781B0033681D /* DialogView.swift */; };
 		F5FAE1F02C3F0DE800DC362A /* SetDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5FAE1EF2C3F0DE800DC362A /* SetDetailsView.swift */; };
 		F5FAE1F22C3F5D5C00DC362A /* WorkoutPlansViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5FAE1F12C3F5D5C00DC362A /* WorkoutPlansViewModel.swift */; };
 /* End PBXBuildFile section */
@@ -68,7 +70,7 @@
 		F50D80F92C429EBB0061366E /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		F5379E4B2C3993F20054E7A8 /* ChallengeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeView.swift; sourceTree = "<group>"; };
 		F53B94E52C3E152800C79FAB /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
-		F53B94E82C3E2C3400C79FAB /* LabeledTextFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabeledTextFieldView.swift; sourceTree = "<group>"; };
+		F53B94E82C3E2C3400C79FAB /* TextFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldView.swift; sourceTree = "<group>"; };
 		F53B94EA2C3E2C6200C79FAB /* LoadingButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingButtonView.swift; sourceTree = "<group>"; };
 		F53E84892C3F89EB0038F82A /* LoaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoaderView.swift; sourceTree = "<group>"; };
 		F5482CD42C3EC21900BA2513 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
@@ -100,6 +102,8 @@
 		F5D4A4112C398C9D00E880A7 /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		F5D91C172C3CE70F004356BC /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
 		F5D91C1C2C3CF144004356BC /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
+		F5F0B04E2C5078080033681D /* DialogManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogManager.swift; sourceTree = "<group>"; };
+		F5F0B0502C50781B0033681D /* DialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogView.swift; sourceTree = "<group>"; };
 		F5FAE1EF2C3F0DE800DC362A /* SetDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetDetailsView.swift; sourceTree = "<group>"; };
 		F5FAE1F12C3F5D5C00DC362A /* WorkoutPlansViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutPlansViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -129,13 +133,15 @@
 		F53B94E72C3E2BE900C79FAB /* CommonViews */ = {
 			isa = PBXGroup;
 			children = (
-				F53B94E82C3E2C3400C79FAB /* LabeledTextFieldView.swift */,
+				F53B94E82C3E2C3400C79FAB /* TextFieldView.swift */,
 				F53B94EA2C3E2C6200C79FAB /* LoadingButtonView.swift */,
 				F5FAE1EF2C3F0DE800DC362A /* SetDetailsView.swift */,
 				F54D32FA2C402D7000B1A6B3 /* SetDetailsViewModel.swift */,
 				F53E84892C3F89EB0038F82A /* LoaderView.swift */,
 				F50D80F92C429EBB0061366E /* ErrorView.swift */,
 				53A7AF582C4EE8E3009C4220 /* TimerView.swift */,
+				F5F0B04E2C5078080033681D /* DialogManager.swift */,
+				F5F0B0502C50781B0033681D /* DialogView.swift */,
 			);
 			path = CommonViews;
 			sourceTree = "<group>";
@@ -363,7 +369,9 @@
 				F5D91C182C3CE70F004356BC /* AuthView.swift in Sources */,
 				F58750122C3EFCAC005A54C5 /* CustomExercisePlanFormViewModel.swift in Sources */,
 				F55222622C36CD5E0057C0E5 /* SwetyApp.swift in Sources */,
-				F53B94E92C3E2C3400C79FAB /* LabeledTextFieldView.swift in Sources */,
+				F5F0B04F2C5078080033681D /* DialogManager.swift in Sources */,
+				F5F0B0512C50781B0033681D /* DialogView.swift in Sources */,
+				F53B94E92C3E2C3400C79FAB /* TextFieldView.swift in Sources */,
 				F50097762C3D575D00D799C4 /* AuthState.swift in Sources */,
 				F54D32FB2C402D7000B1A6B3 /* SetDetailsViewModel.swift in Sources */,
 				F5CF480B2C4D78E900999E09 /* ExercisePlansView.swift in Sources */,

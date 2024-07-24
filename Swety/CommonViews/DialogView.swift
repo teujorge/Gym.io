@@ -1,5 +1,5 @@
 //
-//  CustomDialogView.swift
+//  DialogView.swift
 //  Swety
 //
 //  Created by Matheus Jorge on 7/23/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CustomDialogView: View {
+struct DialogView: View {
     @EnvironmentObject var dialogManager: DialogManager
 
     var body: some View {
@@ -19,13 +19,17 @@ struct CustomDialogView: View {
                 }
                 .padding()
             }
-            .frame(maxWidth: 300)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding()
-            .background(Color.white)
-            .cornerRadius(10)
-            .shadow(radius: 10)
-            .transition(.scale)
+            .background(.black.opacity(0.2))
+            .shadow(radius: .large)
             .zIndex(1)
+            .ignoresSafeArea(.all)
+            .onTapGesture {
+                if dialogManager.allowPop {
+                    dialogManager.hideDialog()
+                }
+            }
         }
     }
 }

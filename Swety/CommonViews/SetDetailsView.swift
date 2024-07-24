@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct SetDetailsView: View {
+    @EnvironmentObject var dialogManager: DialogManager
     @StateObject var viewModel: SetDetailsViewModel
     
     private var showCheckColumn: Bool {
@@ -48,57 +49,54 @@ struct SetDetailsView: View {
     }
     
     var body: some View {
-        ZStack {
-            VStack(alignment: .center, spacing: 16) {
-                if viewModel.isEditable && viewModel.onDetailsChanged != nil {
-                    HStack {
-                        Button(action: { viewModel.isShowingRestTimerOverlay.toggle() }) {
-                            Text(viewModel.formatSeconds(viewModel.details.restTime))
-                            Image(systemName: "stopwatch")
-                                .foregroundColor(.accent)
+        VStack(alignment: .center, spacing: 16) {
+            if viewModel.isEditable && viewModel.onDetailsChanged != nil {
+                HStack {
+                    Button(action: {
+                        dialogManager.showDialog {
+                            restTimeSelectorView
                         }
-                        .buttonStyle(.plain)
-                        Spacer()
-                    }
-                    .padding(.horizontal)
-                    .padding(.bottom)
-                    
-                    Picker("Type", selection: $viewModel.details.isRepBased.animation()) {
-                        Text("Rep Based").tag(true)
-                        Text("Time Based").tag(false)
-                    }
-                    .pickerStyle(.segmented)
-                    .padding(.bottom)
-                    .padding(.horizontal)
-                }
-                
-                headerView
-                setsList
-                
-                if viewModel.isEditable && viewModel.onDetailsChanged != nil {
-                    Button(action: viewModel.addSet) {
-                        HStack {
-                            Text("Add set")
-                            Image(systemName: "plus.circle")
-                                .foregroundColor(.accent)
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding(10)
-                        .background(Color.accent.opacity(0.2))
-                        .cornerRadius(.medium)
+                    }) {
+                        Text(viewModel.formatSeconds(viewModel.details.restTime))
+                        Image(systemName: "stopwatch")
+                            .foregroundColor(.accent)
                     }
                     .buttonStyle(.plain)
-                    .padding(.horizontal)
-                    .transition(.move(edge: .bottom))
+                    Spacer()
                 }
+                .padding(.horizontal)
+                .padding(.bottom)
+                
+                Picker("Type", selection: $viewModel.details.isRepBased.animation()) {
+                    Text("Rep Based").tag(true)
+                    Text("Time Based").tag(false)
+                }
+                .pickerStyle(.segmented)
+                .padding(.bottom)
+                .padding(.horizontal)
             }
-            .animation(.easeInOut, value: viewModel.details.sets)
             
-            if viewModel.isShowingRestTimerOverlay {
-                restTimeOverlay
-                    .animation(.easeInOut, value: viewModel.isShowingRestTimerOverlay)
+            headerView
+            setsList
+            
+            if viewModel.isEditable && viewModel.onDetailsChanged != nil {
+                Button(action: viewModel.addSet) {
+                    HStack {
+                        Text("Add set")
+                        Image(systemName: "plus.circle")
+                            .foregroundColor(.accent)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(10)
+                    .background(Color.accent.opacity(0.2))
+                    .cornerRadius(.medium)
+                }
+                .buttonStyle(.plain)
+                .padding(.horizontal)
+                .transition(.move(edge: .bottom))
             }
         }
+        .animation(.easeInOut, value: viewModel.details.sets)
     }
     
     private var setsList: some View {
@@ -161,34 +159,26 @@ struct SetDetailsView: View {
         .fontWeight(.medium)
     }
     
-    private var restTimeOverlay: some View {
-        ZStack {
-            Color.black.opacity(0.4)
-                .edgesIgnoringSafeArea(.all)
-                .onTapGesture {
-                    viewModel.isShowingRestTimerOverlay = false
-                }
-            
-            VStack {
+    private var restTimeSelectorView: some View {
+        VStack {
+            HStack {
                 Text("Rest Time")
                     .font(.title3)
                     .fontWeight(.semibold)
-                    .padding(.top)
-                
-                TimerView(minutes: $viewModel.restTimeMinutes, seconds: $viewModel.restTimeSeconds)
-                    .padding(.horizontal)
-                
+                Spacer()
                 Button("Done") {
-                    viewModel.isShowingRestTimerOverlay = false
+                    dialogManager.hideDialog()
                 }
-                .padding(.bottom)
             }
-            .frame(maxWidth: .infinity)
-            .background(.ultraThinMaterial)
-            .cornerRadius(.large)
-            .padding(.horizontal, 40)
+            .padding(.top)
+            .padding(.horizontal)
+            TimerView(minutes: $viewModel.restTimeMinutes, seconds: $viewModel.restTimeSeconds)
+                .padding(.horizontal)
         }
-        .transition(.opacity)
+        .frame(maxWidth: .infinity)
+        .background(.regularMaterial)
+        .cornerRadius(.large)
+        .padding(.horizontal, 40)
     }
 }
 
@@ -258,40 +248,50 @@ private struct ExerciseSetView: View {
 
 
 #Preview {
-    NavigationView {
-        ScrollView {
-            Section {
-                SetDetailsView(
-                    details: SetDetails(
-                        exerciseId: "",
-                        isRepBased: true,
-                        restTime: 30,
-                        sets: [
-                            SetDetail(
-                                id: "1",
-                                reps: 10,
-                                weight: 50,
-                                duration: 0,
-                                intensity: .high,
-                                completedAt: nil
-                            ),
-                            SetDetail(
-                                id: "2",
-                                reps: 10,
-                                weight: 50,
-                                duration: 0,
-                                intensity: .medium,
-                                completedAt: nil
-                            )
-                        ]
-                    ),
-                    isEditable: true,
-                    isPlan: false,
-                    autoSave: false
-                )
-            }
-        }
-    }
-    .navigationTitle("SetDetailsPreview")
+    SetDetailsPreview()
 }
 
+private struct SetDetailsPreview: View {
+    @StateObject var dialogManager = DialogManager()
+    
+    var body: some View {
+        NavigationView {
+            ScrollView {
+                Section {
+                    SetDetailsView(
+                        details: SetDetails(
+                            exerciseId: "",
+                            isRepBased: true,
+                            restTime: 30,
+                            sets: [
+                                SetDetail(
+                                    id: "1",
+                                    reps: 10,
+                                    weight: 50,
+                                    duration: 0,
+                                    intensity: .high,
+                                    completedAt: nil
+                                ),
+                                SetDetail(
+                                    id: "2",
+                                    reps: 10,
+                                    weight: 50,
+                                    duration: 0,
+                                    intensity: .medium,
+                                    completedAt: nil
+                                )
+                            ]
+                        ),
+                        isEditable: true,
+                        isPlan: false,
+                        autoSave: false,
+                        onDetailsChanged: { _ in }
+                    )
+                }
+            }
+        }
+        .navigationTitle("SetDetailsPreview")
+        .environmentObject(dialogManager)
+    }
+    
+}
