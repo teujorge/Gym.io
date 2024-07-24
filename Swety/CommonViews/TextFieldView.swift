@@ -1,5 +1,5 @@
 //
-//  LabeledTextFieldView.swift
+//  TextFieldView.swift
 //  Swety
 //
 //  Created by Matheus Jorge on 7/9/24.
@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-struct LabeledTextFieldView: View {
-    let label: String
-    let placeholder: String
+struct TextFieldView: View {
+    let label: String?
+    let placeholder: String?
     @Binding var text: String
     var error: String? = nil
     var onChange: ((String) -> Void)? = nil
@@ -19,9 +19,11 @@ struct LabeledTextFieldView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
-            Text(label)
-                .font(.subheadline)
-                .foregroundColor(error == nil ? .secondary : .red)
+            if let label = label {
+                Text(label)
+                    .font(.subheadline)
+                    .foregroundColor(error == nil ? .secondary : .red)
+            }
             
             if lines > 1 {
                 TextEditor(text: $text)
@@ -38,7 +40,7 @@ struct LabeledTextFieldView: View {
                     }
                     .padding(.bottom, 5)
             } else {
-                TextField(placeholder, text: $text)
+                TextField(placeholder ?? "", text: $text)
                     .disabled(isDisabled)
                     .keyboardType(keyboardType)
                     .padding(10)
@@ -65,7 +67,7 @@ struct LabeledTextFieldView: View {
 }
 
 #Preview {
-    LabeledTextFieldView(
+    TextFieldView(
         label: "Full name (optional):",
         placeholder: "Enter your full Name",
         text: .constant("write here...")

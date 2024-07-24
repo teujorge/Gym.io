@@ -23,14 +23,14 @@ struct SignUpView: View {
                 .foregroundColor(.accent)
                 .padding(.top)
             
-            LabeledTextFieldView(
+            TextFieldView(
                 label: "Full name:",
                 placeholder: "Enter your full Name",
                 text: $viewModel.newName,
                 isDisabled: isDisabled
             )
             
-            LabeledTextFieldView(
+            TextFieldView(
                 label: "Username:",
                 placeholder: "Enter a username",
                 text: $viewModel.newUsername,

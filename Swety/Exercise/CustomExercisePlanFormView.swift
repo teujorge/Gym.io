@@ -23,10 +23,10 @@ struct CustomExercisePlanFormView: View {
     var body: some View {
         ScrollView {
             VStack {
-                LabeledTextFieldView(label: "Name", placeholder: "Name", text: $viewModel.exercisePlan.name)
+                TextFieldView(label: "Name", placeholder: "Name", text: $viewModel.exercisePlan.name)
                     .padding(.top)
                     .padding(.horizontal)
-                LabeledTextFieldView(label: "Instructions", placeholder: "Instructions", text: $viewModel.notes, lines: 3)
+                TextFieldView(label: "Instructions", placeholder: "Instructions", text: $viewModel.notes, lines: 3)
                     .padding()
             }
             .padding(.vertical)

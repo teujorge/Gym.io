@@ -20,8 +20,8 @@ struct DefaultExercisePlan: Codable {
             name: name,
             notes: notes,
             isRepBased: isRepBased,
-            equipment: equipment, // .ball, // TODO: fix
-            muscleGroups: muscleGroups // [.arms] // TODO: fix
+            equipment: equipment,
+            muscleGroups: muscleGroups
         )
     }
 }
