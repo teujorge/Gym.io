@@ -84,11 +84,10 @@ struct ExercisePlansView: View {
                     
                 }
                 // Search bar
-                TextField("Search", text: $searchQuery)
-                    .textFieldStyle(.roundedBorder)
+                TextFieldView(label: nil, placeholder: "Search", text: $searchQuery)
             }
                 .padding()
-                .background(.ultraThinMaterial)
+                .background(.regularMaterial)
                 .cornerRadius(.large)
                 .padding()
                 .shadow(radius: .medium)
@@ -103,12 +102,32 @@ struct ExercisePlansView: View {
     }
     
     func loadExercises() {
+        
+        let lastFetchDate = UserDefaults.standard.object(forKey: .defaultExercisesLastFetch)
+        let savedExercises: [DefaultExercisePlan] = UserDefaults.standard.codable(forKey: .defaultExercises) ?? []
+        
+        print("Last fetch date: \(String(describing: lastFetchDate))")
+        print("Saved exercises: \(savedExercises)")
+        
+        if let lastFetchDate = UserDefaults.standard.object(forKey: .defaultExercisesLastFetch) as? Date,
+           let savedExercises: [DefaultExercisePlan] = UserDefaults.standard.codable(forKey: .defaultExercises),
+           Date().timeIntervalSince(lastFetchDate) < 60 * 60 * 24 { // one day in seconds
+            // Use saved data if not expired
+            self.allDefaultExercises = savedExercises.map { $0.toExercisePlan() }
+            print("Loaded exercises from UserDefaults")
+            return
+        }
+        
         Task {
             let response: HTTPResponse<[DefaultExercisePlan]> = await sendRequest(endpoint: "/exercises/defaults", method: .GET)
             switch response {
-            case .success(let plans):
+            case .success(let defaultPlans):
+                let exercisePlans = defaultPlans.map { $0.toExercisePlan() }
                 DispatchQueue.main.async {
-                    self.allDefaultExercises = plans.map { $0.toExercisePlan() }
+                    self.allDefaultExercises = exercisePlans
+                    UserDefaults.standard.setCodable(defaultPlans, forKey: .defaultExercises)
+                    UserDefaults.standard.set(Date(), forKey: .defaultExercisesLastFetch)
+                    print("Fetched and saved new exercises")
                 }
             case .failure(let error):
                 print("Failed to load exercises: \(error)")
@@ -142,13 +161,6 @@ private struct ExerciseRowView: View {
                     .foregroundColor(.green)
             }
         }
-    }
-}
-
-struct ViewOffsetKey: PreferenceKey {
-    static var defaultValue: CGFloat = 0
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value = nextValue()
     }
 }
 
