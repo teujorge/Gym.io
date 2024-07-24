@@ -14,7 +14,7 @@ struct ErrorView: View {
         Image(systemName: "exclamationmark.triangle")
             .resizable()
             .scaledToFit()
-            .frame(width: 100, height: 100)
+            .frame(width: 75, height: 75)
             .foregroundColor(.red)
             .padding(.top, 32)
             .padding(.horizontal, 32)
@@ -22,6 +22,7 @@ struct ErrorView: View {
             .foregroundColor(.red)
             .padding(.bottom, 32)
             .padding(.horizontal, 32)
+            .frame(alignment: .center)
     }
 }
 

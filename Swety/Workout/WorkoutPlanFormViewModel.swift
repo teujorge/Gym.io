@@ -12,6 +12,7 @@ class WorkoutPlanFormViewModel: ObservableObject {
     let isEditing: Bool
     var onSave: (WorkoutPlan) -> Void
     var onDelete: (WorkoutPlan) -> Void
+    let allInitialExerciseIds: [String]
     
     @Published var workoutPlan: WorkoutPlan
     @Published var selectedExercise: ExercisePlan?
@@ -40,6 +41,7 @@ class WorkoutPlanFormViewModel: ObservableObject {
         }
         self.onSave = onSave
         self.onDelete = onDelete
+        self.allInitialExerciseIds = workoutPlan?.exercisePlans.map { $0.id } ?? []
     }
     
     func addExercise() {
@@ -200,6 +202,15 @@ class WorkoutPlanFormViewModel: ObservableObject {
         
         DispatchQueue.main.async {
             self.state = .loading
+        }
+        
+        let removedExerciseIds = allInitialExerciseIds.filter { id in
+            !workoutPlan.exercisePlans.contains { $0.id == id }
+        }
+        
+        if !removedExerciseIds.isEmpty {
+            let exerciseDeletionResult: HTTPResponse<EmptyBody> = await sendRequest(endpoint: "/exercises/templates", body: removedExerciseIds, method: .DELETE)
+            print("Exercise deletion result: \(exerciseDeletionResult)")
         }
         
         let result: HTTPResponse<WorkoutPlan> = await sendRequest(endpoint: "/workouts/templates/\(workoutPlan.id)", body: workoutPlan, method: .PUT)

@@ -10,17 +10,28 @@ import SwiftUI
 struct WorkoutPlanFormView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.dismissAll) var dismissAll
+    
     @EnvironmentObject private var currentUser: User
+    @EnvironmentObject private var dialogManager: DialogManager
+    
     @StateObject private var viewModel: WorkoutPlanFormViewModel
     
     // Initializer with save functionality only
     init(onSave: @escaping (WorkoutPlan) -> Void) {
-        _viewModel = StateObject(wrappedValue: WorkoutPlanFormViewModel(workoutPlan: nil, onSave: onSave, onDelete: {workoutPlan in}))
+        _viewModel = StateObject(wrappedValue: WorkoutPlanFormViewModel(
+            workoutPlan: nil,
+            onSave: onSave,
+            onDelete: {workoutPlan in}
+        ))
     }
     
     // Initializer with workout, save and delete functionality
     init(workoutPlan: WorkoutPlan, onSave: @escaping (WorkoutPlan) -> Void, onDelete: @escaping (WorkoutPlan) -> Void) {
-        _viewModel = StateObject(wrappedValue: WorkoutPlanFormViewModel(workoutPlan: workoutPlan, onSave: onSave, onDelete: onDelete))
+        _viewModel = StateObject(wrappedValue: WorkoutPlanFormViewModel(
+            workoutPlan: workoutPlan,
+            onSave: onSave,
+            onDelete: onDelete
+        ))
     }
     
     var body: some View {
@@ -87,7 +98,6 @@ struct WorkoutPlanFormView: View {
                             onDetailsChanged: { setDetails in
                                 let updatedExercisePlan = setDetails.updateExercisePlan(exercisePlan: exercisePlan)
                                 viewModel.workoutPlan.exercisePlans[index] = updatedExercisePlan
-                                // viewModel.updateExerciseSets(exerciseId: exercisePlan.id, sets: sets) // do we need this?
                                 viewModel.workoutPlan.exercisePlans[index].setPlans.map {
                                     $0.print()
                                 }
@@ -133,6 +143,25 @@ struct WorkoutPlanFormView: View {
                 .padding()
             }
         }
+        .onChange(of: viewModel.state) { _, newState in
+            switch newState {
+            case .loading:
+                dialogManager.showDialog(allowPop: false) {
+                    LoaderView()
+                }
+            case .failure(let error):
+                dialogManager.showDialog {
+                    VStack(alignment: .center, spacing: 8) {
+                        ErrorView(error: error)
+                        Button("OK") {
+                            dialogManager.hideDialog()
+                        }
+                    }
+                }
+            default:
+                dialogManager.hideDialog()
+            }
+        }
         .navigationTitle(viewModel.isEditing ? "Edit Workout" : "New Workout")
         .toolbar {
             if viewModel.isEditing {
@@ -143,11 +172,6 @@ struct WorkoutPlanFormView: View {
             }
             ToolbarItem(placement: .confirmationAction) {
                 Button("Save") { viewModel.save() { dismiss() } }
-            }
-            if viewModel.state != .idle {
-                ToolbarItem(placement: .status) {
-                    LoaderView(state: viewModel.state)
-                }
             }
             ToolbarItemGroup(placement: .keyboard) {
                 Spacer()
@@ -164,6 +188,7 @@ struct WorkoutPlanFormView: View {
             print("save form")
         })
     }
+    .environmentObject(DialogManager())
 }
 
 #Preview("Edit") {
@@ -182,4 +207,5 @@ struct WorkoutPlanFormView: View {
             }
         )
     }
+    .environmentObject(DialogManager())
 }
