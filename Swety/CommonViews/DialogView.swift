@@ -8,20 +8,19 @@
 import SwiftUI
 
 struct DialogView: View {
+    @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var dialogManager: DialogManager
 
     var body: some View {
         if dialogManager.isShowingDialog {
-            VStack {
+            VStack(alignment: .center) {
+                Spacer()
                 dialogManager.dialogContent
-                Button("Close") {
-                    dialogManager.hideDialog()
-                }
-                .padding()
+                Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding()
-            .background(.black.opacity(0.2))
+            .background(colorScheme == .dark ? .black.opacity(0.7) : .black.opacity(0.3))
             .shadow(radius: .large)
             .zIndex(1)
             .ignoresSafeArea(.all)
