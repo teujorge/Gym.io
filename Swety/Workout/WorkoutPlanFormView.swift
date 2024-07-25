@@ -51,7 +51,7 @@ struct WorkoutPlanFormView: View {
                     ForEach(Array(viewModel.workoutPlan.exercisePlans.enumerated()), id: \.element.id) { index, exercisePlan in
                         exercisePlanView(for: index, exercisePlan: exercisePlan, proxy: proxy)
                     }
-                    .animation(.easeInOut, value: viewModel.workoutPlan.exercisePlans)
+                    .animation(.default, value: viewModel.workoutPlan.exercisePlans)
                     
                     // Add exercise button
                     NavigationLink(
