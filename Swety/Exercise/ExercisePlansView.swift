@@ -64,7 +64,7 @@ struct ExercisePlansView: View {
                 HStack {
                     // Picker for equipment
                     Picker("Equipment", selection: $selectedEquipment) {
-                        Text("Equipment").tag(Equipment?.none)
+                        Text("Any equipment").tag(Equipment?.none)
                         ForEach(Equipment.allCases, id: \.self) { equipment in
                             Text(equipment.rawValue.capitalized.replacing("_", with: " ")).tag(equipment as Equipment?)
                         }
@@ -75,7 +75,7 @@ struct ExercisePlansView: View {
                     
                     // Picker for muscle groups
                     Picker("Muscle Group", selection: $selectedMuscleGroup) {
-                        Text("Muscles").tag(MuscleGroup?.none)
+                        Text("Any muscle").tag(MuscleGroup?.none)
                         ForEach(MuscleGroup.allCases, id: \.self) { muscleGroup in
                             Text(muscleGroup.rawValue.capitalized).tag(muscleGroup as MuscleGroup?)
                         }
