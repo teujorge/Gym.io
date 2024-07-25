@@ -43,7 +43,7 @@ class SetDetailsViewModel: ObservableObject {
     
     @Published var listHeight = 0.0
     let rowHeight = 40.0
-    let rowInsets = 20.0
+    let rowInsets = 4.0
     
     private var autoSave: Bool
     private var updateTimer: Timer?
