@@ -10,11 +10,11 @@ import SwiftUI
 struct SetDetailsView: View {
     @EnvironmentObject var dialogManager: DialogManager
     @StateObject var viewModel: SetDetailsViewModel
-    
+
     private var showCheckColumn: Bool {
         return !viewModel.isPlan && viewModel.isEditable
     }
-    
+
     private var gridItems: [GridItem] {
         showCheckColumn
         ? [
@@ -29,7 +29,7 @@ struct SetDetailsView: View {
             GridItem(.flexible())
         ]
     }
-    
+
     init(
         details: SetDetails,
         isEditable: Bool,
@@ -47,7 +47,7 @@ struct SetDetailsView: View {
             onDebounceTriggered: onDebounceTriggered
         ))
     }
-    
+
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
             if viewModel.isEditable && viewModel.onDetailsChanged != nil {
@@ -66,14 +66,15 @@ struct SetDetailsView: View {
                 }
                 .padding(.horizontal)
                 .padding(.bottom)
-                
-                Picker("Type", selection: $viewModel.details.isRepBased.animation()) {
-                    Text("Rep Based").tag(true)
-                    Text("Time Based").tag(false)
-                }
-                .pickerStyle(.segmented)
-                .padding(.bottom)
-                .padding(.horizontal)
+
+                // For future use -> custom exercise creation
+                //    Picker("Type", selection: $viewModel.details.isRepBased.animation()) {
+                //        Text("Rep Based").tag(true)
+                //        Text("Time Based").tag(false)
+                //    }
+                //    .pickerStyle(.segmented)
+                //    .padding(.bottom)
+                //    .padding(.horizontal)
             }
             
             headerView
@@ -98,7 +99,7 @@ struct SetDetailsView: View {
         }
         .animation(.easeInOut, value: viewModel.details.sets)
     }
-    
+
     private var setsList: some View {
         List {
             ForEach(viewModel.details.sets.indices, id: \.self) { index in
@@ -140,14 +141,14 @@ struct SetDetailsView: View {
             }
         }
     }
-    
+
     private var headerView: some View {
         LazyVGrid(columns: gridItems, alignment: .center) {
             Text("Set")
             if viewModel.details.isRepBased {
                 Text("Reps")
                 Text("Kg")
-                
+
             } else {
                 Text("Sec")
                 Text("Intensity")
@@ -158,7 +159,7 @@ struct SetDetailsView: View {
         }
         .fontWeight(.medium)
     }
-    
+
     private var restTimeSelectorView: some View {
         VStack {
             HStack {
@@ -189,7 +190,7 @@ private struct ExerciseSetView: View {
     let isRepBased: Bool
     let index: Int
     let toggleSetCompletion: ((Int) -> Void)?
-    
+
     private var rowColor: Color? {
         if exerciseSet.completedAt != nil {
             return .green.opacity(0.7)
@@ -200,7 +201,7 @@ private struct ExerciseSetView: View {
             return .gray.opacity(0.18)
         }
     }
-    
+
     var body: some View {
         LazyVGrid(columns: gridItems, alignment: .center) {
             Text("\(index + 1)")
@@ -246,7 +247,6 @@ private struct ExerciseSetView: View {
     }
 }
 
-
 #Preview {
     SetDetailsPreview()
 }
@@ -255,43 +255,45 @@ private struct SetDetailsPreview: View {
     @StateObject var dialogManager = DialogManager()
     
     var body: some View {
-        NavigationView {
-            ScrollView {
-                Section {
-                    SetDetailsView(
-                        details: SetDetails(
-                            exerciseId: "",
-                            isRepBased: true,
-                            restTime: 30,
-                            sets: [
-                                SetDetail(
-                                    id: "1",
-                                    reps: 10,
-                                    weight: 50,
-                                    duration: 0,
-                                    intensity: .high,
-                                    completedAt: nil
-                                ),
-                                SetDetail(
-                                    id: "2",
-                                    reps: 10,
-                                    weight: 50,
-                                    duration: 0,
-                                    intensity: .medium,
-                                    completedAt: nil
-                                )
-                            ]
+        VStack {
+            Color.blue.frame(height: 400)
+            SetDetailsView(
+                details: SetDetails(
+                    exerciseId: "",
+                    isRepBased: true,
+                    restTime: 30,
+                    sets: [
+                        SetDetail(
+                            id: "1",
+                            reps: 10,
+                            weight: 50,
+                            duration: 0,
+                            intensity: .high,
+                            completedAt: nil
                         ),
-                        isEditable: true,
-                        isPlan: false,
-                        autoSave: false,
-                        onDetailsChanged: { _ in }
-                    )
-                }
+                        SetDetail(
+                            id: "2",
+                            reps: 10,
+                            weight: 50,
+                            duration: 0,
+                            intensity: .medium,
+                            completedAt: nil
+                        )
+                    ]
+                ),
+                isEditable: true,
+                isPlan: false,
+                autoSave: false,
+                onDetailsChanged: { _ in }
+            )
+        }
+        .toolbar {
+            ToolbarItem(placement: .keyboard) {
+                Spacer()
+                Button("Done") { dismissKeyboard() }
             }
         }
         .navigationTitle("SetDetailsPreview")
         .environmentObject(dialogManager)
     }
-    
 }

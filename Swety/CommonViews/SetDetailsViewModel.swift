@@ -288,7 +288,7 @@ class SetDetails: ObservableObject, Equatable {
     
 }
 
-class SetDetail: ObservableObject, Equatable {
+class SetDetail: ObservableObject, Equatable, Identifiable {
     static func == (lhs: SetDetail, rhs: SetDetail) -> Bool {
         lhs.id == rhs.id &&
         lhs.reps == rhs.reps &&

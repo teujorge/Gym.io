@@ -194,7 +194,7 @@ class Exercise: Codable, Identifiable, ObservableObject {
         self.image = exercisePlan.image
         self.notes = exercisePlan.notes
         self.index = exercisePlan.index
-        self.isRepBased = exercisePlan.duration == nil
+        self.isRepBased = exercisePlan.isRepBased
         self.restTime = exercisePlan.restTime
         self.equipment = exercisePlan.equipment
         self.muscleGroups = exercisePlan.muscleGroups
