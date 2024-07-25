@@ -268,7 +268,7 @@ class SetDetails: ObservableObject, Equatable {
         }
     }
     
-    func updateExercise(exercise: Exercise) -> Exercise {
+    func createExercise(from exercise: Exercise) -> Exercise {
         exercise.isRepBased = isRepBased
         exercise.restTime = restTime
         exercise.sets = sets.enumerated().map { (index, setDetail) in
@@ -277,7 +277,7 @@ class SetDetails: ObservableObject, Equatable {
         return exercise
     }
     
-    func updateExercisePlan(exercisePlan: ExercisePlan) -> ExercisePlan {
+    func createExercisePlan(from exercisePlan: ExercisePlan) -> ExercisePlan {
         exercisePlan.isRepBased = isRepBased
         exercisePlan.restTime = restTime
         exercisePlan.setPlans = sets.enumerated().map { (index, setDetail) in

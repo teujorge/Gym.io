@@ -37,7 +37,7 @@ struct CustomExercisePlanFormView: View {
                 isPlan: true,
                 autoSave: false,
                 onDetailsChanged: { setDetails in
-                    viewModel.exercisePlan = setDetails.updateExercisePlan(exercisePlan: viewModel.exercisePlan)
+                    viewModel.exercisePlan = setDetails.createExercisePlan(from: viewModel.exercisePlan)
                 }
             )
             .padding()

@@ -64,14 +64,21 @@ class WorkoutPlanFormViewModel: ObservableObject {
     }
     
     func moveExerciseUp(index: Int) {
-        if index <= 0 { return }
+        guard index > 0 else { return }
         workoutPlan.exercisePlans.swapAt(index, index - 1)
-        objectWillChange.send()
+        updateIndexes()
     }
     
     func moveExerciseDown(index: Int) {
-        if index >= workoutPlan.exercisePlans.count - 1 { return }
+        guard index < workoutPlan.exercisePlans.count - 1 else { return }
         workoutPlan.exercisePlans.swapAt(index, index + 1)
+        updateIndexes()
+    }
+    
+    func updateIndexes() {
+        for (index, exercisePlan) in workoutPlan.exercisePlans.enumerated() {
+            exercisePlan.index = index
+        }
         objectWillChange.send()
     }
     

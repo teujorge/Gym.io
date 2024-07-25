@@ -12,6 +12,14 @@ struct WorkoutPlanView: View {
     
     @StateObject var workoutPlan: WorkoutPlan
     
+    var exercisePlansList: [(offset: Int, element: ExercisePlan)] {
+        return Array(
+            workoutPlan.exercisePlans
+                .sorted(by: { $0.index < $1.index })
+                .enumerated()
+        )
+    }
+    
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
@@ -38,7 +46,7 @@ struct WorkoutPlanView: View {
                 VStack(alignment: .leading, spacing: 15) {
                     Text("Exercises")
                         .font(.title2)
-                    ForEach(Array(workoutPlan.exercisePlans.enumerated()), id: \.element.id) { index, exercisePlan in
+                    ForEach(exercisePlansList, id: \.element.id) { index, exercisePlan in
                         VStack(alignment: .leading) {
                             NavigationLink(destination: ExercisePlanView(exercisePlan: exercisePlan)) {
                                 Text(exercisePlan.name)
