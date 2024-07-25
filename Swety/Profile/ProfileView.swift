@@ -61,6 +61,9 @@ struct ProfileView: View {
                             .foregroundColor(.accent)
                     }
                 }
+                ToolbarItem(placement: .status) {
+                    LoaderView(state: viewModel.state)
+                }
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
                     Button("Done", action: dismissKeyboard)

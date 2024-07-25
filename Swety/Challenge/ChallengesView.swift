@@ -31,11 +31,6 @@ struct ChallengesView: View {
                 .frame(maxWidth: .infinity)
                 .animation(.easeInOut, value: currentUser.challenges)
                 
-                if (viewModel.state != .idle) {
-                    LoaderView(state: viewModel.state, showErrorMessage: true)
-                        .padding()
-                }
-                
             }
             .navigationTitle("Challenges")
             .toolbar {
@@ -57,6 +52,9 @@ struct ChallengesView: View {
                         .background(Color.accent.opacity(0.2))
                         .cornerRadius(.large)
                     }
+                }
+                ToolbarItem(placement: .status) {
+                    LoaderView(state: viewModel.state)
                 }
             }
             .sheet(isPresented: $viewModel.isPresentingChallengesForm) {
