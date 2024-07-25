@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ProfileView: View {
+    @Environment(AppSettings.self) var appSettings
     @EnvironmentObject var authState: AuthState
     @EnvironmentObject var currentUser: User
     @StateObject var viewModel = ProfileViewModel()
@@ -24,7 +25,6 @@ struct ProfileView: View {
                 profileInfo
                 dashboard
                 workoutHistory
-                userButtons
             }
             .animation(.easeInOut, value: currentUser.workouts.count)
             .navigationTitle(currentUser.username)
@@ -52,23 +52,23 @@ struct ProfileView: View {
                         Image(systemName: "square.and.arrow.up")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: 16, height: 16)
                             .foregroundColor(.accent)
-                            .padding(.horizontal, 4)
                     }
-                    Button(action: { }) {
+                    Button(action: { viewModel.isPresentingSettings = true }) {
                         Image(systemName: "gear")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: 16, height: 16)
                             .foregroundColor(.accent)
-                            .padding(.horizontal, 4)
                     }
                 }
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
                     Button("Done", action: dismissKeyboard)
                 }
+            }
+            .sheet(isPresented: $viewModel.isPresentingSettings) {
+                userSettings
+                    .presentationDetents([.medium])
             }
         }
         
@@ -239,8 +239,28 @@ struct ProfileView: View {
         .onAppear(perform: updateUserWorkoutHistory)
     }
     
-    private var userButtons: some View {
-        HStack {
+    private var userSettings: some View {
+        VStack {
+            
+            Text("Settings")
+                .font(.title2)
+                .fontWeight(.bold)
+                .padding()
+            
+            Picker("Language", selection: $viewModel.currentLanguage) {
+                Text(String("English")).tag(Language.english)
+                Text(String("Español")).tag(Language.spanish)
+                Text(String("Português")).tag(Language.portuguese)
+            }
+            .padding()
+            .pickerStyle(.segmented)
+            .onAppear() {
+                viewModel.currentLanguage = appSettings.language
+            }
+            .onChange(of: viewModel.currentLanguage) { oldLang, newLang in
+                appSettings.language = newLang
+            }
+            
             Button(action: {
                 UserDefaults.standard.removeObject(forKey: .userId)
                 DispatchQueue.main.async {
@@ -258,6 +278,9 @@ struct ProfileView: View {
                     .background(Color.red.opacity(0.2))
                     .cornerRadius(.medium)
             }
+            .padding(.top)
+            .padding(.horizontal)
+            
             Button(action: {
                 Task {
                     let isDeleted = await viewModel.deleteUser()
@@ -278,8 +301,8 @@ struct ProfileView: View {
                     .background(Color.red.opacity(0.2))
                     .cornerRadius(.medium)
             }
+            .padding()
         }
-        .padding()
     }
     
     private func updateUserWorkoutHistory() {
@@ -300,6 +323,7 @@ struct ProfileView: View {
 
 #Preview {
     ProfileView()
+        .environment(AppSettings())
         .environmentObject(_previewAuthSignedInState)
         .environmentObject(_previewParticipants[0])
 }

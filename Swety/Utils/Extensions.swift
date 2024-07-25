@@ -7,6 +7,37 @@
 
 import SwiftUI
 
+// App language
+enum Language: String, CaseIterable, Identifiable {
+    case english = "en"
+    case spanish = "es"
+    case portuguese = "pt"
+
+    var id: String { self.rawValue }
+    
+    func toLocale() -> Locale {
+        return Locale(identifier: self.rawValue)
+    }
+}
+
+@Observable
+class AppSettings {
+    var language: Language {
+        didSet {
+            UserDefaults.standard.set(language.rawValue, forKey: .appLanguage)
+        }
+    }
+    
+    init() {
+        if let language = UserDefaults.standard.string(forKey: .appLanguage) {
+            self.language = Language(rawValue: language) ?? .english
+        } else {
+            self.language = .english
+        }
+    }
+    
+}
+
 // ===== View =====
 
 enum CornerRadius: CGFloat {
@@ -35,6 +66,7 @@ extension View {
 
 enum UserDefaultsKeys: String {
     case userId
+    case appLanguage
     case userAccessToken
     case userRefreshToken
     case defaultExercises
@@ -88,6 +120,7 @@ extension UserDefaults {
 
 // ===== Environment =====
 
+// Popping views
 struct DismissAllKey: EnvironmentKey {
     static let defaultValue: () -> Void = {}
 }

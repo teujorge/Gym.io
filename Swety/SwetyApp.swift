@@ -9,6 +9,7 @@ import SwiftUI
 
 @main
 struct Gym_ioApp: App {
+    @State private var appSettings = AppSettings()
     @StateObject private var authState = AuthState()
     @StateObject private var dialogManager = DialogManager()
     
@@ -17,11 +18,14 @@ struct Gym_ioApp: App {
             RootView()
                 .environmentObject(authState)
                 .environmentObject(dialogManager)
+                .environment(appSettings)
+                .environment(\.locale, appSettings.language.toLocale())
         }
     }
 }
 
 struct RootView: View {
+    @Environment(AppSettings.self) var appSettings
     @EnvironmentObject var authState: AuthState
     @EnvironmentObject var dialogManager: DialogManager
 
@@ -45,6 +49,7 @@ struct RootView: View {
 
 #Preview {
     RootView()
+        .environment(AppSettings())
         .environmentObject(AuthState())
         .environmentObject(DialogManager())
 }

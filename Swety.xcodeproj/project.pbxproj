@@ -36,6 +36,7 @@
 		F55222642C36CD5E0057C0E5 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F55222632C36CD5E0057C0E5 /* HomeView.swift */; };
 		F55222662C36CD5F0057C0E5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F55222652C36CD5F0057C0E5 /* Assets.xcassets */; };
 		F55222692C36CD5F0057C0E5 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F55222682C36CD5F0057C0E5 /* Preview Assets.xcassets */; };
+		F55440E12C52F72A0021F6FF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = F55440E02C52F72A0021F6FF /* Localizable.xcstrings */; };
 		F58750102C3EF3A6005A54C5 /* WorkoutPlanFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F587500F2C3EF3A6005A54C5 /* WorkoutPlanFormViewModel.swift */; };
 		F58750122C3EFCAC005A54C5 /* CustomExercisePlanFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F58750112C3EFCAC005A54C5 /* CustomExercisePlanFormViewModel.swift */; };
 		F59F2DD82C488E7800EF8707 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F59F2DD72C488E7800EF8707 /* Extensions.swift */; };
@@ -88,6 +89,7 @@
 		F55222632C36CD5E0057C0E5 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		F55222652C36CD5F0057C0E5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F55222682C36CD5F0057C0E5 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		F55440E02C52F72A0021F6FF /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		F587500F2C3EF3A6005A54C5 /* WorkoutPlanFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutPlanFormViewModel.swift; sourceTree = "<group>"; };
 		F58750112C3EFCAC005A54C5 /* CustomExercisePlanFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomExercisePlanFormViewModel.swift; sourceTree = "<group>"; };
 		F59F2DD72C488E7800EF8707 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -167,6 +169,7 @@
 			children = (
 				F50097772C3D5ADB00D799C4 /* Swety.entitlements */,
 				F55222652C36CD5F0057C0E5 /* Assets.xcassets */,
+				F55440E02C52F72A0021F6FF /* Localizable.xcstrings */,
 				F55222612C36CD5E0057C0E5 /* SwetyApp.swift */,
 				F54B3C522C384B7600171A6F /* ContentView.swift */,
 				F50097802C3DA58B00D799C4 /* Utils */,
@@ -306,6 +309,8 @@
 			knownRegions = (
 				en,
 				Base,
+				"pt-BR",
+				"es-419",
 			);
 			mainGroup = F55222552C36CD5E0057C0E5;
 			packageReferences = (
@@ -326,6 +331,7 @@
 			files = (
 				F55222692C36CD5F0057C0E5 /* Preview Assets.xcassets in Resources */,
 				F55222662C36CD5F0057C0E5 /* Assets.xcassets in Resources */,
+				F55440E12C52F72A0021F6FF /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

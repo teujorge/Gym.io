@@ -10,6 +10,9 @@ import Foundation
 class ProfileViewModel: ObservableObject {
     
     @Published var state: LoaderState = .idle
+    @Published var isPresentingSettings = false
+    @Published var currentLanguage = Language.english
+    
     var workoutsCursor: String? = nil
     
     func editUser(name: String, username: String) async -> User? {
@@ -45,7 +48,9 @@ class ProfileViewModel: ObservableObject {
     }
     
     func fetchWorkouts(for userId: String) async -> [Workout]? {
-        self.state = .loading
+        DispatchQueue.main.async {
+            self.state = .loading
+        }
         
         let result: HTTPResponse<WorkoutsWithCursor> = await sendRequest(
             endpoint: "/users/\(userId)/workouts",
