@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct WorkoutPlansView: View {
-    @Environment(\.dismiss) var dismiss
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var currentUser: User
     @StateObject private var viewModel = WorkoutPlansViewModel()
@@ -26,22 +25,20 @@ struct WorkoutPlansView: View {
     var body: some View {
         NavigationView {
             ScrollView {
-                VStack {
-                    ForEach(filteredWorkouts.indices, id: \.self) { index in
-                        WorkoutPlanCardView(workoutPlan: currentUser.workoutPlans[index])
-                            .transition(
-                                .scale(scale: 0.85)
-                                .combined(with: .opacity)
-                                .combined(with: .move(edge: .bottom))
-                            )
-                        if index < filteredWorkouts.count - 1 {
-                            Divider()
-                        }
+                ForEach(filteredWorkouts.indices, id: \.self) { index in
+                    WorkoutPlanCardView(workoutPlan: currentUser.workoutPlans[index])
+                        .transition(
+                            .scale(scale: 0.85)
+                            .combined(with: .opacity)
+                            .combined(with: .move(edge: .bottom))
+                        )
+                    if index < filteredWorkouts.count - 1 {
+                        Divider()
                     }
                 }
                 .padding()
-                .animation(.easeInOut, value: viewModel.state)
             }
+            .animation(.easeInOut, value: viewModel.state)
             .background(Color(.systemBackground))
             .navigationTitle("Workouts")
             .toolbar {
@@ -58,10 +55,8 @@ struct WorkoutPlansView: View {
                             .foregroundColor(.accent)
                     }
                 }
-                if (viewModel.state != .idle) {
-                    ToolbarItem(placement: .status) {
-                        LoaderView(state: viewModel.state)
-                    }
+                ToolbarItem(placement: .status) {
+                    LoaderView(state: viewModel.state)
                 }
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
