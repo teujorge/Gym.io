@@ -16,14 +16,6 @@ struct WorkoutPlanFormView: View {
     
     @StateObject private var viewModel: WorkoutPlanFormViewModel
     
-    var exercisePlansList: [(offset: Int, element: ExercisePlan)] {
-        return Array(
-            viewModel.workoutPlan.exercisePlans
-                .sorted(by: { $0.index < $1.index })
-                .enumerated()
-        )
-    }
-    
     // Initializer with save functionality only
     init(onSave: @escaping (WorkoutPlan) -> Void) {
         _viewModel = StateObject(wrappedValue: WorkoutPlanFormViewModel(
@@ -56,95 +48,8 @@ struct WorkoutPlanFormView: View {
                     }
                     .padding(.vertical)
                     
-                    // Exercises section
-                    ForEach(exercisePlansList, id: \.element.id) { index, exercisePlan in
-                        VStack(alignment: .leading) {
-                            // Header
-                            HStack {
-                                // Move Buttons
-                                VStack {
-                                    if index != 0 {
-                                        Button(action: {
-                                            withAnimation {
-                                                proxy.scrollTo(exercisePlansList[index - 1].element.id, anchor: .center)
-                                                viewModel.moveExerciseUp(index: index)
-                                            }
-                                        }) {
-                                            Image(systemName: "arrow.up")
-                                                .foregroundColor(.accentColor)
-                                                .font(.system(size: 14))
-                                                .bold()
-                                        }
-                                    }
-                                    if index != viewModel.workoutPlan.exercisePlans.count - 1 {
-                                        Button(action: {
-                                            withAnimation {
-                                                proxy.scrollTo(exercisePlansList[index + 1].element.id, anchor: .center)
-                                                viewModel.moveExerciseDown(index: index)
-                                            }
-                                        }) {
-                                            Image(systemName: "arrow.down")
-                                                .foregroundColor(.accentColor)
-                                                .font(.system(size: 14))
-                                                .bold()
-                                        }
-                                    }
-                                }
-                                
-                                // Index
-                                Text("\(index + 1)")
-                                    .font(.subheadline)
-                                    .fontWeight(.bold)
-                                
-                                // Title
-                                Text(exercisePlan.name)
-                                    .font(.title)
-                                    .fontWeight(.bold)
-                                
-                                Spacer()
-                                
-                                // Move and Delete Buttons
-                                Button(action: {
-                                    withAnimation {
-                                        viewModel.deleteExercise(index: index)
-                                    }
-                                }) {
-                                    Image(systemName: "trash")
-                                        .foregroundColor(.red)
-                                }
-                            }
-                            .padding()
-                            
-                            SetDetailsView(
-                                details: SetDetails(exercisePlan: exercisePlan),
-                                isEditable: true,
-                                isPlan: true,
-                                autoSave: false,
-                                onDetailsChanged: { setDetails in
-                                    viewModel.workoutPlan.exercisePlans[index] = setDetails.createExercisePlan(from: exercisePlan)
-                                }
-                            )
-                            .id(exercisePlan.id)
-                            
-                            if index < viewModel.workoutPlan.exercisePlans.count - 1 {
-                                Divider()
-                                    .padding(.top, 32)
-                            }
-                        }
-                        .padding()
-                        .transition(.move(edge: .bottom))
-                        .swipeActions {
-                            Button(action: { viewModel.editExercisePlan(exercisePlan) }) {
-                                Label("Edit", systemImage: "pencil")
-                            }
-                            Button(role: .destructive, action: {
-                                if let index = viewModel.workoutPlan.exercisePlans.firstIndex(where: { $0.id == exercisePlan.id }) {
-                                    viewModel.workoutPlan.exercisePlans.remove(at: index)
-                                }
-                            }) {
-                                Label("Delete", systemImage: "trash")
-                            }
-                        }
+                    ForEach(Array(viewModel.workoutPlan.exercisePlans.enumerated()), id: \.element.id) { index, exercisePlan in
+                        exercisePlanView(for: index, exercisePlan: exercisePlan, proxy: proxy)
                     }
                     .animation(.easeInOut, value: viewModel.workoutPlan.exercisePlans)
                     
@@ -201,6 +106,97 @@ struct WorkoutPlanFormView: View {
             }
         }
     }
+    
+    private func exercisePlanView(for index: Int, exercisePlan: ExercisePlan, proxy: ScrollViewProxy) -> some View {
+        VStack(alignment: .leading) {
+            // Header
+            HStack {
+                // Move Buttons
+                VStack {
+                    if index != 0 {
+                        Button(action: {
+                            withAnimation {
+                                proxy.scrollTo(viewModel.workoutPlan.exercisePlans[index - 1].id, anchor: .center)
+                                viewModel.moveExerciseUp(index: index)
+                            }
+                        }) {
+                            Image(systemName: "arrow.up")
+                                .foregroundColor(.accentColor)
+                                .font(.system(size: 14))
+                                .bold()
+                        }
+                    }
+                    if index != viewModel.workoutPlan.exercisePlans.count - 1 {
+                        Button(action: {
+                            withAnimation {
+                                proxy.scrollTo(viewModel.workoutPlan.exercisePlans[index + 1].id, anchor: .center)
+                                viewModel.moveExerciseDown(index: index)
+                            }
+                        }) {
+                            Image(systemName: "arrow.down")
+                                .foregroundColor(.accentColor)
+                                .font(.system(size: 14))
+                                .bold()
+                        }
+                    }
+                }
+                
+                // Index
+                Text("\(index + 1)")
+                    .font(.subheadline)
+                    .fontWeight(.bold)
+                
+                // Title
+                Text(exercisePlan.name)
+                    .font(.title)
+                    .fontWeight(.bold)
+                
+                Spacer()
+                
+                // Move and Delete Buttons
+                Button(action: {
+                    withAnimation {
+                        viewModel.deleteExercise(index: index)
+                    }
+                }) {
+                    Image(systemName: "trash")
+                        .foregroundColor(.red)
+                }
+            }
+            .padding()
+            
+            SetDetailsView(
+                details: SetDetails(exercisePlan: exercisePlan),
+                isEditable: true,
+                isPlan: true,
+                autoSave: false,
+                onDetailsChanged: { setDetails in
+                    viewModel.workoutPlan.exercisePlans[index] = setDetails.createExercisePlan(from: exercisePlan)
+                }
+            )
+            .id(exercisePlan.id)
+            
+            if index < viewModel.workoutPlan.exercisePlans.count - 1 {
+                Divider()
+                    .padding(.top, 32)
+            }
+        }
+        .padding()
+        .transition(.move(edge: .bottom))
+        .swipeActions {
+            Button(action: { viewModel.editExercisePlan(exercisePlan) }) {
+                Label("Edit", systemImage: "pencil")
+            }
+            Button(role: .destructive, action: {
+                if let index = viewModel.workoutPlan.exercisePlans.firstIndex(where: { $0.id == exercisePlan.id }) {
+                    viewModel.workoutPlan.exercisePlans.remove(at: index)
+                }
+            }) {
+                Label("Delete", systemImage: "trash")
+            }
+        }
+    }
+    
 }
 
 

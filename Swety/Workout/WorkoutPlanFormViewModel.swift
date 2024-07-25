@@ -41,7 +41,15 @@ class WorkoutPlanFormViewModel: ObservableObject {
         }
         self.onSave = onSave
         self.onDelete = onDelete
+        
+        // Used to delete exercises that were removed
         self.allInitialExerciseIds = workoutPlan?.exercisePlans.map { $0.id } ?? []
+        
+        // Sort exercises by index
+        self.workoutPlan.exercisePlans.sort { $0.index < $1.index }
+        self.workoutPlan.exercisePlans.enumerated().forEach { index, exercisePlan in
+            exercisePlan.index = index
+        }
     }
     
     func addExercise() {
