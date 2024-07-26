@@ -119,9 +119,7 @@ class SetDetailsViewModel: ObservableObject {
     private func saveUpdatedExercise() {
         print("saveUpdatedExercise")
         guard autoSave else { return }
-        
-        // TODO: update the exercise on the server
-        print("TODO: save all sets")
+        onDebounceTriggered?()
     }
     
     func toggleSetCompletion(index: Int) {

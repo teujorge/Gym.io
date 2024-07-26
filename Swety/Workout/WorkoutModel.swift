@@ -8,7 +8,11 @@
 import Foundation
 import Combine
 
-class WorkoutPlan: Codable, Identifiable, ObservableObject {
+class WorkoutPlan: Codable, Identifiable, ObservableObject, Equatable {
+    static func == (lhs: WorkoutPlan, rhs: WorkoutPlan) -> Bool {
+        lhs.id == rhs.id
+    }
+    
     @Published var id: String
     @Published var name: String
     @Published var notes: String?
@@ -91,9 +95,14 @@ class WorkoutPlan: Codable, Identifiable, ObservableObject {
         try container.encode(createdAt, forKey: .createdAt)
         try container.encode(updatedAt, forKey: .updatedAt)
     }
+    
 }
 
-class Workout: Codable, Identifiable, ObservableObject {
+class Workout: Codable, Identifiable, ObservableObject, Equatable, Hashable {
+    static func == (lhs: Workout, rhs: Workout) -> Bool {
+        lhs.id == rhs.id
+    }
+    
     @Published var id: String
     @Published var name: String
     @Published var notes: String?
@@ -194,6 +203,10 @@ class Workout: Codable, Identifiable, ObservableObject {
         try container.encode(owner, forKey: .owner)
         try container.encode(createdAt, forKey: .createdAt)
         try container.encode(updatedAt, forKey: .updatedAt)
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
     
 }

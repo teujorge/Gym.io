@@ -73,10 +73,14 @@ private struct ExerciseCardView: View {
                 details: SetDetails(exercise: exercise),
                 isEditable: true,
                 isPlan: false,
-                autoSave: false,
+                autoSave: true,
                 onDetailsChanged: { setDetails in
                     exercise = setDetails.createExercise(from: exercise)
+                },
+                onDebounceTriggered: {
+                    viewModel.debouncedChanges()
                 }
+                
             )
             
         }

@@ -15,7 +15,7 @@ enum Units: String, Codable, Identifiable, CaseIterable {
     var id: Self { self }
 }
 
-class User: Codable, Equatable, Identifiable, ObservableObject {
+class User: Codable, Identifiable, ObservableObject, Equatable {
     static func == (lhs: User, rhs: User) -> Bool {
         return lhs.id == rhs.id
     }
@@ -27,11 +27,11 @@ class User: Codable, Equatable, Identifiable, ObservableObject {
     @Published var birthday: Date
     @Published var units: Units
     
-    @Published var auth:  Auth?
+    @Published var auth: Auth?
     @Published var workoutPlans: [WorkoutPlan]
     @Published var workouts: [Workout]
     @Published var challenges: [Challenge]
-
+    
     
     @Published var createdAt: Date
     @Published var updatedAt: Date

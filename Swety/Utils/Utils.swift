@@ -7,37 +7,37 @@
 
 import SwiftUI
 
-/// Hides the keyboard.
-func dismissKeyboard() {
-    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-}
-
-/// Decodes a date from a string using the ISO8601DateFormatter.
+/// Decodes a date from a string or a number using the ISO8601DateFormatter.
 func decodeDate<K: CodingKey>(from container: KeyedDecodingContainer<K>, forKey key: K) throws -> Date {
-    let dateString = try container.decode(String.self, forKey: key)
-    let dateFormatter = ISO8601DateFormatter()
-    dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-    
-    if let date = dateFormatter.date(from: dateString) {
-        return date
+    if let dateString = try? container.decode(String.self, forKey: key) {
+        let dateFormatter = ISO8601DateFormatter()
+        dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        if let date = dateFormatter.date(from: dateString) {
+            return date
+        } else {
+            throw DecodingError.dataCorruptedError(forKey: key, in: container, debugDescription: "Date string does not match format expected by formatter.")
+        }
+    } else if let timestamp = try? container.decode(Double.self, forKey: key) {
+        return Date(timeIntervalSince1970: timestamp)
     } else {
-        throw DecodingError.dataCorruptedError(forKey: key, in: container, debugDescription: "Date string does not match format expected by formatter.")
+        throw DecodingError.dataCorruptedError(forKey: key, in: container, debugDescription: "Date is not in a recognized format.")
     }
 }
 
-/// Decodes a nullable date from a string using the ISO8601DateFormatter.
+/// Decodes a nullable date from a string or a number using the ISO8601DateFormatter.
 func decodeNullableDate<K: CodingKey>(from container: KeyedDecodingContainer<K>, forKey key: K) throws -> Date? {
-    guard let dateString = try container.decodeIfPresent(String.self, forKey: key) else {
-        return nil
-    }
-    
-    let dateFormatter = ISO8601DateFormatter()
-    dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-    
-    if let date = dateFormatter.date(from: dateString) {
-        return date
+    if let dateString = try? container.decodeIfPresent(String.self, forKey: key) {
+        let dateFormatter = ISO8601DateFormatter()
+        dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        if let date = dateFormatter.date(from: dateString) {
+            return date
+        } else {
+            throw DecodingError.dataCorruptedError(forKey: key, in: container, debugDescription: "Date string does not match format expected by formatter.")
+        }
+    } else if let timestamp = try? container.decodeIfPresent(Double.self, forKey: key) {
+        return Date(timeIntervalSince1970: timestamp)
     } else {
-        throw DecodingError.dataCorruptedError(forKey: key, in: container, debugDescription: "Date string does not match format expected by formatter.")
+        return nil
     }
 }
 

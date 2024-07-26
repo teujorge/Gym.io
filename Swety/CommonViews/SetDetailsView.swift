@@ -183,7 +183,7 @@ struct SetDetailsView: View {
     }
 }
 
-private struct ExerciseSetView: View {
+fileprivate struct ExerciseSetView: View {
     @ObservedObject var exerciseSet: SetDetail
     let gridItems: [GridItem]
     let isEditable: Bool

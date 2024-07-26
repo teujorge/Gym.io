@@ -21,6 +21,7 @@ enum HTTPMethod: String {
 
 struct EmptyBody: Codable {}
 
+@MainActor
 func sendRequest<T: Codable>(endpoint: String, queryItems: [URLQueryItem]? = nil, body: Encodable? = nil, method: HTTPMethod, shouldRetry: Bool = true) async -> HTTPResponse<T> {
     print("")
     print("Sending request to \(endpoint)")
@@ -44,7 +45,7 @@ func sendRequest<T: Codable>(endpoint: String, queryItems: [URLQueryItem]? = nil
     request.httpMethod = method.rawValue
     
     if let token = currentUserAccessToken {
-        print("Token: \(token)")
+//        print("Token: \(token)")
         request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
     }
     
@@ -55,7 +56,7 @@ func sendRequest<T: Codable>(endpoint: String, queryItems: [URLQueryItem]? = nil
         
         if let jsonData = try? encoder.encode(body) {
             if let jsonString = String(data: jsonData, encoding: .utf8) {
-                print("HTTP Request: \(jsonString)")
+//                print("HTTP Request: \(jsonString)") // TODO: here to see the request
             }
             request.httpBody = jsonData
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -93,7 +94,7 @@ func sendRequest<T: Codable>(endpoint: String, queryItems: [URLQueryItem]? = nil
             
         }
         if let responseString = String(data: data, encoding: .utf8) {
-            print("HTTP Response: \(responseString)")
+//            print("HTTP Response: \(responseString)") // TODO: here to see the response
         }
         
         let decodedResponse = try JSONDecoder().decode([String: T].self, from: data)

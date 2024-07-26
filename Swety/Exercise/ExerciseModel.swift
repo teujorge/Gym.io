@@ -44,7 +44,7 @@ class ExercisePlan: Codable, Equatable, Identifiable, ObservableObject {
     @Published var workoutPlanId: String?
     @Published var setPlans: [ExerciseSetPlan]
     @Published var history: [Exercise]
-
+    
     @Published var workoutPlan: WorkoutPlan?
     
     @Published var createdAt: Date
@@ -146,30 +146,11 @@ class ExercisePlan: Codable, Equatable, Identifiable, ObservableObject {
     }
 }
 
-enum MuscleGroup: String, Codable, CaseIterable, Identifiable {
-    case chest = "CHEST"
-    case back = "BACK"
-    case legs = "LEGS"
-    case shoulders = "SHOULDERS"
-    case arms = "ARMS"
-    case core = "CORE"
+class Exercise: Codable, Equatable, Identifiable, ObservableObject, Hashable {
+    static func == (lhs: Exercise, rhs: Exercise) -> Bool {
+        return lhs.id == rhs.id
+    }
     
-    var id: Self { self }
-}
-
-enum Equipment: String, Codable, CaseIterable, Identifiable {
-    case barbell = "BARBELL"
-    case dumbbell = "DUMBBELL"
-    case machine = "MACHINE"
-    case flexible = "FLEXIBLE"
-    case ball = "BALL"
-    case other = "OTHER"
-    case none = "NONE"
-    
-    var id: Self { self }
-}
-
-class Exercise: Codable, Identifiable, ObservableObject {
     @Published var id: String
     @Published var name: String
     @Published var image: String?
@@ -294,6 +275,11 @@ class Exercise: Codable, Identifiable, ObservableObject {
         try container.encode(createdAt, forKey: .createdAt)
         try container.encode(updatedAt, forKey: .updatedAt)
     }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
 }
 
 class ExerciseSetPlan: Codable, Identifiable, ObservableObject {
@@ -380,7 +366,11 @@ class ExerciseSetPlan: Codable, Identifiable, ObservableObject {
     }
 }
 
-class ExerciseSet: Codable, Identifiable, ObservableObject {
+class ExerciseSet: Codable, Equatable, Identifiable, ObservableObject, Hashable {
+    static func == (lhs: ExerciseSet, rhs: ExerciseSet) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
     @Published var id: String
     @Published var reps: Int
     @Published var weight: Int
@@ -470,27 +460,12 @@ class ExerciseSet: Codable, Identifiable, ObservableObject {
         try container.encode(updatedAt, forKey: .updatedAt)
     }
     
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
     func print() {
         Swift.print("ExerciseSet: \(reps) - \(weight) - \(duration) - \(intensity) - \(index)")
     }
     
-}
-
-enum Intensity: String, Codable, CaseIterable, Identifiable {
-    case low = "LOW"
-    case medium = "MEDIUM"
-    case high = "HIGH"
-    
-    var id: Self { self }
-    
-    var color: Color {
-        switch self {
-        case .low:
-            return .green
-        case .medium:
-            return .yellow
-        case .high:
-            return .red
-        }
-    }
 }

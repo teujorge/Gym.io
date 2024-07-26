@@ -52,6 +52,9 @@
         }
       }
     },
+    "%lld kg" : {
+
+    },
     "%lld points per hour" : {
       "localizations" : {
         "es-419" : {
@@ -96,6 +99,19 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld pontos por repetições"
+          }
+        }
+      }
+    },
+    "%lld s" : {
+
+    },
+    "%lld/%lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld/%2$lld"
           }
         }
       }
@@ -291,6 +307,9 @@
           }
         }
       }
+    },
+    "Bottom" : {
+
     },
     "Calendar" : {
       "localizations" : {
@@ -852,6 +871,9 @@
         }
       }
     },
+    "Leading" : {
+
+    },
     "Library" : {
       "localizations" : {
         "es-419" : {
@@ -1015,6 +1037,9 @@
         }
       }
     },
+    "Next" : {
+
+    },
     "OK" : {
       "localizations" : {
         "es-419" : {
@@ -1078,6 +1103,9 @@
           }
         }
       }
+    },
+    "Prev" : {
+
     },
     "Profile" : {
       "localizations" : {
@@ -1479,6 +1507,9 @@
         }
       }
     },
+    "Trailing" : {
+
+    },
     "Units" : {
       "localizations" : {
         "es-419" : {
@@ -1574,6 +1605,9 @@
           }
         }
       }
+    },
+    "Workout" : {
+
     },
     "Workouts" : {
       "localizations" : {
