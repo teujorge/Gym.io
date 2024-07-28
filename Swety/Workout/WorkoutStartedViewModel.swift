@@ -34,7 +34,8 @@ class WorkoutStartedViewModel: ObservableObject{
         workoutPlan.exercisePlans.sort { $0.index < $1.index }
         workoutPlan.exercisePlans.forEach { $0.setPlans.sort { $0.index < $1.index } }
         
-        let startedWorkout = Workout(workoutPlan: workoutPlan)
+        var startedWorkout = Workout(workoutPlan: workoutPlan)
+        startedWorkout.completedAt = nil
         
         self.workout = startedWorkout
         
@@ -153,10 +154,8 @@ class WorkoutStartedViewModel: ObservableObject{
     }
     
     private func createNewWorkout() async -> Workout? {
-        
         DispatchQueue.main.async {
             self.state = .loading
-            self.workout.completedAt = nil
         }
         
         let result: HTTPResponse<Workout> = await sendRequest(endpoint: "/workouts/history", body: workout, method: .POST)
@@ -196,7 +195,6 @@ class WorkoutStartedViewModel: ObservableObject{
     }
     
     private func updateWorkout() async -> Workout? {
-        
         DispatchQueue.main.async {
             self.state = .loading
         }

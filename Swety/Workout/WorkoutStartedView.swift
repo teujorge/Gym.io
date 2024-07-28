@@ -12,6 +12,10 @@ struct WorkoutStartedView: View {
     @EnvironmentObject var currentUser: User
     @StateObject var viewModel: WorkoutStartedViewModel
     
+    init (workout: Workout) {
+        _viewModel = StateObject(wrappedValue: WorkoutStartedViewModel(workout: workout))
+    }
+    
     init(workoutPlan: WorkoutPlan){
         _viewModel = StateObject(wrappedValue: WorkoutStartedViewModel(workoutPlan: workoutPlan))
     }

@@ -52,22 +52,27 @@ class ProfileViewModel: ObservableObject {
             self.state = .loading
         }
         
-        let result: HTTPResponse<WorkoutsWithCursor> = await sendRequest(
-            endpoint: "/users/\(userId)/workouts",
+        let result: HTTPResponse<[Workout]> = await sendRequest(
+            endpoint: "/workouts/history",
             queryItems: [
+                URLQueryItem(name: "findMany", value: "true"),
+                URLQueryItem(name: "includeAll", value: "true"),
+                URLQueryItem(name: "ownerId", value: userId),
                 URLQueryItem(name: "cursor", value: workoutsCursor)
             ],
             method: .GET
         )
         
         switch result {
-        case .success(let data):
-            print("Workout history fetched: \(data)")
+        case .success(let workouts):
+            print("Workout history fetched: \(workouts)")
             DispatchQueue.main.async {
                 self.state = .success
             }
-            workoutsCursor = data.nextCursor
-            return data.workouts
+            if workouts.count == 10 {
+                workoutsCursor = workouts.last?.id
+            }
+            return workouts
         case .failure(let error):
             print("Failed to fetch workout history: \(error)")
             DispatchQueue.main.async {
@@ -77,9 +82,4 @@ class ProfileViewModel: ObservableObject {
         }
     }
     
-}
-
-private struct WorkoutsWithCursor: Codable {
-    var workouts: [Workout]
-    var nextCursor: String?
 }

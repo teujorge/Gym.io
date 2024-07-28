@@ -16,6 +16,9 @@ class WorkoutPlansViewModel: ObservableObject {
         }
     }
     
+    @Published var showWorkoutsInProgress = true
+    @Published var showWorkoutPlans = true
+    
     private var debounceTimer: AnyCancellable?
     
     private func debounceStateChange() {
@@ -32,7 +35,7 @@ class WorkoutPlansViewModel: ObservableObject {
             }
     }
     
-    func fetchWorkouts(for userId: String) async -> [WorkoutPlan]? {
+    func fetchWorkoutPlans(for userId: String) async -> [WorkoutPlan]? {
         DispatchQueue.main.async {
             self.state = .loading
         }
@@ -61,6 +64,39 @@ class WorkoutPlansViewModel: ObservableObject {
             }
             return nil
         }
+    }
+    
+    func fetchWorkoutsInProgress(for userId: String) async -> [Workout]? {
+        DispatchQueue.main.async {
+            self.state = .loading
+        }
+        
+        let result: HTTPResponse<[Workout]> = await sendRequest(
+            endpoint: "/workouts/history",
+            queryItems: [
+                URLQueryItem(name: "findMany", value: "true"),
+                URLQueryItem(name: "includeAll", value: "true"),
+                URLQueryItem(name: "ownerId", value: userId),
+                URLQueryItem(name: "isInProgress", value: "true")
+            ],
+            method: .GET
+        )
+        
+        switch result {
+        case .success(let workouts):
+            print("Workouts in progress fetched: \(workouts)")
+            DispatchQueue.main.async {
+                self.state = .success
+            }
+            return workouts
+        case .failure(let error):
+            print("Failed to fetch workouts in progress: \(error)")
+            DispatchQueue.main.async {
+                self.state = .failure(error)
+            }
+            return nil
+        }
+        
     }
     
 }

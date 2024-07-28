@@ -407,6 +407,22 @@
         }
       }
     },
+    "Continue Workout" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuar Entrenamiento"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuar o Treino"
+          }
+        }
+      }
+    },
     "Dashboard" : {
       "localizations" : {
         "es-419" : {
@@ -1728,6 +1744,22 @@
         }
       }
     },
+    "Workout Plans" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Planes de Entrenamiento"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Planos de Treino"
+          }
+        }
+      }
+    },
     "Workouts" : {
       "localizations" : {
         "es-419" : {
@@ -1740,6 +1772,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Treinos"
+          }
+        }
+      }
+    },
+    "Workouts in Progress" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entrenamientos en Progreso"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Treinos em Andamento"
           }
         }
       }
