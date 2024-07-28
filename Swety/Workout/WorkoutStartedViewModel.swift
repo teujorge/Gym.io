@@ -14,23 +14,63 @@ class WorkoutStartedViewModel: ObservableObject{
     @Published var workoutCounter = 0
     @Published var restCounter = 0
     @Published var isResting = false
-    @Published var currentExercise: Exercise
     @Published var state: LoaderState = .idle
     
     var workoutTimerCancellable: AnyCancellable? = nil
     var restTimerCancellable: AnyCancellable? = nil
     
-    init(workoutPlan: WorkoutPlan) {
-        let startedWorkout = Workout(workoutPlan: workoutPlan)
-        self.workout = startedWorkout
-        self.currentExercise = startedWorkout.exercises[0]
+    init(workout: Workout) {
+        workout.exercises.sort { $0.index < $1.index }
+        workout.exercises.forEach { $0.sets.sort { $0.index < $1.index } }
         
-        Task { await createNewWorkout() }
+        self.workout = workout
+        
+        Task {
+            await observeLiveActivityChanges()
+        }
+    }
+    
+    init(workoutPlan: WorkoutPlan) {
+        workoutPlan.exercisePlans.sort { $0.index < $1.index }
+        workoutPlan.exercisePlans.forEach { $0.setPlans.sort { $0.index < $1.index } }
+        
+        let startedWorkout = Workout(workoutPlan: workoutPlan)
+        
+        self.workout = startedWorkout
+        
+        Task {
+            await createNewWorkout()
+            await observeLiveActivityChanges()
+        }
+    }
+    
+    func observeLiveActivityChanges() async {
+        guard let activity = currentLiveActivity else { return }
+        
+        Task {
+            for await state in activity.activityStateUpdates {
+                // Handle state updates
+                print("Activity state updated: \(state)")
+                if let workout = await self.updateWorkout() {
+                    self.workout = workout
+                }
+            }
+        }
+        
+        Task {
+            for await content in activity.contentUpdates {
+                // Handle content updates
+                print("Activity content updated: \(content)")
+                if let workout = await self.updateWorkout() {
+                    self.workout = workout
+                }
+            }
+        }
     }
     
     func startWorkoutTimer() {
         workoutTimerCancellable?.cancel()  // Cancel any existing timer
-        workoutCounter = 0  // Reset the counter
+        workoutCounter = Int(workout.createdAt.timeIntervalSinceNow) // Reset the counter
         
         workoutTimerCancellable = Timer.publish(every: 1.0, on: .main, in: .common)
             .autoconnect()
@@ -46,7 +86,7 @@ class WorkoutStartedViewModel: ObservableObject{
     
     func startRestTimer() {
         restTimerCancellable?.cancel()  // Cancel any existing rest timer
-        restCounter = currentExercise.restTime // Reset the rest counter
+        // restCounter = currentExercise.restTime // TODO: Reset the rest counter
         
         restTimerCancellable = Timer.publish(every: 1.0, on: .main, in: .common)
             .autoconnect()
@@ -63,17 +103,6 @@ class WorkoutStartedViewModel: ObservableObject{
     func stopRestTimer() {
         restTimerCancellable?.cancel()  // Cancel the rest timer
         restTimerCancellable = nil  // Set the cancellable to nil
-    }
-    
-    func completeSet(exerciseSet: ExerciseSet) {
-        print("Completing set for exercise with id: \(exerciseSet.id)")
-        
-        if let _currentExercise = workout.exercises.first(where: { $0.id == exerciseSet.exerciseId }) {
-            currentExercise = _currentExercise
-            startRestTimer()
-        } else {
-            print("Could not find exercise with id: \(exerciseSet.exerciseId)")
-        }
     }
     
     func initiateWorkout() {
@@ -98,33 +127,27 @@ class WorkoutStartedViewModel: ObservableObject{
             if let newWorkout = await updateWorkout() {
                 print("Workout updated: \(newWorkout)")
                 
-                // find the last exercise and last set where the completedAt is not null, we assume we are now there...
-                // remember we have to sort exercises, and sets by index first...
-                Task {
-                    let exercises = newWorkout.exercises.sorted { $0.index < $1.index }
-                    
-                    var currentExerciseIndex = 0
-                    var currentSetIndex = 0
-                    var exerciseId = exercises.first?.id ?? ""
-
-                    for exercise in exercises {
-                        let sortedSets = exercise.sets.sorted { $0.index < $1.index }
-                        
-                        for exerciseSet in sortedSets {
-                            if exerciseSet.completedAt != nil {
-                                currentExerciseIndex = exercise.index
-                                currentSetIndex = exerciseSet.index
-                                exerciseId = exercise.id
-                            }
+                
+                var currentExerciseIndex = 0
+                var currentSetIndex = 0
+                
+                for exercise in newWorkout.exercises {
+                    for exerciseSet in exercise.sets {
+                        if exerciseSet.completedAt != nil {
+                            currentExerciseIndex = exercise.index
+                            currentSetIndex = exerciseSet.index
                         }
                     }
-                    
-                    await refreshWorkoutLiveActivity(
-                        exerciseId: exerciseId,
-                        currentSetIndex: currentSetIndex,
-                        totalExercisesCount: currentExerciseIndex
-                    )
                 }
+                
+                await startOrUpdateLiveActivity(with: WorkoutState(
+                    workoutName: workout.name,
+                    currentExercise: workout.exercises[currentExerciseIndex],
+                    currentSetIndex: currentSetIndex,
+                    totalExercisesCount: workout.exercises.count,
+                    workoutCounter: workoutCounter,
+                    restCounter: restCounter
+                ))
             }
         }
     }
@@ -146,18 +169,19 @@ class WorkoutStartedViewModel: ObservableObject{
                 self.state = .success
             }
             
-            Task {
-                let exercises = newWorkout.exercises.sorted { $0.index < $1.index }
-                if let exerciseId = exercises.first?.id {
-                    await startWorkoutLiveActivity(
-                        exerciseId: exerciseId,
-                        workoutName: newWorkout.name,
-                        totalExercisesCount: exercises.count
-                    )
-                }
-                else {
-                    print("WILL NOT START LIVE ACTIVITY: Could not find exercise set id")
-                }
+            let exercises = newWorkout.exercises.sorted { $0.index < $1.index }
+            if let exerciseId = exercises.first?.id {
+                await startOrUpdateLiveActivity(with: WorkoutState(
+                    workoutName: workout.name,
+                    currentExercise: workout.exercises[0],
+                    currentSetIndex: 0,
+                    totalExercisesCount: workout.exercises.count,
+                    workoutCounter: workoutCounter,
+                    restCounter: restCounter
+                ))
+            }
+            else {
+                print("WILL NOT START LIVE ACTIVITY: Could not find exercise set id")
             }
             
             return newWorkout

@@ -17,6 +17,13 @@
 		F500977D2C3D7AC300D799C4 /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F500977C2C3D7AC300D799C4 /* SignUpViewModel.swift */; };
 		F50D80F82C429AD90061366E /* ChallengesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50D80F72C429AD90061366E /* ChallengesViewModel.swift */; };
 		F50D80FA2C429EBB0061366E /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F50D80F92C429EBB0061366E /* ErrorView.swift */; };
+		F527BCCC2C55DFA300597C33 /* WorkoutActivityIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = F527BCCA2C55DFA300597C33 /* WorkoutActivityIntents.swift */; };
+		F527BCCF2C55E07900597C33 /* WorkoutActivityHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = F527BCCD2C55E07900597C33 /* WorkoutActivityHelpers.swift */; };
+		F527BCD02C55E0D100597C33 /* WorkoutWidgetLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = F58C0B782C5362A50064365E /* WorkoutWidgetLiveActivity.swift */; };
+		F527BCD42C55E26900597C33 /* WorkoutActivityHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = F527BCCD2C55E07900597C33 /* WorkoutActivityHelpers.swift */; };
+		F527BCD52C55E26F00597C33 /* WorkoutActivityIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = F527BCCA2C55DFA300597C33 /* WorkoutActivityIntents.swift */; };
+		F527BCD62C55E27100597C33 /* WorkoutWidgetLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = F58C0B782C5362A50064365E /* WorkoutWidgetLiveActivity.swift */; };
+		F527BCD72C55E7D600597C33 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F55222652C36CD5F0057C0E5 /* Assets.xcassets */; };
 		F5379E4C2C3993F20054E7A8 /* ChallengeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5379E4B2C3993F20054E7A8 /* ChallengeView.swift */; };
 		F53B94E62C3E152800C79FAB /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F53B94E52C3E152800C79FAB /* ProfileViewModel.swift */; };
 		F53B94E92C3E2C3400C79FAB /* TextFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F53B94E82C3E2C3400C79FAB /* TextFieldView.swift */; };
@@ -42,14 +49,12 @@
 		F56FD5172C53F3DB003A804E /* ChallengeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54B3C572C386B3A00171A6F /* ChallengeModel.swift */; };
 		F56FD5182C53F3E0003A804E /* WorkoutModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5D4A40A2C398C0F00E880A7 /* WorkoutModel.swift */; };
 		F56FD51A2C53F3E7003A804E /* AuthModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AB96F42C49904800C5576D /* AuthModel.swift */; };
-		F56FD51C2C53F7E8003A804E /* WorkoutWidgetLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = F58C0B782C5362A50064365E /* WorkoutWidgetLiveActivity.swift */; };
 		F56FD51D2C53FC56003A804E /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54D32FC2C40348A00B1A6B3 /* HTTPClient.swift */; };
 		F58750102C3EF3A6005A54C5 /* WorkoutPlanFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F587500F2C3EF3A6005A54C5 /* WorkoutPlanFormViewModel.swift */; };
 		F58750122C3EFCAC005A54C5 /* CustomExercisePlanFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F58750112C3EFCAC005A54C5 /* CustomExercisePlanFormViewModel.swift */; };
 		F58C0B722C5362A50064365E /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F58C0B712C5362A50064365E /* WidgetKit.framework */; };
 		F58C0B742C5362A50064365E /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F58C0B732C5362A50064365E /* SwiftUI.framework */; };
 		F58C0B772C5362A50064365E /* WorkoutWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F58C0B762C5362A50064365E /* WorkoutWidgetBundle.swift */; };
-		F58C0B792C5362A50064365E /* WorkoutWidgetLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = F58C0B782C5362A50064365E /* WorkoutWidgetLiveActivity.swift */; };
 		F58C0B7F2C5362A60064365E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F58C0B7E2C5362A60064365E /* Assets.xcassets */; };
 		F58C0B832C5362A60064365E /* WorkoutWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F58C0B6F2C5362A50064365E /* WorkoutWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F58C0B902C536D070064365E /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F59F2DD72C488E7800EF8707 /* Extensions.swift */; };
@@ -111,6 +116,8 @@
 		F500977C2C3D7AC300D799C4 /* SignUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
 		F50D80F72C429AD90061366E /* ChallengesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengesViewModel.swift; sourceTree = "<group>"; };
 		F50D80F92C429EBB0061366E /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
+		F527BCCA2C55DFA300597C33 /* WorkoutActivityIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutActivityIntents.swift; sourceTree = "<group>"; };
+		F527BCCD2C55E07900597C33 /* WorkoutActivityHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutActivityHelpers.swift; sourceTree = "<group>"; };
 		F5379E4B2C3993F20054E7A8 /* ChallengeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeView.swift; sourceTree = "<group>"; };
 		F53B94E52C3E152800C79FAB /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		F53B94E82C3E2C3400C79FAB /* TextFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldView.swift; sourceTree = "<group>"; };
@@ -277,6 +284,8 @@
 				F58C0B802C5362A60064365E /* Info.plist */,
 				F58C0B762C5362A50064365E /* WorkoutWidgetBundle.swift */,
 				F58C0B782C5362A50064365E /* WorkoutWidgetLiveActivity.swift */,
+				F527BCCA2C55DFA300597C33 /* WorkoutActivityIntents.swift */,
+				F527BCCD2C55E07900597C33 /* WorkoutActivityHelpers.swift */,
 			);
 			path = WorkoutWidget;
 			sourceTree = "<group>";
@@ -451,6 +460,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F527BCD72C55E7D600597C33 /* Assets.xcassets in Resources */,
 				F58C0B7F2C5362A60064365E /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -464,16 +474,17 @@
 			files = (
 				F5D4A4062C3962E200E880A7 /* ChallengesView.swift in Sources */,
 				F5AB96F52C49904800C5576D /* AuthModel.swift in Sources */,
+				F527BCD62C55E27100597C33 /* WorkoutWidgetLiveActivity.swift in Sources */,
 				F5B5714E2C36E90400062087 /* ExercisePlanView.swift in Sources */,
 				F54B3C532C384B7600171A6F /* ContentView.swift in Sources */,
 				F5D4A40B2C398C0F00E880A7 /* WorkoutModel.swift in Sources */,
 				F5D4A40F2C398C6E00E880A7 /* ExerciseModel.swift in Sources */,
-				F56FD51C2C53F7E8003A804E /* WorkoutWidgetLiveActivity.swift in Sources */,
 				F54D32FF2C416FF000B1A6B3 /* ChallengeFormViewModel.swift in Sources */,
 				F5379E4C2C3993F20054E7A8 /* ChallengeView.swift in Sources */,
 				53EB001A2C3C6859001E7C15 /* WorkoutStartedView.swift in Sources */,
 				F54B3C5C2C3870BB00171A6F /* ProfileView.swift in Sources */,
 				F58750102C3EF3A6005A54C5 /* WorkoutPlanFormViewModel.swift in Sources */,
+				F527BCD52C55E26F00597C33 /* WorkoutActivityIntents.swift in Sources */,
 				F53B94EB2C3E2C6200C79FAB /* LoadingButtonView.swift in Sources */,
 				F5D4A4082C396CCC00E880A7 /* ChallengeFormView.swift in Sources */,
 				F50097792C3D701D00D799C4 /* Debounce.swift in Sources */,
@@ -481,6 +492,7 @@
 				5320AA432C4594E20047A40F /* WorkoutStartedViewModel.swift in Sources */,
 				F54B3C5A2C386C3300171A6F /* CustomExercisePlanFormView.swift in Sources */,
 				F54D32FD2C40348A00B1A6B3 /* HTTPClient.swift in Sources */,
+				F527BCD42C55E26900597C33 /* WorkoutActivityHelpers.swift in Sources */,
 				F5D91C1D2C3CF144004356BC /* SignUpView.swift in Sources */,
 				F50D80F82C429AD90061366E /* ChallengesViewModel.swift in Sources */,
 				F54B3C5E2C387C7D00171A6F /* SummaryChartView.swift in Sources */,
@@ -517,9 +529,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F58C0B792C5362A50064365E /* WorkoutWidgetLiveActivity.swift in Sources */,
+				F527BCD02C55E0D100597C33 /* WorkoutWidgetLiveActivity.swift in Sources */,
+				F527BCCC2C55DFA300597C33 /* WorkoutActivityIntents.swift in Sources */,
 				F56FD5162C53F3D7003A804E /* ProfileModel.swift in Sources */,
 				F56FD5152C53F3D2003A804E /* ExerciseModel.swift in Sources */,
+				F527BCCF2C55E07900597C33 /* WorkoutActivityHelpers.swift in Sources */,
 				F56FD5172C53F3DB003A804E /* ChallengeModel.swift in Sources */,
 				F58C0B772C5362A50064365E /* WorkoutWidgetBundle.swift in Sources */,
 				F58C0B902C536D070064365E /* Extensions.swift in Sources */,

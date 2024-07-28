@@ -391,6 +391,22 @@
         }
       }
     },
+    "Complete Set" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set Completo"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set Completo"
+          }
+        }
+      }
+    },
     "Dashboard" : {
       "localizations" : {
         "es-419" : {
@@ -700,13 +716,29 @@
         "es-419" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Finalizar"
+            "value" : "Terminar"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Concluir"
+          }
+        }
+      }
+    },
+    "Finish Workout" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terminar Entrenamiento"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terminar Treino"
           }
         }
       }
@@ -1038,7 +1070,20 @@
       }
     },
     "Next" : {
-
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Próximo"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Próximo"
+          }
+        }
+      }
     },
     "OK" : {
       "localizations" : {
@@ -1105,7 +1150,36 @@
       }
     },
     "Prev" : {
-
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anterior"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anterior"
+          }
+        }
+      }
+    },
+    "Previous Set" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set Anterior"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set Anterior"
+          }
+        }
+      }
     },
     "Profile" : {
       "localizations" : {
@@ -1395,6 +1469,38 @@
         }
       }
     },
+    "Skip" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saltar"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pular"
+          }
+        }
+      }
+    },
+    "Skip Set" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saltar Set"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pular Set"
+          }
+        }
+      }
+    },
     "Start Date" : {
       "localizations" : {
         "es-419" : {
@@ -1607,7 +1713,20 @@
       }
     },
     "Workout" : {
-
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Treino"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Treino"
+          }
+        }
+      }
     },
     "Workouts" : {
       "localizations" : {

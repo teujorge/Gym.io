@@ -111,7 +111,7 @@ class SetDetailsViewModel: ObservableObject {
         print("-> all sets: \(details.sets.map { $0.reps })")
         
         updateTimer?.invalidate() // Invalidate any existing timer
-        updateTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { [weak self] _ in
+        updateTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false) { [weak self] _ in
             self?.saveUpdatedExercise()
         }
     }
