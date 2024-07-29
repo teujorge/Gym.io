@@ -54,9 +54,7 @@ struct WorkoutPlanFormView: View {
                             exercisePlan: exercisePlan,
                             proxy: proxy
                         )
-                        .opacity(viewModel.lastMoveAffectedIndex == index ? 0.2 : 1.0)
                     }
-                    .animation(.easeOut, value: viewModel.lastMoveAffectedIndex)
                     .animation(.easeInOut, value: viewModel.workoutPlan.exercisePlans)
                     
                     // Add exercise button
