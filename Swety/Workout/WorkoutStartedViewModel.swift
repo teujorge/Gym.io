@@ -26,6 +26,7 @@ class WorkoutStartedViewModel: ObservableObject{
         self.workout = workout
         
         Task {
+            updateLiveActivity(with: workout)
             await observeLiveActivityChanges()
         }
     }
@@ -70,14 +71,15 @@ class WorkoutStartedViewModel: ObservableObject{
     }
     
     func startWorkoutTimer() {
-        workoutTimerCancellable?.cancel()  // Cancel any existing timer
-        workoutCounter = Int(workout.createdAt.timeIntervalSinceNow) // Reset the counter
-        
-        workoutTimerCancellable = Timer.publish(every: 1.0, on: .main, in: .common)
-            .autoconnect()
-            .sink { _ in
-                self.workoutCounter += 1
-            }
+        // TODO: Implement this
+//        workoutTimerCancellable?.cancel()  // Cancel any existing timer
+//        workoutCounter = Int(workout.createdAt.timeIntervalSinceNow) // Reset the counter
+//
+//        workoutTimerCancellable = Timer.publish(every: 1.0, on: .main, in: .common)
+//            .autoconnect()
+//            .sink { _ in
+//                self.workoutCounter += 1
+//            }
     }
     
     func stopWorkoutTimer() {
@@ -86,19 +88,20 @@ class WorkoutStartedViewModel: ObservableObject{
     }
     
     func startRestTimer() {
-        restTimerCancellable?.cancel()  // Cancel any existing rest timer
-        // restCounter = currentExercise.restTime // TODO: Reset the rest counter
-        
-        restTimerCancellable = Timer.publish(every: 1.0, on: .main, in: .common)
-            .autoconnect()
-            .sink { _ in
-                self.restCounter -= 1
-                if self.restCounter <= 0 {
-                    self.stopRestTimer()
-                    self.isResting = false
-                    return
-                }
-            }
+        // TODO: Implement this
+//        restTimerCancellable?.cancel()  // Cancel any existing rest timer
+//        // restCounter = currentExercise.restTime // TODO: Reset the rest counter
+//
+//        restTimerCancellable = Timer.publish(every: 1.0, on: .main, in: .common)
+//            .autoconnect()
+//            .sink { _ in
+//                self.restCounter -= 1
+//                if self.restCounter <= 0 {
+//                    self.stopRestTimer()
+//                    self.isResting = false
+//                    return
+//                }
+//            }
     }
     
     func stopRestTimer() {
@@ -133,29 +136,33 @@ class WorkoutStartedViewModel: ObservableObject{
         Task {
             if let newWorkout = await updateWorkout() {
                 print("Workout updated: \(newWorkout)")
-                
-                
-                var currentExerciseIndex = 0
-                var currentSetIndex = 0
-                
-                for exercise in newWorkout.exercises {
-                    for exerciseSet in exercise.sets {
-                        if exerciseSet.completedAt != nil {
-                            currentExerciseIndex = exercise.index
-                            currentSetIndex = exerciseSet.index
-                        }
+                updateLiveActivity(with: newWorkout)
+            }
+        }
+    }
+    
+    private func updateLiveActivity(with newWorkout: Workout) {
+        Task {
+            var currentExerciseIndex = 0
+            var currentSetIndex = 0
+            
+            for exercise in newWorkout.exercises {
+                for exerciseSet in exercise.sets {
+                    if exerciseSet.completedAt != nil {
+                        currentExerciseIndex = exercise.index
+                        currentSetIndex = exerciseSet.index
                     }
                 }
-                
-                await startOrUpdateLiveActivity(with: WorkoutState(
-                    workoutName: workout.name,
-                    currentExercise: workout.exercises[currentExerciseIndex],
-                    currentSetIndex: currentSetIndex,
-                    totalExercisesCount: workout.exercises.count,
-                    workoutCounter: workoutCounter,
-                    restCounter: restCounter
-                ))
             }
+            
+            await startOrUpdateLiveActivity(with: WorkoutState(
+                workoutName: workout.name,
+                currentExercise: workout.exercises[currentExerciseIndex],
+                currentSetIndex: currentSetIndex,
+                totalExercisesCount: workout.exercises.count,
+                workoutCounter: workoutCounter,
+                restCounter: restCounter
+            ))
         }
     }
     

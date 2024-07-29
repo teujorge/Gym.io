@@ -308,9 +308,6 @@
         }
       }
     },
-    "Bottom" : {
-
-    },
     "Calendar" : {
       "localizations" : {
         "es-419" : {
@@ -940,9 +937,6 @@
           }
         }
       }
-    },
-    "Leading" : {
-
     },
     "Library" : {
       "localizations" : {
@@ -1676,9 +1670,6 @@
           }
         }
       }
-    },
-    "Trailing" : {
-
     },
     "Units" : {
       "localizations" : {
