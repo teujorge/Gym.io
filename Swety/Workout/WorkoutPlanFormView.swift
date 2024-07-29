@@ -50,8 +50,9 @@ struct WorkoutPlanFormView: View {
                     
                     ForEach(Array(viewModel.workoutPlan.exercisePlans.enumerated()), id: \.element.id) { index, exercisePlan in
                         exercisePlanView(for: index, exercisePlan: exercisePlan, proxy: proxy)
+                            .opacity(viewModel.lastMoveAffectedIndex == index ? 0.2 : 1.0)
                     }
-                    .animation(.default, value: viewModel.workoutPlan.exercisePlans)
+                    .animation(.easeOut, value: viewModel.lastMoveAffectedIndex)
                     
                     // Add exercise button
                     NavigationLink(
@@ -182,7 +183,6 @@ struct WorkoutPlanFormView: View {
             }
         }
         .padding()
-        .transition(.move(edge: .bottom))
         .swipeActions {
             Button(action: { viewModel.editExercisePlan(exercisePlan) }) {
                 Label("Edit", systemImage: "pencil")

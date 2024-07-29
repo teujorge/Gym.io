@@ -29,6 +29,8 @@ class WorkoutPlanFormViewModel: ObservableObject {
         }
     }
     
+    @Published var lastMoveAffectedIndex: Int? = nil
+    
     init(workoutPlan: WorkoutPlan?, onSave: @escaping (WorkoutPlan) -> Void, onDelete: @escaping (WorkoutPlan) -> Void) {
         if let workoutPlan = workoutPlan {
             self.isEditing = true
@@ -73,12 +75,20 @@ class WorkoutPlanFormViewModel: ObservableObject {
     
     func moveExerciseUp(index: Int) {
         guard index > 0 else { return }
+        lastMoveAffectedIndex = index
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.lastMoveAffectedIndex = nil
+        }
         workoutPlan.exercisePlans.swapAt(index, index - 1)
         updateIndexes()
     }
     
     func moveExerciseDown(index: Int) {
         guard index < workoutPlan.exercisePlans.count - 1 else { return }
+        lastMoveAffectedIndex = index
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.lastMoveAffectedIndex = nil
+        }
         workoutPlan.exercisePlans.swapAt(index, index + 1)
         updateIndexes()
     }
