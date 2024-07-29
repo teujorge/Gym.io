@@ -115,6 +115,12 @@ class WorkoutStartedViewModel: ObservableObject{
     }
     
     func completeWorkout(onSuccess: @escaping (Workout) -> Void) {
+        // Set the completedAt date for the workout and all exercises
+        workout.completedAt = Date()
+        for exercise in workout.exercises {
+            exercise.completedAt = Date()
+        }
+        // Update the workout in db
         Task {
             await stopWorkoutLiveActivity()
             if let newWorkout = await updateWorkout() {

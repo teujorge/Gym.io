@@ -125,8 +125,8 @@ struct WorkoutWidgetLiveActivity: Widget {
                 
             }
             .padding()
-            .activityBackgroundTint(Color("AccentColor"))
-            .activitySystemActionForegroundColor(Color.black)
+            .activityBackgroundTint(Color("WidgetBackground"))
+            //            .activitySystemActionForegroundColor(Color("AccentColor"))
             
         } dynamicIsland: { context in
             DynamicIsland {
