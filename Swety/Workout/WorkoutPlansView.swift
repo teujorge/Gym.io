@@ -79,7 +79,6 @@ struct WorkoutPlansView: View {
                 
             }
             .animation(.easeInOut, value: viewModel.state)
-            .background(Color(.systemBackground))
             .navigationTitle("Workouts")
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
