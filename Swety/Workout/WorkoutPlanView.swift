@@ -122,7 +122,7 @@ struct WorkoutPlanView: View {
 
 var _previewExercisePlans: [ExercisePlan] = [
     ExercisePlan(
-        name: "Squats",
+        name: "21s Bicep Curl",
         notes: "Stand with your feet shoulder-width apart. Lower your body as if you were sitting back into a chair. Push through your heels to return to the starting position.",
         isRepBased: true,
         index: 2,

@@ -535,6 +535,9 @@
         }
       }
     },
+    "Duration: %lld seconds" : {
+
+    },
     "Edit" : {
       "localizations" : {
         "es-419" : {
@@ -822,6 +825,9 @@
           }
         }
       }
+    },
+    "History" : {
+
     },
     "Home" : {
       "localizations" : {
@@ -1453,6 +1459,16 @@
         }
       }
     },
+    "Sets: %lld/%lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Sets: %1$lld/%2$lld"
+          }
+        }
+      }
+    },
     "Settings" : {
       "localizations" : {
         "es-419" : {
@@ -1695,6 +1711,9 @@
           }
         }
       }
+    },
+    "Weight: %lld kg" : {
+
     },
     "Welcome back," : {
       "localizations" : {

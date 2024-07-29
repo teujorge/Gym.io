@@ -212,46 +212,49 @@ struct WorkoutProgressCardView: View {
     }
     
     var body: some View {
-        NavigationLink(destination: WorkoutPlanView(workoutPlan: workout.plan!)) {
-            VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 8) {
                 Text(workout.name)
                     .fontWeight(.bold)
                     .font(.title2)
                     .foregroundColor(.primary)
-                
-                HStack {
-                    Image(systemName: "dumbbell.fill")
-                        .foregroundColor(.accent)
-                    
-                    Text("Exercises: \(workout.exercises.count)")
-                        .foregroundColor(.secondary)
-                }
-                
-                if let description = workout.notes {
-                    Text(description)
-                        .font(.body)
-                        .foregroundColor(.secondary)
-                        .lineLimit(2)
-                }
-                
-                ProgressView(value: Double(completedSetsCount), total: Double(totalSetsCount))
-                    .progressViewStyle(.linear)
+            
+            HStack {
+                Image(systemName: "dumbbell.fill")
                     .foregroundColor(.accent)
-                    .padding(.horizontal)
-                    .padding(.bottom)
                 
-                NavigationLink(destination: WorkoutStartedView(workout: workout)) {
-                    Text("Continue Workout")
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.accent)
-                        .foregroundColor(.white)
-                        .cornerRadius(.medium)
-                }
+                Text("Exercises: \(workout.exercises.count)")
+                    .foregroundColor(.secondary)
+                
+                Spacer()
+                
+                Text("Sets: \(completedSetsCount)/\(totalSetsCount)")
+                    .foregroundColor(.secondary)
             }
-            .padding()
-            .frame(maxWidth: .infinity, alignment: .leading)
+            
+            if let description = workout.notes {
+                Text(description)
+                    .font(.body)
+                    .foregroundColor(.secondary)
+                    .lineLimit(2)
+            }
+            
+            ProgressView(value: Double(completedSetsCount), total: Double(totalSetsCount))
+                .progressViewStyle(.linear)
+                .foregroundColor(.accent)
+                .padding(.horizontal)
+                .padding(.bottom)
+            
+            NavigationLink(destination: WorkoutStartedView(workout: workout)) {
+                Text("Continue Workout")
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.accent)
+                    .foregroundColor(.white)
+                    .cornerRadius(.medium)
+            }
         }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
