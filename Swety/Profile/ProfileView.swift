@@ -12,6 +12,7 @@ struct ProfileView: View {
     @EnvironmentObject var authState: AuthState
     @EnvironmentObject var currentUser: User
     @StateObject var viewModel = ProfileViewModel()
+    @State private var selectedTab = 0
     
     var filteredWorkouts: [Workout] {
         let x = currentUser.workouts.filter { $0.completedAt != nil }
@@ -23,8 +24,13 @@ struct ProfileView: View {
         NavigationView {
             ScrollView {
                 profileInfo
-                dashboard
-                workoutHistory
+                pickerView
+                if selectedTab == 0 {
+                   workoutHistory
+                } else {
+                    
+                }
+
             }
             .animation(.easeInOut, value: currentUser.workouts.count)
             .navigationTitle(currentUser.username)
@@ -120,62 +126,16 @@ struct ProfileView: View {
             .padding()
     }
     
-    private var dashboard: some View {
+    private var pickerView: some View {
         VStack {
-            Text("Dashboard")
-                .font(.headline)
-            HStack {
-                Button(action: {
-                    // Statistics action
-                }) {
-                    VStack {
-                        Image(systemName: "chart.bar.fill")
-                            .font(.largeTitle)                                        .frame(width: 50, height: 50)
-                        Text("Statistics")
-                    }
-                    .padding()
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(.medium)
-                }
-                Button(action: {
-                    // Exercises action
-                }) {
-                    VStack {
-                        Image(systemName: "dumbbell.fill")
-                            .font(.largeTitle)                                        .frame(width: 50, height: 50)
-                        Text("Exercises")
-                    }
-                    .padding()
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(.medium)
-                }
+            Picker(selection: $selectedTab, label: Text("Select View")) {
+                Text("Workouts").tag(0)
+                Text("Exercises").tag(1)
             }
-            HStack {
-                Button(action: {
-                    // Measures action
-                }) {
-                    VStack {
-                        Image(systemName: "ruler.fill")
-                            .font(.largeTitle)                                        .frame(width: 50, height: 50)
-                        Text("Measures")
-                    }
-                    .padding()
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(.medium)
-                }
-                Button(action: {
-                    // Calendar action
-                }) {
-                    VStack {
-                        Image(systemName: "calendar")
-                            .font(.largeTitle)                                        .frame(width: 50, height: 50)
-                        Text("Calendar")
-                    }
-                    .padding()
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(.medium)
-                }
-            }
+            .pickerStyle(SegmentedPickerStyle())
+            .padding()
+            
+           
         }
         .padding()
     }
@@ -241,6 +201,69 @@ struct ProfileView: View {
         )
         .onAppear(perform: updateUserWorkoutHistory)
     }
+    
+    private var exercisesHistory: some View {
+        VStack(alignment: .leading) {
+            Text("Exercises")
+                .font(.headline)
+            ForEach(filteredWorkouts) { workout in
+                VStack(alignment: .leading) {
+                    HStack {
+                        Spacer()
+                        Text(workout.completedAt!, style: .date)
+                            .foregroundColor(.secondary)
+                    }
+                    .font(.subheadline)
+                    Text(workout.name)
+                        .font(.headline)
+                    if let notes = workout.notes {
+                        Text(notes)
+                            .foregroundColor(.secondary)
+                    }
+                    HStack {
+                        Text("Time: \(formatTime(workout.updatedAt.timeIntervalSince(workout.createdAt)))")
+                        Text("Volume: \(calculateVolume(for: workout))")
+                    }
+                    .foregroundColor(.secondary)
+                    Divider()
+                }
+                .padding()
+            }
+            
+            if viewModel.workoutsCursor != nil {
+                HStack(alignment: .center) {
+                    Spacer()
+                    if viewModel.state == .loading {
+                        LoaderView(size: 50)
+                    } else {
+                        Button(action: updateUserWorkoutHistory) {
+                            if case let .failure(error) = viewModel.state {
+                                Text(error)
+                            } else {
+                                Text("Load More")
+                            }
+                        }
+                        .padding()
+                        .background(Color.accent)
+                        .foregroundColor(Color.white)
+                        .frame(height: 50)
+                        .cornerRadius(.medium)
+                    }
+                    Spacer()
+                }
+                .transition(.opacity)
+            }
+        }
+        .padding()
+        .animation(.easeInOut, value: viewModel.state)
+        .transition(
+            .scale(scale: 0.85)
+            .combined(with: .opacity)
+            .combined(with: .move(edge: .bottom))
+        )
+        .onAppear(perform: updateUserWorkoutHistory)
+    }
+
     
     private var userSettings: some View {
         VStack {
@@ -330,3 +353,5 @@ struct ProfileView: View {
         .environmentObject(_previewAuthSignedInState)
         .environmentObject(_previewParticipants[0])
 }
+
+
