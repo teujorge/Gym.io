@@ -88,6 +88,18 @@ func calculateVolume(for workout: Workout) -> Int {
     }
 }
 
+/// Calculates the total volume of a list of exercises.
+func calculateVolume(for exercises: [Exercise]) -> Int {
+    return exercises.reduce(0) { totalVolume, exercise in
+        if exercise.isRepBased {
+            return totalVolume + exercise.sets.reduce(0) { setTotal, set in
+                setTotal + (set.reps * set.weight)
+            }
+        }
+        return totalVolume
+    }
+}
+
 /// Formats a time interval as a string in the format "HH:MM".
 func formatTime(_ time: TimeInterval) -> String {
     let hours = Int(time) / 3600

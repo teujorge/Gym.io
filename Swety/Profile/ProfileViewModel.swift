@@ -7,13 +7,51 @@
 
 import Foundation
 
+enum HistorySelections: String, CaseIterable, Identifiable {
+    case workouts
+    case exercises
+
+    var id: String { self.rawValue }
+
+    var displayName: String {
+        switch self {
+        case .workouts: return "Workouts"
+        case .exercises: return "Exercises"
+        }
+    }
+}
+
 class ProfileViewModel: ObservableObject {
     
-    @Published var state: LoaderState = .idle
     @Published var isPresentingSettings = false
     @Published var currentLanguage = Language.english
     
+    @Published var selectedPickerTab: HistorySelections = .workouts
+    @Published var exercisesHistory: [String: [Exercise]] = [:]
+    
+    @Published var workoutsState: LoaderState = .idle
+    @Published var exercisesState: LoaderState = .idle
+    var state: LoaderState {
+        if workoutsState == .loading || exercisesState == .loading {
+            return .loading
+        }
+        if workoutsState == .success && exercisesState == .success {
+            return .success
+        }
+        if workoutsState == .idle && exercisesState == .idle {
+            return .idle
+        }
+        if case let .failure(workoutsError) = workoutsState {
+            return .failure(workoutsError)
+        }
+        if case let .failure(exercisesError) = exercisesState {
+            return .failure(exercisesError)
+        }
+        return .idle
+    }
+    
     var workoutsCursor: String? = nil
+    var exercisesCursor: String? = nil
     
     func editUser(name: String, username: String) async -> User? {
         guard !(name.isEmpty && username.isEmpty) else {
@@ -49,7 +87,7 @@ class ProfileViewModel: ObservableObject {
     
     func fetchWorkouts(for userId: String) async -> [Workout]? {
         DispatchQueue.main.async {
-            self.state = .loading
+            self.workoutsState = .loading
         }
         
         let result: HTTPResponse<[Workout]> = await sendRequest(
@@ -67,7 +105,7 @@ class ProfileViewModel: ObservableObject {
         case .success(let workouts):
             print("Workout history fetched: \(workouts)")
             DispatchQueue.main.async {
-                self.state = .success
+                self.workoutsState = .success
             }
             if workouts.count == 10 {
                 workoutsCursor = workouts.last?.id
@@ -76,7 +114,42 @@ class ProfileViewModel: ObservableObject {
         case .failure(let error):
             print("Failed to fetch workout history: \(error)")
             DispatchQueue.main.async {
-                self.state = .failure(error)
+                self.workoutsState = .failure(error)
+            }
+            return nil
+        }
+    }
+    
+    func fetchExercises(for userId: String) async -> [Exercise]? {
+        DispatchQueue.main.async {
+            self.exercisesState = .loading
+        }
+        
+        let result: HTTPResponse<[Exercise]> = await sendRequest(
+            endpoint: "/exercises/history",
+            queryItems: [
+                URLQueryItem(name: "findMany", value: "true"),
+                URLQueryItem(name: "includeAll", value: "true"),
+                URLQueryItem(name: "ownerId", value: userId),
+                URLQueryItem(name: "cursor", value: exercisesCursor)
+            ],
+            method: .GET
+        )
+        
+        switch result {
+        case .success(let exercises):
+            print("Exercise history fetched: \(exercises)")
+            DispatchQueue.main.async {
+                self.exercisesState = .success
+            }
+            if exercises.count == 10 {
+                exercisesCursor = exercises.last?.id
+            }
+            return exercises
+        case .failure(let error):
+            print("Failed to fetch exercise history: \(error)")
+            DispatchQueue.main.async {
+                self.exercisesState = .failure(error)
             }
             return nil
         }

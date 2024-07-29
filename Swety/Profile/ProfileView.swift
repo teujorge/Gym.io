@@ -15,15 +15,22 @@ struct ProfileView: View {
     @State private var selectedTab = 0
     
     var filteredWorkouts: [Workout] {
-        let x = currentUser.workouts.filter { $0.completedAt != nil }
-        print("here ::: \(x)")
-        return x
+        currentUser.workouts.filter { $0.completedAt != nil }
+    }
+    
+    var filteredExerciseNames: [String] {
+        viewModel.exercisesHistory
+            .keys
+            .sorted {
+                viewModel.exercisesHistory[$0]?.count ?? 0 > viewModel.exercisesHistory[$1]?.count ?? 0
+            }
     }
     
     var body: some View {
         NavigationView {
             ScrollView {
                 profileInfo
+                summary
                 pickerView
                 if selectedTab == 0 {
                    workoutHistory
@@ -128,22 +135,28 @@ struct ProfileView: View {
     
     private var pickerView: some View {
         VStack {
-            Picker(selection: $selectedTab, label: Text("Select View")) {
-                Text("Workouts").tag(0)
-                Text("Exercises").tag(1)
+            Picker("Select History", selection: $viewModel.selectedPickerTab) {
+                ForEach(HistorySelections.allCases) { selection in
+                    Text(selection.displayName).tag(selection)
+                }
             }
-            .pickerStyle(SegmentedPickerStyle())
-            .padding()
+            .pickerStyle(.segmented)
+            .padding(.top)
+            .padding(.horizontal)
             
-           
+            switch viewModel.selectedPickerTab {
+            case .workouts:
+                workoutHistory
+            case .exercises:
+                exerciseHistory
+            }
         }
         .padding()
     }
     
     private var workoutHistory: some View {
         VStack(alignment: .leading) {
-            Text("Workouts")
-                .font(.headline)
+            
             ForEach(filteredWorkouts) { workout in
                 VStack(alignment: .leading) {
                     HStack {
@@ -191,6 +204,7 @@ struct ProfileView: View {
                 }
                 .transition(.opacity)
             }
+            
         }
         .padding()
         .animation(.easeInOut, value: viewModel.state)
@@ -202,32 +216,27 @@ struct ProfileView: View {
         .onAppear(perform: updateUserWorkoutHistory)
     }
     
-    private var exercisesHistory: some View {
+    private var exerciseHistory: some View {
         VStack(alignment: .leading) {
-            Text("Exercises")
-                .font(.headline)
-            ForEach(filteredWorkouts) { workout in
-                VStack(alignment: .leading) {
-                    HStack {
-                        Spacer()
-                        Text(workout.completedAt!, style: .date)
-                            .foregroundColor(.secondary)
+            
+            ForEach(filteredExerciseNames, id: \.self) { name in
+                if let exerciseList = viewModel.exercisesHistory[name] {
+                    VStack(alignment: .leading) {
+                        Text(exerciseList.first?.name ?? "no name")
+                            .font(.headline)
+                        if let notes = exerciseList.first!.notes {
+                            Text(notes)
+                                .foregroundColor(.secondary)
+                        }
+                        HStack {
+                            Text("Count: \(exerciseList.count)")
+                            Text("Volume: \(calculateVolume(for: exerciseList))")
+                        }
+                        .foregroundColor(.secondary)
+                        Divider()
                     }
-                    .font(.subheadline)
-                    Text(workout.name)
-                        .font(.headline)
-                    if let notes = workout.notes {
-                        Text(notes)
-                            .foregroundColor(.secondary)
-                    }
-                    HStack {
-                        Text("Time: \(formatTime(workout.updatedAt.timeIntervalSince(workout.createdAt)))")
-                        Text("Volume: \(calculateVolume(for: workout))")
-                    }
-                    .foregroundColor(.secondary)
-                    Divider()
+                    .padding()
                 }
-                .padding()
             }
             
             if viewModel.workoutsCursor != nil {
@@ -253,6 +262,7 @@ struct ProfileView: View {
                 }
                 .transition(.opacity)
             }
+            
         }
         .padding()
         .animation(.easeInOut, value: viewModel.state)
@@ -261,9 +271,9 @@ struct ProfileView: View {
             .combined(with: .opacity)
             .combined(with: .move(edge: .bottom))
         )
-        .onAppear(perform: updateUserWorkoutHistory)
+        .onAppear(perform: updateUserExerciseHistory)
     }
-
+    
     
     private var userSettings: some View {
         VStack {
@@ -345,6 +355,29 @@ struct ProfileView: View {
             }
         }
     }
+    
+    private func updateUserExerciseHistory() {
+        Task {
+            if let completedExercises = await viewModel.fetchExercises(for: currentUserId) {
+                for exercise in completedExercises {
+                    if var exercises = viewModel.exercisesHistory[exercise.name] {
+                        if let index = exercises.firstIndex(where: { $0.id == exercise.id }) {
+                            // Replace the existing exercise
+                            exercises[index] = exercise
+                        } else {
+                            // Append to the existing array
+                            exercises.append(exercise)
+                        }
+                        viewModel.exercisesHistory[exercise.name] = exercises
+                    } else {
+                        // Create new array
+                        viewModel.exercisesHistory[exercise.name] = [exercise]
+                    }
+                }
+            }
+        }
+    }
+    
 }
 
 #Preview {

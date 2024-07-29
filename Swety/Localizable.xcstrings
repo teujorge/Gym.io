@@ -308,22 +308,6 @@
         }
       }
     },
-    "Calendar" : {
-      "localizations" : {
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Calendario"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Calendário"
-          }
-        }
-      }
-    },
     "Cancel" : {
       "localizations" : {
         "es-419" : {
@@ -420,21 +404,11 @@
         }
       }
     },
-    "Dashboard" : {
-      "localizations" : {
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tablero"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Painel"
-          }
-        }
-      }
+    "Count: %lld" : {
+
+    },
+    "Date" : {
+
     },
     "Delete" : {
       "localizations" : {
@@ -986,9 +960,6 @@
         }
       }
     },
-    "Measures" : {
-
-    },
     "Muscle Group" : {
       "localizations" : {
         "es-419" : {
@@ -1405,6 +1376,9 @@
         }
       }
     },
+    "Select History" : {
+
+    },
     "Select Summary Range" : {
       "localizations" : {
         "es-419" : {
@@ -1587,22 +1561,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Começar treino"
-          }
-        }
-      }
-    },
-    "Statistics" : {
-      "localizations" : {
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Estadísticas"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Estatísticas"
           }
         }
       }
