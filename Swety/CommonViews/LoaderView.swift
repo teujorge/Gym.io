@@ -87,7 +87,7 @@ struct LoaderView: View {
     LoaderPreview()
 }
 
-private struct LoaderPreview: View {
+fileprivate struct LoaderPreview: View {
     @State private var loaderState: LoaderState = .loading
     
     var body: some View {

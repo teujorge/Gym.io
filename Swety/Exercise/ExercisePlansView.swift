@@ -136,7 +136,7 @@ struct ExercisePlansView: View {
     }
 }
 
-private struct ExerciseRowView: View {
+fileprivate struct ExerciseRowView: View {
     var exercise: ExercisePlan
     
     var body: some View {

@@ -81,7 +81,7 @@ struct ChallengeFormView: View {
 }
 
 
-private struct ParticipantsSectionView: View {
+fileprivate struct ParticipantsSectionView: View {
     @Binding var participants: [User]
     
     var body: some View {
@@ -95,7 +95,7 @@ private struct ParticipantsSectionView: View {
     }
 }
 
-private struct ParticipantRow: View {
+fileprivate struct ParticipantRow: View {
     var participant: User
     @Binding var participants: [User]
     
@@ -119,7 +119,7 @@ private struct ParticipantRow: View {
     }
 }
 
-private struct RulesSectionView: View {
+fileprivate struct RulesSectionView: View {
     @Binding var challenge: Challenge
     
     var body: some View {
@@ -138,7 +138,7 @@ private struct RulesSectionView: View {
 }
 
 
-private struct FindUsersView: View {
+fileprivate struct FindUsersView: View {
     
     @State var users: [User] = []
     @State var searchText: String = ""

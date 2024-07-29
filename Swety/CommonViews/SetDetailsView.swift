@@ -251,7 +251,7 @@ fileprivate struct ExerciseSetView: View {
     SetDetailsPreview()
 }
 
-private struct SetDetailsPreview: View {
+fileprivate struct SetDetailsPreview: View {
     @StateObject var dialogManager = DialogManager()
     
     var body: some View {

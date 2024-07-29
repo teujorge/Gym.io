@@ -57,7 +57,7 @@ struct WorkoutStartedView: View {
     }
 }
 
-private struct ExerciseCardView: View {
+fileprivate struct ExerciseCardView: View {
     @Binding var exercise: Exercise
     @ObservedObject var viewModel: WorkoutStartedViewModel
     

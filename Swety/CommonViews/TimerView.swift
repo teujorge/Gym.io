@@ -51,7 +51,7 @@ struct TimerView: View {
     TimerPreview()
 }
 
-private struct TimerPreview: View {
+fileprivate struct TimerPreview: View {
     @State private var minutes: Int = 0
     @State private var seconds: Int = 0
     var body: some View {

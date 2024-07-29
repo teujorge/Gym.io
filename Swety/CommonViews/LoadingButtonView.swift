@@ -43,7 +43,7 @@ struct LoadingButtonView: View {
     LoaderButtonPreview()
 }
 
-private struct LoaderButtonPreview: View {
+fileprivate struct LoaderButtonPreview: View {
     @State private var loaderState: LoaderState = .loading
     @State private var disabled = false
     
