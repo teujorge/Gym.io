@@ -43,86 +43,9 @@ struct WorkoutWidgetLiveActivity: Widget {
                 }
                 
                 Divider()
-                
-                HStack {
-                    VStack(spacing: 4) {
-                        Image(systemName: "list.number")
-                            .bold()
-                        Text("\(context.state.currentSetIndex + 1)/\(context.state.exercise.sets.count)")
-                            .fontWeight(.semibold)
-                    }
-                    
-                    Spacer()
-                    
-                    if context.state.exercise.isRepBased {
-                        VStack(spacing: 4) {
-                            Image(systemName: "repeat")
-                                .bold()
-                            Text("\(context.state.exercise.sets[context.state.currentSetIndex].reps)")
-                                .fontWeight(.semibold)
-                        }
-                        
-                        Spacer()
-                        
-                        VStack(spacing: 4) {
-                            Image(systemName: "scalemass")
-                                .bold()
-                            Text("\(context.state.exercise.sets[context.state.currentSetIndex].weight) kg")
-                                .fontWeight(.semibold)
-                        }
-                    } else {
-                        VStack(spacing: 4) {
-                            Image(systemName: "clock")
-                                .bold()
-                            Text("\(context.state.exercise.sets[context.state.currentSetIndex].duration) s")
-                                .fontWeight(.semibold)
-                        }
-                        
-                        Spacer()
-                        
-                        VStack(spacing: 4) {
-                            Image(systemName: "bolt")
-                                .bold()
-                            Circle()
-                                .fill(context.state.exercise.sets[context.state.currentSetIndex].intensity.color)
-                                .frame(width: 10, height: 10)
-                        }
-                    }
-                }
-                .padding(8)
-                
+                SetDetailsView(context)
                 Divider()
-                
-                HStack {
-                    // Previous button: Only show if not on the first set of the first exercise
-                    if context.state.currentSetIndex > 0 || context.state.exercise.index > 0 {
-                        Button("Prev", intent: PrevSetIntent())
-                            .buttonStyle(.plain)
-                            .controlSize(.large)
-                    }
-
-                    // Skip button: Only show if not on the last set of the last exercise
-                    if context.state.currentSetIndex < context.state.exercise.sets.count - 1 || context.state.exercise.index < context.state.totalExercisesCount - 1 {
-                        Button("Skip", intent: SkipSetIntent())
-                            .buttonStyle(.plain)
-                            .controlSize(.large)
-                    }
-                    
-                    Spacer()
-                    
-                    // Next button: Only show if not on the last set of the last exercise
-                    if context.state.currentSetIndex < context.state.exercise.sets.count - 1 || context.state.exercise.index < context.state.totalExercisesCount - 1 {
-                        Button("Next", intent: CompleteSetIntent())
-                            .buttonStyle(.plain)
-                            .controlSize(.large)
-                    } else {
-                        // Finish button: Only show if on the last set of the last exercise
-                        Button("Finish", intent: FinishWorkoutIntent())
-                            .buttonStyle(.plain)
-                            .controlSize(.large)
-                    }
-                }
-                
+                BottomControlsView(context)
             }
             .padding()
             .activityBackgroundTint(Color("WidgetBackground"))
@@ -130,19 +53,20 @@ struct WorkoutWidgetLiveActivity: Widget {
             
         } dynamicIsland: { context in
             DynamicIsland {
-                // Expanded UI goes here.  Compose the expanded UI through
-                // various regions, like leading/trailing/center/bottom
+                // Expanded UI goes here. Compose the expanded UI through various regions, like leading/trailing/center/bottom
                 DynamicIslandExpandedRegion(.leading) {
-                    Text("Leading")
+                    Text(context.attributes.workoutName)
+                        .font(.caption)
                 }
                 DynamicIslandExpandedRegion(.trailing) {
-                    Text("Trailing")
+                    Text(context.state.exercise.name)
+                        .font(.headline)
                 }
                 DynamicIslandExpandedRegion(.center) {
-                    Text(context.attributes.workoutName)
+                    SetDetailsView(context)
                 }
                 DynamicIslandExpandedRegion(.bottom) {
-                    Text("Bottom")
+                    BottomControlsView(context)
                 }
             } compactLeading: {
                 Text("Workout")
@@ -155,6 +79,88 @@ struct WorkoutWidgetLiveActivity: Widget {
             .keylineTint(Color("AccentColor"))
         }
     }
+    
+    func SetDetailsView(_ context: ActivityViewContext<WorkoutWidgetAttributes>) -> some View {
+        HStack {
+            VStack(spacing: 4) {
+                Image(systemName: "list.number")
+                    .bold()
+                Text("\(context.state.currentSetIndex + 1)/\(context.state.exercise.sets.count)")
+                    .fontWeight(.semibold)
+            }
+            
+            Spacer()
+            
+            if context.state.exercise.isRepBased {
+                VStack(spacing: 4) {
+                    Image(systemName: "repeat")
+                        .bold()
+                    Text("\(context.state.exercise.sets[context.state.currentSetIndex].reps)")
+                        .fontWeight(.semibold)
+                }
+                
+                Spacer()
+                
+                VStack(spacing: 4) {
+                    Image(systemName: "scalemass")
+                        .bold()
+                    Text("\(context.state.exercise.sets[context.state.currentSetIndex].weight) kg")
+                        .fontWeight(.semibold)
+                }
+            } else {
+                VStack(spacing: 4) {
+                    Image(systemName: "clock")
+                        .bold()
+                    Text("\(context.state.exercise.sets[context.state.currentSetIndex].duration) s")
+                        .fontWeight(.semibold)
+                }
+                
+                Spacer()
+                
+                VStack(spacing: 4) {
+                    Image(systemName: "bolt")
+                        .bold()
+                    Circle()
+                        .fill(context.state.exercise.sets[context.state.currentSetIndex].intensity.color)
+                        .frame(width: 10, height: 10)
+                }
+            }
+        }
+        .padding(8)
+    }
+    
+    func BottomControlsView(_ context: ActivityViewContext<WorkoutWidgetAttributes>) -> some View {
+        HStack {
+            // Previous button: Only show if not on the first set of the first exercise
+            if context.state.currentSetIndex > 0 || context.state.exercise.index > 0 {
+                Button("Prev", intent: PrevSetIntent())
+                    .buttonStyle(.plain)
+                    .controlSize(.large)
+            }
+
+            // Skip button: Only show if not on the last set of the last exercise
+            if context.state.currentSetIndex < context.state.exercise.sets.count - 1 || context.state.exercise.index < context.state.totalExercisesCount - 1 {
+                Button("Skip", intent: SkipSetIntent())
+                    .buttonStyle(.plain)
+                    .controlSize(.large)
+            }
+            
+            Spacer()
+            
+            // Next button: Only show if not on the last set of the last exercise
+            if context.state.currentSetIndex < context.state.exercise.sets.count - 1 || context.state.exercise.index < context.state.totalExercisesCount - 1 {
+                Button("Next", intent: CompleteSetIntent())
+                    .buttonStyle(.plain)
+                    .controlSize(.large)
+            } else {
+                // Finish button: Only show if on the last set of the last exercise
+                Button("Finish", intent: FinishWorkoutIntent())
+                    .buttonStyle(.plain)
+                    .controlSize(.large)
+            }
+        }
+    }
+    
 }
 
 extension WorkoutWidgetAttributes {
