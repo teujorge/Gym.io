@@ -536,7 +536,20 @@
       }
     },
     "Duration: %lld seconds" : {
-
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiempo: %lld seg."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tempo: %lld seg."
+          }
+        }
+      }
     },
     "Edit" : {
       "localizations" : {
@@ -861,6 +874,9 @@
         }
       }
     },
+    "In Progress" : {
+
+    },
     "Instructions" : {
       "localizations" : {
         "es-419" : {
@@ -1151,6 +1167,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Participantes"
+          }
+        }
+      }
+    },
+    "Plans" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Planos"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Planos"
           }
         }
       }
@@ -1713,7 +1745,20 @@
       }
     },
     "Weight: %lld kg" : {
-
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peso: %lld kg"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peso: %lld kg"
+          }
+        }
+      }
     },
     "Welcome back," : {
       "localizations" : {
@@ -1763,22 +1808,6 @@
         }
       }
     },
-    "Workout Plans" : {
-      "localizations" : {
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Planes de Entrenamiento"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Planos de Treino"
-          }
-        }
-      }
-    },
     "Workouts" : {
       "localizations" : {
         "es-419" : {
@@ -1791,22 +1820,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Treinos"
-          }
-        }
-      }
-    },
-    "Workouts in Progress" : {
-      "localizations" : {
-        "es-419" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Entrenamientos en Progreso"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Treinos em Andamento"
           }
         }
       }

@@ -23,77 +23,60 @@ struct WorkoutPlansView: View {
             ScrollView {
                 
                 if !filteredWorkouts.isEmpty {
-                    HStack {
-                        Text("Workouts in Progress")
-                            .font(.title2)
-                            .bold()
-                            .padding(.top)
-                        Spacer()
-                        Button(action: {
-                            withAnimation {
-                                viewModel.showWorkoutsInProgress.toggle()
+                    DisclosureGroup(isExpanded: $viewModel.showWorkoutsInProgress) {
+                        if viewModel.showWorkoutsInProgress {
+                            ForEach(filteredWorkouts.indices, id: \.self) { index in
+                                WorkoutProgressCardView(workout: filteredWorkouts[index])
+                                    .transition(
+                                        .scale(scale: 0.85)
+                                        .combined(with: .opacity)
+                                        .combined(with: .move(edge: .bottom))
+                                    )
+                                if index < filteredWorkouts.count - 1 {
+                                    Divider()
+                                }
                             }
-                        }) {
-                            Image(systemName: viewModel.showWorkoutsInProgress ? "chevron.up" : "chevron.down")
-                                .padding(.top)
+                            .padding()
                         }
+                    } label: {
+                        Text("In Progress")
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                            .padding(.top)
                     }
-                    .padding(.horizontal)
-                    .padding(.top)
-                    
-                    if viewModel.showWorkoutsInProgress {
-                        ForEach(filteredWorkouts.indices, id: \.self) { index in
-                            WorkoutProgressCardView(workout: filteredWorkouts[index])
+                    .padding()
+                    Divider()
+                }
+                
+                if !currentUser.workoutPlans.isEmpty {
+                    DisclosureGroup(isExpanded: $viewModel.showWorkoutPlans) {
+                        if viewModel.showWorkoutPlans {
+                            ForEach(currentUser.workoutPlans.indices, id: \.self) { index in
+                                WorkoutPlanCardView(
+                                    workoutPlan: currentUser.workoutPlans[index],
+                                    hasWorkoutInProgress: !filteredWorkouts.isEmpty
+                                )
                                 .transition(
                                     .scale(scale: 0.85)
                                     .combined(with: .opacity)
                                     .combined(with: .move(edge: .bottom))
                                 )
-                            if index < filteredWorkouts.count - 1 {
-                                Divider()
+                                if index < currentUser.workoutPlans.count - 1 {
+                                    Divider()
+                                }
                             }
+                            .padding()
                         }
-                        .padding()
+                    } label: {
+                        Text("Plans")
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                            .padding(.top)
                     }
+                    .padding()
+                    Divider()
                 }
                 
-                if !currentUser.workoutPlans.isEmpty {
-                    HStack {
-                        Text("Workout Plans")
-                            .font(.title2)
-                            .bold()
-                            .padding(.top)
-                        Spacer()
-                        Button(action: {
-                            withAnimation {
-                                viewModel.showWorkoutPlans.toggle()
-                            }
-                        }) {
-                            Image(systemName: viewModel.showWorkoutsInProgress ? "chevron.up" : "chevron.down")
-                                .padding(.top)
-                        }
-                    }
-                    .padding(.horizontal)
-                    .padding(.top)
-                    
-                    if viewModel.showWorkoutPlans {
-                        ForEach(currentUser.workoutPlans.indices, id: \.self) { index in
-                            WorkoutPlanCardView(
-                                workoutPlan: currentUser.workoutPlans[index],
-                                hasWorkoutInProgress: !filteredWorkouts.isEmpty
-                            )
-                            .transition(
-                                .scale(scale: 0.85)
-                                .combined(with: .opacity)
-                                .combined(with: .move(edge: .bottom))
-                            )
-                            if index < currentUser.workoutPlans.count - 1 {
-                                Divider()
-                            }
-                        }
-                        .padding()
-                    }
-                }
             }
             .animation(.easeInOut, value: viewModel.state)
             .background(Color(.systemBackground))
@@ -213,10 +196,10 @@ struct WorkoutProgressCardView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-                Text(workout.name)
-                    .fontWeight(.bold)
-                    .font(.title2)
-                    .foregroundColor(.primary)
+            Text(workout.name)
+                .fontWeight(.bold)
+                .font(.title2)
+                .foregroundColor(.primary)
             
             HStack {
                 Image(systemName: "dumbbell.fill")

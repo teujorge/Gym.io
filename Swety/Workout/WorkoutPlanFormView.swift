@@ -21,7 +21,7 @@ struct WorkoutPlanFormView: View {
         _viewModel = StateObject(wrappedValue: WorkoutPlanFormViewModel(
             workoutPlan: nil,
             onSave: onSave,
-            onDelete: {workoutPlan in}
+            onDelete: { workoutPlan in }
         ))
     }
     
@@ -49,10 +49,15 @@ struct WorkoutPlanFormView: View {
                     .padding(.vertical)
                     
                     ForEach(Array(viewModel.workoutPlan.exercisePlans.enumerated()), id: \.element.id) { index, exercisePlan in
-                        exercisePlanView(for: index, exercisePlan: exercisePlan, proxy: proxy)
-                            .opacity(viewModel.lastMoveAffectedIndex == index ? 0.2 : 1.0)
+                        exercisePlanView(
+                            for: index,
+                            exercisePlan: exercisePlan,
+                            proxy: proxy
+                        )
+                        .opacity(viewModel.lastMoveAffectedIndex == index ? 0.2 : 1.0)
                     }
                     .animation(.easeOut, value: viewModel.lastMoveAffectedIndex)
+                    .animation(.easeInOut, value: viewModel.workoutPlan.exercisePlans)
                     
                     // Add exercise button
                     NavigationLink(
@@ -116,7 +121,7 @@ struct WorkoutPlanFormView: View {
                 VStack {
                     if index != 0 {
                         Button(action: {
-                            withAnimation {
+                            withAnimation(.easeInOut(duration: 0.5)) {
                                 proxy.scrollTo(viewModel.workoutPlan.exercisePlans[index - 1].id, anchor: .center)
                                 viewModel.moveExerciseUp(index: index)
                             }
@@ -129,7 +134,7 @@ struct WorkoutPlanFormView: View {
                     }
                     if index != viewModel.workoutPlan.exercisePlans.count - 1 {
                         Button(action: {
-                            withAnimation {
+                            withAnimation(.easeInOut(duration: 0.5)) {
                                 proxy.scrollTo(viewModel.workoutPlan.exercisePlans[index + 1].id, anchor: .center)
                                 viewModel.moveExerciseDown(index: index)
                             }
@@ -196,7 +201,6 @@ struct WorkoutPlanFormView: View {
             }
         }
     }
-    
 }
 
 

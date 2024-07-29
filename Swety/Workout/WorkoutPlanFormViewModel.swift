@@ -97,7 +97,6 @@ class WorkoutPlanFormViewModel: ObservableObject {
         for (index, exercisePlan) in workoutPlan.exercisePlans.enumerated() {
             exercisePlan.index = index
         }
-        objectWillChange.send()
     }
     
     func handleSaveExercise(_ updatedExercise: ExercisePlan) {
