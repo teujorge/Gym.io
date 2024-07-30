@@ -12,7 +12,6 @@ struct ProfileView: View {
     @EnvironmentObject var authState: AuthState
     @EnvironmentObject var currentUser: User
     @StateObject var viewModel = ProfileViewModel()
-    @State private var selectedTab = 0
     
     var filteredWorkouts: [Workout] {
         currentUser.workouts.filter { $0.completedAt != nil }
@@ -32,10 +31,10 @@ struct ProfileView: View {
                 profileInfo
                 summary
                 pickerView
-                if selectedTab == 0 {
+                if viewModel.selectedPickerTab == .workouts {
                    workoutHistory
                 } else {
-                    
+                    exerciseHistory
                 }
 
             }
