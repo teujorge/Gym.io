@@ -97,12 +97,20 @@ struct WorkoutPlanFormView: View {
         .toolbar {
             if viewModel.isEditing {
                 ToolbarItem(placement: .destructiveAction) {
-                    Button("Delete") { viewModel.delete() { dismissAll() } }
+                    Button("Delete") { viewModel.delete() { 
+                        DispatchQueue.main.async {
+                            dismissAll()
+                        }
+                    } }
                         .foregroundColor(.red)
                 }
             }
             ToolbarItem(placement: .confirmationAction) {
-                Button("Save") { viewModel.save() { dismiss() } }
+                Button("Save") { viewModel.save() {
+                    DispatchQueue.main.async {
+                        dismiss()
+                    }
+                } }
             }
             ToolbarItemGroup(placement: .keyboard) {
                 Spacer()
@@ -175,11 +183,7 @@ struct WorkoutPlanFormView: View {
                 isPlan: true,
                 autoSave: false,
                 onDetailsChanged: { setDetails in
-                    if index >= 0 && index < viewModel.workoutPlan.exercisePlans.count {
-                        viewModel.workoutPlan.exercisePlans[index] = setDetails.createExercisePlan(from: exercisePlan)
-                    } else {
-                        print("Attempted to update exercise plan at invalid index: \(index)")
-                    }
+                    viewModel.handleSetChange(index: index, setDetails: setDetails)
                 }
             )
             .id(exercisePlan.id)

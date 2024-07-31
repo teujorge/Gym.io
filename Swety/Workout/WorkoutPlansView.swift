@@ -137,7 +137,7 @@ struct WorkoutPlanCardView: View {
     var hasWorkoutInProgress: Bool
     
     var body: some View {
-        NavigationLink(destination: WorkoutPlanView(workoutPlan: workoutPlan)) {
+        NavigationLink(destination: WorkoutPlanView(workoutPlanId: workoutPlan.id)) {
             VStack(alignment: .leading, spacing: 8) {
                 Text(workoutPlan.name)
                     .fontWeight(.bold)

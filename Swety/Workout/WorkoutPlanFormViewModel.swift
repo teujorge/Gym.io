@@ -73,6 +73,14 @@ class WorkoutPlanFormViewModel: ObservableObject {
         updateIndexes()
     }
     
+    func handleSetChange(index: Int, setDetails: SetDetails) {
+        if index >= 0 && index < workoutPlan.exercisePlans.count {
+            workoutPlan.exercisePlans[index] = setDetails.createExercisePlan(from: workoutPlan.exercisePlans[index])
+        } else {
+            print("Attempted to update exercise plan at invalid index: \(index)")
+        }
+    }
+    
     func updateExerciseSets(exerciseId: String, sets: [SetDetail]) {
         if let index = workoutPlan.exercisePlans.firstIndex(where: { $0.id == exerciseId }) {
             workoutPlan.exercisePlans[index].setPlans = sets.enumerated().map { index, set in

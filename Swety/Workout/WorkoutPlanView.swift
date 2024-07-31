@@ -8,9 +8,18 @@
 import SwiftUI
 
 struct WorkoutPlanView: View {
+    @Environment(\.dismiss) var dismiss
+    @Environment(\.dismissAll) var dismissAll
     @EnvironmentObject var currentUser: User
     
-    @StateObject var workoutPlan: WorkoutPlan
+    var workoutPlanId: String
+    var workoutPlan: WorkoutPlan {
+        if let workout = currentUser.workoutPlans.first(where: { $0.id == workoutPlanId }) {
+            return workout
+        } else {
+            return WorkoutPlan(name: "loading...", notes: "loading...", exercisePlans: [])
+        }
+    }
     
     var exercisePlansList: [(offset: Int, element: ExercisePlan)] {
         return Array(
@@ -81,12 +90,18 @@ struct WorkoutPlanView: View {
                     destination: WorkoutPlanFormView(
                         workoutPlan: workoutPlan,
                         onSave: { workoutPlan in
-                            if let workoutIndex = currentUser.workoutPlans.firstIndex(where: { $0.id == workoutPlan.id }) {
-                                currentUser.workoutPlans[workoutIndex] = workoutPlan
+                            DispatchQueue.main.async {
+                                dismissAll()
+                                currentUser.workoutPlans.removeAll { $0.id == workoutPlan.id }
+                                currentUser.workoutPlans.append(workoutPlan)
                             }
                         },
                         onDelete: { workoutPlan in
-                            currentUser.workoutPlans.removeAll(where: { $0.id == workoutPlan.id })
+                            DispatchQueue.main.async {
+                                dismissAll()
+                                print("DISMISSALL: Workout plan not found: \(workoutPlanId)")
+                                currentUser.workoutPlans.removeAll(where: { $0.id == workoutPlan.id })
+                            }
                         }
                     )
                 ) {
@@ -112,12 +127,21 @@ struct WorkoutPlanView: View {
 
 #Preview {
     NavigationView {
-        WorkoutPlanView(workoutPlan: WorkoutPlan(
-            name: "Full Body Workout",
-            notes: "A complete workout targeting all major muscle groups.",
-            exercisePlans: _previewExercisePlans
-        ))
+        WorkoutPlanView(workoutPlanId: "1")
     }
+    .environmentObject(User(
+        id: "1",
+        username: "teujorge",
+        name: "Matheus Jorge",
+        workoutPlans: [
+            WorkoutPlan(
+                id: "1",
+                name: "Full Body Workout",
+                notes: "A complete workout targeting all major muscle groups.",
+                exercisePlans: _previewExercisePlans
+            )
+        ]
+    ))
 }
 
 var _previewExercisePlans: [ExercisePlan] = [
