@@ -30,7 +30,7 @@ class WorkoutPlanFormViewModel: ObservableObject {
     }
     
     var enumeratedExercisePlans: EnumeratedSequence<[ExercisePlan]> {
-        print("exercisePlans count: \(workoutPlan.exercisePlans.count)")
+//        print("exercisePlans count: \(workoutPlan.exercisePlans.count)")
         return workoutPlan.exercisePlans.enumerated()
     }
     
