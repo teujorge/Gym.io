@@ -35,14 +35,15 @@ class WorkoutStartedViewModel: ObservableObject{
         workoutPlan.exercisePlans.sort { $0.index < $1.index }
         workoutPlan.exercisePlans.forEach { $0.setPlans.sort { $0.index < $1.index } }
         
-        var startedWorkout = Workout(workoutPlan: workoutPlan)
+        let startedWorkout = Workout(workoutPlan: workoutPlan)
         startedWorkout.completedAt = nil
         
         self.workout = startedWorkout
         
         Task {
-            await createNewWorkout()
-            await observeLiveActivityChanges()
+            if (await createNewWorkout()) != nil {
+                await observeLiveActivityChanges()
+            }
         }
     }
     
@@ -182,7 +183,7 @@ class WorkoutStartedViewModel: ObservableObject{
             }
             
             let exercises = newWorkout.exercises.sorted { $0.index < $1.index }
-            if let exerciseId = exercises.first?.id {
+            if exercises.first != nil {
                 await startOrUpdateLiveActivity(with: WorkoutState(
                     workoutName: workout.name,
                     currentExercise: workout.exercises[0],

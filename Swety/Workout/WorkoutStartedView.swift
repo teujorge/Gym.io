@@ -16,7 +16,7 @@ struct WorkoutStartedView: View {
         _viewModel = StateObject(wrappedValue: WorkoutStartedViewModel(workout: workout))
     }
     
-    init(workoutPlan: WorkoutPlan){
+    init(workoutPlan: WorkoutPlan) {
         _viewModel = StateObject(wrappedValue: WorkoutStartedViewModel(workoutPlan: workoutPlan))
     }
     

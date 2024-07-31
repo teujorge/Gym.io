@@ -56,7 +56,7 @@ func sendRequest<T: Codable>(endpoint: String, queryItems: [URLQueryItem]? = nil
         
         if let jsonData = try? encoder.encode(body) {
             if let jsonString = String(data: jsonData, encoding: .utf8) {
-//                print("HTTP Request: \(jsonString)") // TODO: here to see the request
+                print("HTTP Request: \(jsonString.isEmpty)") // TODO: here to see the request
             }
             request.httpBody = jsonData
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -94,7 +94,7 @@ func sendRequest<T: Codable>(endpoint: String, queryItems: [URLQueryItem]? = nil
             
         }
         if let responseString = String(data: data, encoding: .utf8) {
-//            print("HTTP Response: \(responseString)") // TODO: here to see the response
+            print("HTTP Response: \(responseString.isEmpty)") // TODO: here to see the response
         }
         
         let decodedResponse = try JSONDecoder().decode([String: T].self, from: data)
