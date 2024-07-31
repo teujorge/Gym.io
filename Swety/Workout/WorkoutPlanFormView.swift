@@ -48,7 +48,7 @@ struct WorkoutPlanFormView: View {
                     }
                     .padding(.vertical)
                     
-                    ForEach(Array(viewModel.workoutPlan.exercisePlans.enumerated()), id: \.element.id) { index, exercisePlan in
+                    ForEach(Array(viewModel.enumeratedExercisePlans), id: \.element.id) { index, exercisePlan in
                         exercisePlanView(
                             for: index,
                             exercisePlan: exercisePlan,
@@ -175,7 +175,11 @@ struct WorkoutPlanFormView: View {
                 isPlan: true,
                 autoSave: false,
                 onDetailsChanged: { setDetails in
-                    viewModel.workoutPlan.exercisePlans[index] = setDetails.createExercisePlan(from: exercisePlan)
+                    if index >= 0 && index < viewModel.workoutPlan.exercisePlans.count {
+                        viewModel.workoutPlan.exercisePlans[index] = setDetails.createExercisePlan(from: exercisePlan)
+                    } else {
+                        print("Attempted to update exercise plan at invalid index: \(index)")
+                    }
                 }
             )
             .id(exercisePlan.id)
@@ -186,18 +190,6 @@ struct WorkoutPlanFormView: View {
             }
         }
         .padding()
-        .swipeActions {
-            Button(action: { viewModel.editExercisePlan(exercisePlan) }) {
-                Label("Edit", systemImage: "pencil")
-            }
-            Button(role: .destructive, action: {
-                if let index = viewModel.workoutPlan.exercisePlans.firstIndex(where: { $0.id == exercisePlan.id }) {
-                    viewModel.workoutPlan.exercisePlans.remove(at: index)
-                }
-            }) {
-                Label("Delete", systemImage: "trash")
-            }
-        }
     }
 }
 

@@ -29,6 +29,11 @@ class WorkoutPlanFormViewModel: ObservableObject {
         }
     }
     
+    var enumeratedExercisePlans: EnumeratedSequence<[ExercisePlan]> {
+        print("exercisePlans count: \(workoutPlan.exercisePlans.count)")
+        return workoutPlan.exercisePlans.enumerated()
+    }
+    
     init(workoutPlan: WorkoutPlan?, onSave: @escaping (WorkoutPlan) -> Void, onDelete: @escaping (WorkoutPlan) -> Void) {
         if let workoutPlan = workoutPlan {
             self.isEditing = true
@@ -44,31 +49,16 @@ class WorkoutPlanFormViewModel: ObservableObject {
         
         // Used to delete exercises that were removed
         self.allInitialExerciseIds = workoutPlan?.exercisePlans.map { $0.id } ?? []
-        
-        // Sort exercises by index
-        self.workoutPlan.exercisePlans.sort { $0.index < $1.index }
-        self.workoutPlan.exercisePlans.enumerated().forEach { index, exercisePlan in
-            exercisePlan.index = index
-        }
-    }
-    
-    func addExercise() {
-        selectedExercise = nil
-    }
-    
-    func moveExercise(from source: IndexSet, to destination: Int) {
-        workoutPlan.exercisePlans.move(fromOffsets: source, toOffset: destination)
-        objectWillChange.send()
+        self.updateIndexes()
     }
     
     func deleteExercise(index: Int) {
+        guard index >= 0 && index < workoutPlan.exercisePlans.count else {
+            print("Attempted to delete exercise at invalid index: \(index)")
+            return
+        }
         workoutPlan.exercisePlans.remove(at: index)
-        objectWillChange.send()
-    }
-    
-    func editExercisePlan(_ exercise: ExercisePlan) {
-        selectedExercise = exercise
-        objectWillChange.send()
+        updateIndexes()
     }
     
     func moveExerciseUp(index: Int) {
@@ -83,40 +73,20 @@ class WorkoutPlanFormViewModel: ObservableObject {
         updateIndexes()
     }
     
-    func updateIndexes() {
-        for (index, exercisePlan) in workoutPlan.exercisePlans.enumerated() {
-            exercisePlan.index = index
-        }
-        objectWillChange.send()
-    }
-    
-    func handleSaveExercise(_ updatedExercise: ExercisePlan) {
-        if let selectedExercise = selectedExercise {
-            if let index = workoutPlan.exercisePlans.firstIndex(where: { $0.id == selectedExercise.id }) {
-                workoutPlan.exercisePlans[index] = updatedExercise
-            } else {
-                workoutPlan.exercisePlans.append(updatedExercise)
-            }
-        } else {
-            workoutPlan.exercisePlans.append(updatedExercise)
-        }
-        objectWillChange.send()
-    }
-    
-    func handleDeleteExercise(_ exercise: ExercisePlan) {
-        if let index = workoutPlan.exercisePlans.firstIndex(where: { $0.id == exercise.id }) {
-            workoutPlan.exercisePlans.remove(at: index)
-        }
-        objectWillChange.send()
-    }
-    
     func updateExerciseSets(exerciseId: String, sets: [SetDetail]) {
         if let index = workoutPlan.exercisePlans.firstIndex(where: { $0.id == exerciseId }) {
             workoutPlan.exercisePlans[index].setPlans = sets.enumerated().map { index, set in
                 set.toSetPlan(index: index)
             }
+            updateIndexes()
         }
-        objectWillChange.send()
+    }
+    
+    private func updateIndexes() {
+        for (index, exercisePlan) in workoutPlan.exercisePlans.enumerated() {
+            exercisePlan.index = index
+        }
+        print("Updated indices: \(workoutPlan.exercisePlans.map { $0.index })")
     }
     
     func save(onSuccess: @escaping () -> Void) {
