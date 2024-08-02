@@ -76,6 +76,8 @@
 		F5D91C1D2C3CF144004356BC /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5D91C1C2C3CF144004356BC /* SignUpView.swift */; };
 		F5F0B04F2C5078080033681D /* DialogManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5F0B04E2C5078080033681D /* DialogManager.swift */; };
 		F5F0B0512C50781B0033681D /* DialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5F0B0502C50781B0033681D /* DialogView.swift */; };
+		F5F39CED2C5D7CAB00D9DA90 /* EditWorkoutHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5F39CEC2C5D7CAB00D9DA90 /* EditWorkoutHistoryView.swift */; };
+		F5F39CEF2C5D7D7B00D9DA90 /* EditWorkoutHistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5F39CEE2C5D7D7B00D9DA90 /* EditWorkoutHistoryViewModel.swift */; };
 		F5FAE1F02C3F0DE800DC362A /* SetDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5FAE1EF2C3F0DE800DC362A /* SetDetailsView.swift */; };
 		F5FAE1F22C3F5D5C00DC362A /* WorkoutPlansViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5FAE1F12C3F5D5C00DC362A /* WorkoutPlansViewModel.swift */; };
 /* End PBXBuildFile section */
@@ -166,6 +168,8 @@
 		F5D91C1C2C3CF144004356BC /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		F5F0B04E2C5078080033681D /* DialogManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogManager.swift; sourceTree = "<group>"; };
 		F5F0B0502C50781B0033681D /* DialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogView.swift; sourceTree = "<group>"; };
+		F5F39CEC2C5D7CAB00D9DA90 /* EditWorkoutHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditWorkoutHistoryView.swift; sourceTree = "<group>"; };
+		F5F39CEE2C5D7D7B00D9DA90 /* EditWorkoutHistoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditWorkoutHistoryViewModel.swift; sourceTree = "<group>"; };
 		F5FAE1EF2C3F0DE800DC362A /* SetDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetDetailsView.swift; sourceTree = "<group>"; };
 		F5FAE1F12C3F5D5C00DC362A /* WorkoutPlansViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutPlansViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -324,6 +328,8 @@
 				F54B3C5B2C3870BB00171A6F /* ProfileView.swift */,
 				F53B94E52C3E152800C79FAB /* ProfileViewModel.swift */,
 				F54B3C5D2C387C7D00171A6F /* SummaryChartView.swift */,
+				F5F39CEC2C5D7CAB00D9DA90 /* EditWorkoutHistoryView.swift */,
+				F5F39CEE2C5D7D7B00D9DA90 /* EditWorkoutHistoryViewModel.swift */,
 				F5D4A4112C398C9D00E880A7 /* ProfileModel.swift */,
 			);
 			path = Profile;
@@ -489,6 +495,7 @@
 				F5D4A4082C396CCC00E880A7 /* ChallengeFormView.swift in Sources */,
 				F50097792C3D701D00D799C4 /* Debounce.swift in Sources */,
 				F53B94E62C3E152800C79FAB /* ProfileViewModel.swift in Sources */,
+				F5F39CED2C5D7CAB00D9DA90 /* EditWorkoutHistoryView.swift in Sources */,
 				5320AA432C4594E20047A40F /* WorkoutStartedViewModel.swift in Sources */,
 				F54B3C5A2C386C3300171A6F /* CustomExercisePlanFormView.swift in Sources */,
 				F54D32FD2C40348A00B1A6B3 /* HTTPClient.swift in Sources */,
@@ -520,6 +527,7 @@
 				F5D4A4122C398C9D00E880A7 /* ProfileModel.swift in Sources */,
 				F53E848A2C3F89EB0038F82A /* LoaderView.swift in Sources */,
 				F50097742C3D56C600D799C4 /* AuthViewModel.swift in Sources */,
+				F5F39CEF2C5D7D7B00D9DA90 /* EditWorkoutHistoryViewModel.swift in Sources */,
 				F50D80FA2C429EBB0061366E /* ErrorView.swift in Sources */,
 				F5482CD52C3EC21900BA2513 /* Utils.swift in Sources */,
 			);

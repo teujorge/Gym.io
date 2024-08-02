@@ -405,10 +405,36 @@
       }
     },
     "Count: %lld" : {
-
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recuento: %lld"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contagem: %lld"
+          }
+        }
+      }
     },
     "Date" : {
-
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fecha"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data"
+          }
+        }
+      }
     },
     "Delete" : {
       "localizations" : {
@@ -811,7 +837,20 @@
       }
     },
     "History" : {
-
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Historia"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "História"
+          }
+        }
+      }
     },
     "Home" : {
       "localizations" : {
@@ -846,7 +885,20 @@
       }
     },
     "In Progress" : {
-
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En Curso"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em Andamento"
+          }
+        }
+      }
     },
     "Instructions" : {
       "localizations" : {
@@ -1377,7 +1429,20 @@
       }
     },
     "Select History" : {
-
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleccionar Historial"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selecione Histórico"
+          }
+        }
+      }
     },
     "Select Summary Range" : {
       "localizations" : {
@@ -1529,6 +1594,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pular Set"
+          }
+        }
+      }
+    },
+    "Start" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comenzar"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comece"
           }
         }
       }
@@ -1753,6 +1834,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Treino"
+          }
+        }
+      }
+    },
+    "Workout Details" : {
+      "localizations" : {
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detalles del Entrenamiento"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detalhes do Treino"
           }
         }
       }

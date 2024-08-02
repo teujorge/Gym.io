@@ -35,6 +35,7 @@ struct SetDetailsView: View {
         isEditable: Bool,
         isPlan: Bool,
         autoSave: Bool,
+        showTimer: Bool = true,
         onDetailsChanged: ((SetDetails) -> Void)? = nil,
         onDebounceTriggered: (() -> Void)? = nil
     ) {
@@ -43,6 +44,7 @@ struct SetDetailsView: View {
             isEditable: isEditable,
             isPlan: isPlan,
             autoSave: autoSave,
+            showTimer: showTimer,
             onDetailsChanged: onDetailsChanged,
             onDebounceTriggered: onDebounceTriggered
         ))
@@ -51,21 +53,23 @@ struct SetDetailsView: View {
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
             if viewModel.isEditable && viewModel.onDetailsChanged != nil {
-                HStack {
-                    Button(action: {
-                        dialogManager.showDialog {
-                            restTimeSelectorView
+                if viewModel.showTimer {
+                    HStack {
+                        Button(action: {
+                            dialogManager.showDialog {
+                                restTimeSelectorView
+                            }
+                        }) {
+                            Text(viewModel.formatSeconds(viewModel.details.restTime))
+                            Image(systemName: "stopwatch")
+                                .foregroundColor(.accent)
                         }
-                    }) {
-                        Text(viewModel.formatSeconds(viewModel.details.restTime))
-                        Image(systemName: "stopwatch")
-                            .foregroundColor(.accent)
+                        .buttonStyle(.plain)
+                        Spacer()
                     }
-                    .buttonStyle(.plain)
-                    Spacer()
+                    .padding(.horizontal)
+                    .padding(.bottom)
                 }
-                .padding(.horizontal)
-                .padding(.bottom)
 
                 // For future use -> custom exercise creation
                 //    Picker("Type", selection: $viewModel.details.isRepBased.animation()) {

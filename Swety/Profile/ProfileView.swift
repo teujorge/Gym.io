@@ -14,7 +14,9 @@ struct ProfileView: View {
     @StateObject var viewModel = ProfileViewModel()
     
     var filteredWorkouts: [Workout] {
-        currentUser.workouts.filter { $0.completedAt != nil }
+        currentUser.workouts
+            .filter { $0.completedAt != nil }
+            .sorted { $0.completedAt! > $1.completedAt! }
     }
     
     var filteredExerciseNames: [String] {
@@ -31,12 +33,6 @@ struct ProfileView: View {
                 profileInfo
                 summary
                 pickerView
-                if viewModel.selectedPickerTab == .workouts {
-                   workoutHistory
-                } else {
-                    exerciseHistory
-                }
-
             }
             .animation(.easeInOut, value: currentUser.workouts.count)
             .navigationTitle(currentUser.username)
@@ -164,8 +160,10 @@ struct ProfileView: View {
                             .foregroundColor(.secondary)
                     }
                     .font(.subheadline)
-                    Text(workout.name)
-                        .font(.headline)
+                    NavigationLink(destination: EditWorkoutHistoryView(workout: workout)) {
+                        Text(workout.name)
+                            .font(.headline)
+                    }
                     if let notes = workout.notes {
                         Text(notes)
                             .foregroundColor(.secondary)

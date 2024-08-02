@@ -81,7 +81,10 @@ func calculateVolume(for workout: Workout) -> Int {
         total + (
             exercise.isRepBased
             ? exercise.sets.reduce(0) { setTotal, set in
-                setTotal + (set.reps * set.weight)
+                if set.completedAt == nil {
+                    return setTotal
+                }
+                return setTotal + (set.reps * set.weight)
             }
             : 0
         )

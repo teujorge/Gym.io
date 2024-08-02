@@ -9,6 +9,7 @@ import SwiftUI
 import Combine
 
 class SetDetailsViewModel: ObservableObject {
+    @Published var showTimer: Bool
     @Published var state: LoaderState = .idle
     
     @Published var details: SetDetails {
@@ -58,6 +59,7 @@ class SetDetailsViewModel: ObservableObject {
         isEditable: Bool,
         isPlan: Bool,
         autoSave: Bool,
+        showTimer: Bool,
         onDetailsChanged: ((SetDetails) -> Void)? = nil,
         onDebounceTriggered: (() -> Void)? = nil
     ) {
@@ -65,6 +67,7 @@ class SetDetailsViewModel: ObservableObject {
         self.isEditable = isEditable
         self.isPlan = isPlan
         self.autoSave = autoSave
+        self.showTimer = showTimer
         
         self.restTimeMinutes = details.restTime / 60
         self.restTimeSeconds = details.restTime % 60
