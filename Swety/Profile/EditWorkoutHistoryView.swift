@@ -28,6 +28,7 @@ struct EditWorkoutHistoryView: View {
                     .padding(.top)
                 
                 // Start and Finish Date Pickers
+                // TODO: cant change start date... would need to create new one?
                 VStack(spacing: 20) {
                     DatePicker("Start", selection: $viewModel.startDate, displayedComponents: [.date, .hourAndMinute])
                         .datePickerStyle(.compact)

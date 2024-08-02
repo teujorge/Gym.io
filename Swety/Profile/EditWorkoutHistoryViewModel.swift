@@ -12,6 +12,7 @@ class EditWorkoutHistoryViewModel: ObservableObject{
     @Published var workout: Workout
     @Published var state: LoaderState = .idle
     
+    // TODO: cant change start date... would need to create new one?
     @Published var startDate: Date {
         didSet {
             workout.createdAt = startDate
