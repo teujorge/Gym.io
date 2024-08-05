@@ -27,12 +27,26 @@ struct EditWorkoutHistoryView: View {
                     .padding(.horizontal)
                     .padding(.top)
                 
-                // Start and Finish Date Pickers
-                // TODO: cant change start date... would need to create new one?
-                VStack(spacing: 20) {
-                    DatePicker("Start", selection: $viewModel.startDate, displayedComponents: [.date, .hourAndMinute])
-                        .datePickerStyle(.compact)
-                        .padding(.horizontal)
+                // Start and Finish Dates
+                VStack {
+                    HStack {
+                        Text("Start")
+                        Spacer()
+
+                        // Date
+                        Text(dateString(from: viewModel.workout.createdAt))
+                            .padding(.vertical, .small)
+                            .padding(.horizontal, .medium)
+
+                        // Time
+                        Text(timeString(from: viewModel.workout.createdAt))
+                            .padding(.vertical, .small)
+                            .padding(.horizontal, .medium)
+                        
+                    }
+                    .padding(.horizontal)
+                    .padding(.vertical, .small)
+                    .foregroundColor(.secondary)
 
                     DatePicker("Finish", selection: $viewModel.finishDate, displayedComponents: [.date, .hourAndMinute])
                         .datePickerStyle(.compact)
@@ -53,7 +67,7 @@ struct EditWorkoutHistoryView: View {
                     if !viewModel.isLastExercise(exercise: exercise) {
                         Divider()
                             .padding(.horizontal)
-                            .padding(.top, 10)
+                            .padding(.top, .small)
                     }
                 }
             }
@@ -71,6 +85,18 @@ struct EditWorkoutHistoryView: View {
                 Button("Done", action: dismissKeyboard)
             }
         }
+    }
+    
+    private func dateString(from date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMM d, yyyy" // Date format
+        return formatter.string(from: date)
+    }
+
+    private func timeString(from date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "h:mm a" // Time format
+        return formatter.string(from: date)
     }
     
     // Function to delete workout
@@ -152,19 +178,19 @@ fileprivate struct ExerciseCardView: View {
 //    @EnvironmentObject var dialogManager: DialogManager
 //    @EnvironmentObject var currentUser: User
 //    @StateObject var viewModel: EditWorkoutHistoryViewModel
-//    
+//
 //    init (workout: Workout) {
 //        _viewModel = StateObject(wrappedValue: EditWorkoutHistoryViewModel(workout: workout))
 //    }
-//    
+//
 //    var body: some View {
 //        ScrollView {
 //            // Exercises to edit
 //            VStack(alignment: .center) {
-//                
+//
 //                VStack(spacing: 20) {
 //                    Divider()
-//                    
+//
 //                    // Start Date and Time Picker
 //                    DatePicker("Start", selection: $viewModel.startDate, displayedComponents: [.hourAndMinute])
 //                        .datePickerStyle(.compact)
@@ -174,10 +200,10 @@ fileprivate struct ExerciseCardView: View {
 //                    DatePicker("Finish", selection: $viewModel.finishDate, displayedComponents: [.date, .hourAndMinute])
 //                        .datePickerStyle(.compact)
 //                        .padding(.horizontal)
-//                    
+//
 //                    Divider()
 //                }
-//                
+//
 //                // Exercises
 //                ForEach($viewModel.workout.exercises, id: \.id) { $exercise in
 //                    ExerciseCardView(exercise: $exercise, viewModel: viewModel)
@@ -238,7 +264,7 @@ fileprivate struct ExerciseCardView: View {
 //fileprivate struct ExerciseCardView: View {
 //    @Binding var exercise: Exercise
 //    @ObservedObject var viewModel: EditWorkoutHistoryViewModel
-//    
+//
 //    var body: some View {
 //        VStack(alignment: .center) {
 //            Text(exercise.name)
@@ -246,7 +272,7 @@ fileprivate struct ExerciseCardView: View {
 //                .fontWeight(.semibold)
 //                .foregroundColor(.accent)
 //                .padding()
-//            
+//
 //            SetDetailsView(
 //                details: SetDetails(exercise: exercise),
 //                isEditable: true,
@@ -257,7 +283,7 @@ fileprivate struct ExerciseCardView: View {
 //                    exercise = setDetails.createExercise(from: exercise)
 //                }
 //            )
-//            
+//
 //        }
 //        .frame(maxWidth: .infinity, alignment: .leading)
 //        .padding()
