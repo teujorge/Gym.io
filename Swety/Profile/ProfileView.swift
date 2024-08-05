@@ -155,21 +155,25 @@ struct ProfileView: View {
             ForEach(filteredWorkouts) { workout in
                 VStack(alignment: .leading) {
                     HStack {
+                        NavigationLink(destination: EditWorkoutHistoryView(workout: workout)) {
+                            Text(workout.name)
+                                .font(.headline)
+                        }
                         Spacer()
                         Text(workout.completedAt!, style: .date)
                             .foregroundColor(.secondary)
                     }
                     .font(.subheadline)
-                    NavigationLink(destination: EditWorkoutHistoryView(workout: workout)) {
-                        Text(workout.name)
-                            .font(.headline)
-                    }
                     if let notes = workout.notes {
                         Text(notes)
                             .foregroundColor(.secondary)
                     }
                     HStack {
-                        Text("Time: \(formatTime(workout.updatedAt.timeIntervalSince(workout.createdAt)))")
+                        if let completedAt = workout.completedAt {
+                            Text("Time: \(formatTime(completedAt.timeIntervalSince(workout.createdAt)))")
+                        } else {
+                            Text("Time: --:--")
+                        }
                         Text("Volume: \(calculateVolume(for: workout))")
                     }
                     .foregroundColor(.secondary)
